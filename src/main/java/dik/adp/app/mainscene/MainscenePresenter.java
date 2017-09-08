@@ -1,4 +1,4 @@
-package dik.adp.rami.window.qdashboard;
+package dik.adp.app.mainscene;
 
 /*
  * #%L
@@ -20,7 +20,7 @@ package dik.adp.rami.window.qdashboard;
  * #L%
  */
 
-import dik.adp.rami.window.light.LightView;
+
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
  *
  * @author adam-bien.com
  */
-public class QDashboardPresenter implements Initializable {
+public class MainscenePresenter implements Initializable {
 
     @FXML
     Label message;
@@ -43,7 +43,7 @@ public class QDashboardPresenter implements Initializable {
     Pane lightsBox;
 
     @Inject
-    QTower tower;
+    Tower tower;
 
     @Inject
     private String prefix;
@@ -62,13 +62,17 @@ public class QDashboardPresenter implements Initializable {
         this.theVeryEnd = rb.getString("theEnd");
     }
 
-    public void createLights() {
-        for (int i = 0; i < 255; i++) {
-            final int red = i;
-            LightView view = new LightView((f) -> red);
-            view.getViewAsync(lightsBox.getChildren()::add);
-        }
-    }
+    
+    
+//      How to add new Nodes
+            
+//    public void createLights() {
+//        for (int i = 0; i < 255; i++) {
+//            final int red = i;
+//            LightView view = new LightView((f) -> red);
+//            view.getViewAsync(lightsBox.getChildren()::add);
+//        }
+//    }
 
     public void launch() {
         message.setText("Date: " + date + " -> " + prefix + tower.readyToTakeoff() + happyEnding + theVeryEnd

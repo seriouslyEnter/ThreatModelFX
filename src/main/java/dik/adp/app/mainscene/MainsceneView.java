@@ -1,4 +1,4 @@
-package dik.adp.rami.window.qdashboard;
+package dik.adp.app.mainscene;
 
 /*
  * #%L
@@ -20,21 +20,11 @@ package dik.adp.rami.window.qdashboard;
  * #L%
  */
 
-import javax.annotation.PostConstruct;
+import com.airhacks.afterburner.views.FXMLView;
 
 /**
  *
  * @author adam-bien.com
  */
-public class QTower {
-
-    @PostConstruct
-    public void init() {
-        System.out.println("Tower.init()");
-    }
-
-    public String readyToTakeoff() {
-        System.out.println("Ready to take-off");
-        return "ok from tower";
-    }
+public class MainsceneView extends FXMLView {
 }

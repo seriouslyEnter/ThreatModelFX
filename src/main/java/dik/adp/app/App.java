@@ -22,7 +22,7 @@ package dik.adp.app;
  * #L%
  */
 
-import dik.adp.rami.window.qdashboard.QDashboardView;
+import dik.adp.app.mainscene.MainsceneView;
 import com.airhacks.afterburner.injection.Injector;
 import java.time.LocalDate;
 import java.time.Month;
@@ -53,9 +53,9 @@ public class App extends Application {
         Injector.setConfigurationSource(customProperties::get);
 
         System.setProperty("happyEnding", " Enjoy the flight!");
-        QDashboardView appView = new QDashboardView();
+        MainsceneView appView = new MainsceneView();
         Scene scene = new Scene(appView.getView());
-        stage.setTitle("followme.fx");
+        stage.setTitle("ThreatModel.fx");
         final String uri = getClass().getResource("app.css").toExternalForm();
         scene.getStylesheets().add(uri);
         stage.setScene(scene);
