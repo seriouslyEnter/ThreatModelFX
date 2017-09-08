@@ -21,12 +21,15 @@ package dik.adp.app.mainscene;
  */
 
 
+import dik.adp.app.breadcrumbbar.BreadcrumbbarView;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javax.inject.Inject;
 
@@ -41,6 +44,10 @@ public class MainscenePresenter implements Initializable {
 
     @FXML
     Pane lightsBox;
+    
+    //Hiermit wird der Anchor festgelegt wo ich später breadcrumb injecte
+    @FXML
+    AnchorPane breadcrumbAnchor;
 
     @Inject
     Tower tower;
@@ -53,6 +60,8 @@ public class MainscenePresenter implements Initializable {
 
     @Inject
     private LocalDate date;
+            
+            
 
     private String theVeryEnd;
 
@@ -60,8 +69,28 @@ public class MainscenePresenter implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         //fetched from dashboard.properties
         this.theVeryEnd = rb.getString("theEnd");
+        
+        
+        
+        //Funktioniert
+        BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
+        breadcrumbbarView.getViewAsync(breadcrumbAnchor.getChildren()::add);
+        
+        
+        // Funktioniert auch
+//        BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
+//        Parent view = breadcrumbbarView.getView();
+//        breadcrumbAnchor.getChildren().add(view);
+        
     }
 
+    
+    
+    
+    
+    
+    
+    
     
     
 //      How to add new Nodes
