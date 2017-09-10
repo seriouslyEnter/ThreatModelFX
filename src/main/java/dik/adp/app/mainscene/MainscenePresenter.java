@@ -19,9 +19,8 @@ package dik.adp.app.mainscene;
  * limitations under the License.
  * #L%
  */
-
-
 import dik.adp.app.breadcrumbbar.BreadcrumbbarView;
+import dik.adp.app.dfd.DfdView;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -44,10 +43,13 @@ public class MainscenePresenter implements Initializable {
 
     @FXML
     Pane lightsBox;
-    
+
     //Hiermit wird der Anchor festgelegt wo ich später breadcrumb injecte
     @FXML
     AnchorPane breadcrumbAnchor;
+
+    @FXML
+    AnchorPane dfdAnchor;
 
     @Inject
     Tower tower;
@@ -60,8 +62,6 @@ public class MainscenePresenter implements Initializable {
 
     @Inject
     private LocalDate date;
-            
-            
 
     private String theVeryEnd;
 
@@ -69,32 +69,21 @@ public class MainscenePresenter implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         //fetched from dashboard.properties
         this.theVeryEnd = rb.getString("theEnd");
-        
-        
-        
+
         //Funktioniert
         BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
         breadcrumbbarView.getViewAsync(breadcrumbAnchor.getChildren()::add);
         
-        
+        DfdView dfdView = new DfdView();
+        dfdView.getViewAsync(dfdAnchor.getChildren()::add);
+
         // Funktioniert auch
 //        BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
 //        Parent view = breadcrumbbarView.getView();
 //        breadcrumbAnchor.getChildren().add(view);
-        
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
 //      How to add new Nodes
-            
 //    public void createLights() {
 //        for (int i = 0; i < 255; i++) {
 //            final int red = i;
@@ -102,7 +91,6 @@ public class MainscenePresenter implements Initializable {
 //            view.getViewAsync(lightsBox.getChildren()::add);
 //        }
 //    }
-
     public void launch() {
         message.setText("Date: " + date + " -> " + prefix + tower.readyToTakeoff() + happyEnding + theVeryEnd
         );
