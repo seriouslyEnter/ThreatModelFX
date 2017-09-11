@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="77.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.navigation.NavigationPresenter">
+    <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
+        <URL value="@navigation.css" />
+    </stylesheets>
+   <children>
+      <Button fx:id="dfdNavButton" layoutX="24.0" layoutY="24.0" mnemonicParsing="false" onAction="#hideDfdScene" text="DFD" />
+      <Button fx:id="atNavButton" layoutX="104.0" layoutY="24.0" mnemonicParsing="false" onAction="#showDfdScene" text="AT" />
+   </children>
+</AnchorPane>

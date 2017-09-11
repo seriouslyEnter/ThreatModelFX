@@ -3,30 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dik.adp.app.at;
+package dik.adp.app.navigation;
 
 import dik.adp.app.mainscene.MainscenePresenter;
+import dik.adp.app.sharedcommunicationmodel.ViewState;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
 import javax.inject.Inject;
 
 /**
  *
  * @author gu35nxt
  */
-public class AtPresenter implements Initializable {
+public class NavigationPresenter implements Initializable {
 
-        @FXML
-    private AnchorPane atAnchorPane;
-    
-    
+    @FXML
+    Button atNavButton;
+
+    @FXML
+    Button dfdNavButton;
+
     @Inject
-    MainscenePresenter mainscene;
+    private ViewState viewState;
 
+//    @Inject
+//    MainscenePresenter mainscene;
     private ResourceBundle resources = null;
 
     @Override
@@ -35,9 +40,13 @@ public class AtPresenter implements Initializable {
     }
 
     @FXML
-    void clearMain(ActionEvent event) {
+    void showDfdScene(ActionEvent event) {
+        viewState.setAtShowing(true);
+    }
 
-        this.atAnchorPane.getChildren().clear();
+    @FXML
+    void hideDfdScene(ActionEvent event) {
+        viewState.setAtShowing(false);
     }
 
 }

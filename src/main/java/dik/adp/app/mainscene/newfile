@@ -22,31 +22,54 @@ package dik.adp.app.mainscene;
 import dik.adp.app.at.AtPresenter;
 import dik.adp.app.at.AtView;
 import dik.adp.app.breadcrumbbar.BreadcrumbbarView;
+import dik.adp.app.dfd.DfdView;
 import dik.adp.app.navigation.NavigationView;
-import dik.adp.app.sharedcommunicationmodel.ViewState;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javax.inject.Inject;
 
 /**
  *
  * @author adam-bien.com
  */
+
 public class MainscenePresenter implements Initializable {
 
-    @Inject
-    private ViewState viewState;
+    @FXML
+    Label message;
+
+    @FXML
+    Pane lightsBox;
 
     //Hiermit wird der Anchor festgelegt wo ich später breadcrumb injecte
     @FXML
     AnchorPane breadcrumbAnchor;
 
+//    @FXML
+//    AnchorPane mainAnchor;
     @FXML
     AnchorPane navigationAnchor;
+
+    @Inject
+    Tower tower;
+
+    @Inject
+    private String prefix;
+
+    @Inject
+    private String happyEnding;
+
+    @Inject
+    private LocalDate date;
+
+    private String theVeryEnd;
 
     //--------------------------------------------------------
     @FXML
@@ -54,51 +77,70 @@ public class MainscenePresenter implements Initializable {
 
     private AtPresenter atPresenter;
     private AtView atView;
-    //--------------------------------------------------------
 
+    //--------------------------------------------------------
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //fetched from dashboard.properties
+        this.theVeryEnd = rb.getString("theEnd");
+
+//        this.bootstrapView = new DayView();
+        this.atView = new AtView();
+//        this.bootstrapPresenter = (DayPresenter) this.bootstrapView.getPresenter();
+        this.atPresenter = (AtPresenter) this.atView.getPresenter();
 
         //add BreadCrumBar
         BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
         breadcrumbbarView.getViewAsync(breadcrumbAnchor.getChildren()::add);
 
-//        //add DFD
+        //add DFD
 //        DfdView dfdView = new DfdView();
-//        Parent view2 = dfdView.getView();
-//        this.mainAnchorPane.getChildren().add(view2);
+//        dfdView.getViewAsync(dfdAnchor.getChildren()::add);
+        //add DFD
+        DfdView dfdView = new DfdView();
+        Parent view2 = dfdView.getView();
+        this.mainAnchorPane.getChildren().add(view2);
 
-//        this.atView = new AtView();
-//        this.atPresenter = (AtPresenter) this.atView.getPresenter();
+//        this.mainAnchorPane.getChildren().add(this.atView.getView());
+        this.showAt();
 
-//        this.showAt();
+//        //add AT 
+//        AtView atView = new AtView();
+//        Parent view3 = atView.getView();
+//        this.mainAnchorPane.getChildren().add(view3);
         //add Navigation
         NavigationView navigationView = new NavigationView();
         Parent view = navigationView.getView();
         navigationAnchor.getChildren().add(view);
-        
-        
-        //add AT
-        this.atView = new AtView();
-        this.atPresenter = (AtPresenter) this.atView.getPresenter();
 
-        this.viewState.atShowingProperty().addListener((obs, wasShowing, isNowShowing) -> {
-            if (isNowShowing) {
-                this.mainAnchorPane.getChildren().add(this.atView.getView());
-            } else {
-                this.mainAnchorPane.getChildren().remove(this.atView.getView());
-            }
-        });
+//        mainAnchor.getChildren().clear();
+    }
 
+    public void launch() {
+        message.setText("Date: " + date + " -> " + prefix + tower.readyToTakeoff() + happyEnding + theVeryEnd
+        );
     }
 
     void showAt() {
+
+//      this.bootstrapPane.getChildren().add(this.bootstrapView.getView());
         this.mainAnchorPane.getChildren().add(this.atView.getView());
+//        this.mainAnchorPane.getChildren().clear();
+
     }
 
     public void buttonAt() {
-        this.mainAnchorPane.getChildren().clear();
-//        this.showAt();
+        this.showAt();
     }
 
+//        this.mainAnchor.getChildren().add(this.atView.getView());
+    //        middleAnchor.getChildren().clear();
+    //                AtView atView = new AtView();
+    //        Parent view3 = atView.getView();
+    //        mainAnchor.getChildren().add(FXMLLoader.load(getClass().getResource("at.fxml")));
+    //        AtView atView = new AtView();
+    //        Parent view3 = atView.getView();
+    //        mainAnchor.getChildren().add(view3);
 }
+

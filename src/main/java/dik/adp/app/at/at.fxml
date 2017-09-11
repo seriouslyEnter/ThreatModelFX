@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.at.AtPresenter">
+<AnchorPane id="AnchorPane" fx:id="atAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.at.AtPresenter">
     <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
-        <URL value="@at.css"/>
+        <URL value="@at.css" />
     </stylesheets>
+   <children>
+      <Button fx:id="atClearButton" layoutX="274.0" layoutY="188.0" mnemonicParsing="false" onAction="#clearMain" text="AT Scene" />
+   </children>
 </AnchorPane>
