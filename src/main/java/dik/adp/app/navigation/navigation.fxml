@@ -2,27 +2,31 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.navigation.NavigationPresenter">
+<AnchorPane id="AnchorPane" fx:id="navAnchorPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.navigation.NavigationPresenter">
     <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
         <URL value="@navigation.css" />
     </stylesheets>
-   <children>
-      <HBox spacing="5.0">
-         <children>
-            <Button fx:id="dfdNavButton" mnemonicParsing="false" prefWidth="50.0" text="DFD" />
-            <Button fx:id="atNavButton" mnemonicParsing="false" prefWidth="50.0" text="AT" />
-            <Button fx:id="baNavButton" mnemonicParsing="false" prefWidth="50.0" text="BA" />
-            <Button fx:id="raNavButton" mnemonicParsing="false" prefWidth="50.0" text="RA" />
-            <Button fx:id="kkNavButton" mnemonicParsing="false" prefWidth="50.0" text="KK" />
-            <Button fx:id="sumNavButton" mnemonicParsing="false" prefWidth="50.0" text="∑" />
-         </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </HBox>
-   </children>
+    <children>
+        <HBox spacing="5.0">
+            <children>
+                <ToggleButton id="dfdNavButtonID" fx:id="dfdNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" selected="true" text="DFD">
+               <toggleGroup>
+                  <ToggleGroup fx:id="navToggleGroup" />
+               </toggleGroup></ToggleButton>
+                <ToggleButton id="atNavButtonID" fx:id="atNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="AT" toggleGroup="$navToggleGroup" />
+                <ToggleButton id="baNavButtonID" fx:id="baNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="BA" toggleGroup="$navToggleGroup" />
+                <ToggleButton id="raNavButtonID" fx:id="raNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="RA" toggleGroup="$navToggleGroup" />
+                <ToggleButton id="kkNavButtonID" fx:id="kkNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="KK" toggleGroup="$navToggleGroup" />
+                <ToggleButton id="sumNavButtonID" fx:id="sumNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="SUM" toggleGroup="$navToggleGroup" />
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </HBox>
+    </children>
 </AnchorPane>

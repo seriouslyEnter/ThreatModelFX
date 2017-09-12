@@ -7,6 +7,8 @@ package dik.adp.app.sharedcommunicationmodel;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
@@ -27,4 +29,21 @@ public class ViewState {
     public final void setAtShowing(boolean atShowing) {
         atShowingProperty().set(atShowing);
     }
+
+    //------------------------------------Main-----------------------------------
+    //final: is this case means it always refer to the same object but it still can change the value
+    private final StringProperty mainShow = new SimpleStringProperty();
+
+    public StringProperty mainShowingProperty() {
+        return mainShow;
+    }
+
+    public final String isMainShowing() {
+        return mainShowingProperty().get();
+    }
+
+    public final void setMainShowing(String mainShow) {
+        mainShowingProperty().set(mainShow);
+    }
+    //--------------------------------------------------------------------------
 }

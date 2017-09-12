@@ -5,7 +5,6 @@
  */
 package dik.adp.app.navigation;
 
-import dik.adp.app.mainscene.MainscenePresenter;
 import dik.adp.app.sharedcommunicationmodel.ViewState;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,6 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javax.inject.Inject;
 
 /**
@@ -22,10 +23,25 @@ import javax.inject.Inject;
 public class NavigationPresenter implements Initializable {
 
     @FXML
-    Button atNavButton;
+    private ToggleButton dfdNavButton;
 
     @FXML
-    Button dfdNavButton;
+    private ToggleButton atNavButton;
+
+    @FXML
+    private ToggleButton baNavButton;
+
+    @FXML
+    private ToggleButton raNavButton;
+
+    @FXML
+    private ToggleButton kkNavButton;
+
+    @FXML
+    private ToggleButton sumNavButton;
+
+    @FXML
+    private ToggleGroup navToggleGroup;
 
     @Inject
     private ViewState viewState;
@@ -39,14 +55,35 @@ public class NavigationPresenter implements Initializable {
         this.resources = resources;
     }
 
+//    @FXML
+//    void showDfdScene(ActionEvent event) {
+//        viewState.setAtShowing(true);
+//    }
+//
+//    @FXML
+//    void hideDfdScene(ActionEvent event) {
+//        viewState.setAtShowing(false);
+//    }
+//    @FXML
+//    void showDfd(ActionEvent event) {
+//        viewState.setDfdShowing(true);
+//    }
+//
+//    @FXML
+//    void hideDfd(ActionEvent event) {
+//        viewState.setDfdShowing(false);
+//    }
+    
     @FXML
-    void showDfdScene(ActionEvent event) {
-        viewState.setAtShowing(true);
-    }
+    void navButtonAction(ActionEvent event) {
+        //get selcted Button from ToggleGroup
+        ToggleButton selectedNavButton
+                = (ToggleButton) navToggleGroup.getSelectedToggle();
 
-    @FXML
-    void hideDfdScene(ActionEvent event) {
-        viewState.setAtShowing(false);
-    }
+        //get id(not fxid) of the selected Button
+        String buttonID = selectedNavButton.getId();
 
+        //set view state
+        viewState.setMainShowing(buttonID);
+    }
 }
