@@ -14,10 +14,10 @@ import javafx.beans.property.SimpleBooleanProperty;
  */
 public class ViewState {
 
-    private final BooleanProperty atShowing = new SimpleBooleanProperty();
+    private final BooleanProperty atShowing = new SimpleBooleanProperty(); //final: is this case means it always refer to the same object but it still can change the value
 
     public BooleanProperty atShowingProperty() {
-        return atShowing ;
+        return atShowing;
     }
 
     public final boolean isAtShowing() {

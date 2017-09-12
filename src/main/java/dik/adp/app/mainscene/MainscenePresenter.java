@@ -43,10 +43,10 @@ public class MainscenePresenter implements Initializable {
 
     //Hiermit wird der Anchor festgelegt wo ich später breadcrumb injecte
     @FXML
-    AnchorPane breadcrumbAnchor;
+    AnchorPane breadcrumbAnchorPane;
 
     @FXML
-    AnchorPane navigationAnchor;
+    AnchorPane navigationAnchorPane;
 
     //--------------------------------------------------------
     @FXML
@@ -61,7 +61,7 @@ public class MainscenePresenter implements Initializable {
 
         //add BreadCrumBar
         BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
-        breadcrumbbarView.getViewAsync(breadcrumbAnchor.getChildren()::add);
+        breadcrumbbarView.getViewAsync(breadcrumbAnchorPane.getChildren()::add);
 
 //        //add DFD
 //        DfdView dfdView = new DfdView();
@@ -75,7 +75,7 @@ public class MainscenePresenter implements Initializable {
         //add Navigation
         NavigationView navigationView = new NavigationView();
         Parent view = navigationView.getView();
-        navigationAnchor.getChildren().add(view);
+        navigationAnchorPane.getChildren().add(view);
         
         
         //add AT

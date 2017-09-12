@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import org.controlsfx.control.BreadCrumbBar?>
 
-<AnchorPane id="AnchorPane" fx:id="zujhngdznbg" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.breadcrumbbar.BreadcrumbbarPresenter">
+<AnchorPane id="AnchorPane" fx:id="breadCrumbAnchorPainI" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.breadcrumbbar.BreadcrumbbarPresenter">
     <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
         <URL value="@breadcrumbbar.css" />
     </stylesheets>
    <children>
       <Label prefHeight="22.0" prefWidth="519.0" text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" />
-      <Button alignment="CENTER" contentDisplay="TOP" layoutX="407.0" layoutY="50.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="105.0" text="Button" AnchorPane.rightAnchor="0.0" />
+      <BreadCrumbBar fx:id="breadCrumbBar" />
    </children>
 </AnchorPane>
