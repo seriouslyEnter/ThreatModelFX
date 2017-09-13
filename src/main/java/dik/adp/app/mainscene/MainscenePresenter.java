@@ -21,9 +21,12 @@ package dik.adp.app.mainscene;
  */
 import dik.adp.app.at.AtPresenter;
 import dik.adp.app.at.AtView;
+import dik.adp.app.breadcrumbbar.BreadcrumbbarPresenter;
 import dik.adp.app.breadcrumbbar.BreadcrumbbarView;
 import dik.adp.app.dfd.DfdPresenter;
 import dik.adp.app.dfd.DfdView;
+import dik.adp.app.menue.MenuePresenter;
+import dik.adp.app.menue.MenueView;
 import dik.adp.app.navigation.NavigationView;
 import dik.adp.app.sharedcommunicationmodel.ViewState;
 import java.net.URL;
@@ -40,19 +43,24 @@ import javax.inject.Inject;
  */
 public class MainscenePresenter implements Initializable {
 
+    //describes view state for navigation. Used with addListener
     @Inject
     private ViewState viewState;
 
-    //Hiermit wird der Anchor festgelegt wo ich später breadcrumb injecte
+    //Views get loaded in these Anchor Panes
+    @FXML
+    AnchorPane menueAnchorPane;
     @FXML
     AnchorPane breadcrumbAnchorPane;
-
+    @FXML
+    private AnchorPane mainAnchorPane; //This is the main View
     @FXML
     AnchorPane navigationAnchorPane;
 
-    @FXML
-    private AnchorPane mainAnchorPane; //Hier wird es reingeladen
-
+    private MenuePresenter menuePresenter;
+    private MenueView menueView;
+    private BreadcrumbbarPresenter bcrumbPresenter;
+    private BreadcrumbbarView bcrumbView;
     private DfdPresenter dfdPresenter;
     private DfdView dfdView;
     private AtPresenter atPresenter;
@@ -61,45 +69,28 @@ public class MainscenePresenter implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        //-----------add always-------------------------------------------------
+        //add Menue
+        MenueView menueView = new MenueView();
+        Parent menueViewParent = menueView.getView();
+        menueAnchorPane.getChildren().add(menueViewParent);
         //add BreadCrumBar
         BreadcrumbbarView breadcrumbbarView = new BreadcrumbbarView();
         breadcrumbbarView.getViewAsync(breadcrumbAnchorPane.getChildren()::add);
-
-//        //add DFD
-//        DfdView dfdView = new DfdView();
-//        Parent view2 = dfdView.getView();
-//        this.mainAnchorPane.getChildren().add(view2);
-//        this.atView = new AtView();
-//        this.atPresenter = (AtPresenter) this.atView.getPresenter();
-//        this.showAt();
         //add Navigation
         NavigationView navigationView = new NavigationView();
-        Parent navView = navigationView.getView();
-        navigationAnchorPane.getChildren().add(navView);
+        Parent navViewParent = navigationView.getView();
+        navigationAnchorPane.getChildren().add(navViewParent);
+        //----------------------------------------------------------------------
 
-//        //add AT
-//        this.atView = new AtView();
-//        this.atPresenter = (AtPresenter) this.atView.getPresenter();
-//
-//        this.viewState.atShowingProperty().addListener((obs, wasShowing, isNowShowing) -> {
-//            if (isNowShowing) {
-//                this.mainAnchorPane.getChildren().add(this.atView.getView());
-//            } else {
-//                this.mainAnchorPane.getChildren().remove(this.atView.getView());
-//            }
-//        });
-        //show Main
-        //show dfd on start
+        //-----------------------main Anchor control view state-----------------
+        //controls what is shown in the mainAnchorPane
+        
+        //show dfd on startup
         this.dfdView = new DfdView();
         this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
-        //show dfd on start
         this.mainAnchorPane.getChildren().add(this.dfdView.getView());
 
-        this.atView = new AtView();
-        this.atPresenter = (AtPresenter) this.atView.getPresenter();
-
-//        this.baView = new BaView();
-//        this.baPresenter = (BaPresenter) this.baView.getPresenter();
         this.viewState.mainShowingProperty().addListener((obs, wasShowing, isMainShowing) -> {
             //first turn all off
             this.mainAnchorPane.getChildren().clear();
@@ -113,9 +104,13 @@ public class MainscenePresenter implements Initializable {
             final String sumNavButtonID = "sumNavButtonID";
 
             if (isMainShowing.equals(dfdNavButtonID)) {
+                this.dfdView = new DfdView();
+                this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.dfdView.getView());
             }
             if (isMainShowing.equals(atNavButtonID)) {
+                this.atView = new AtView();
+                this.atPresenter = (AtPresenter) this.atView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.atView.getView());
             }
 //            if (isMainShowing.equals(baNavButtonID)) {
@@ -131,16 +126,7 @@ public class MainscenePresenter implements Initializable {
 //                this.mainAnchorPane.getChildren().add(this.sumView.getView());
 //            }
         });
+        //----------------------------------------------------------------------
 
     }
-
-    void showAt() {
-        this.mainAnchorPane.getChildren().add(this.atView.getView());
-    }
-
-    public void buttonAt() {
-        this.mainAnchorPane.getChildren().clear();
-//        this.showAt();
-    }
-
 }
