@@ -104,7 +104,7 @@ public class MainscenePresenter implements Initializable {
             final String sumNavButtonID = "sumNavButtonID";
 
             if (isMainShowing.equals(dfdNavButtonID)) {
-                this.dfdView = new DfdView();
+//                this.dfdView = new DfdView();
                 this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.dfdView.getView());
             }

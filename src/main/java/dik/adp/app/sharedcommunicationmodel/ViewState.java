@@ -16,19 +16,22 @@ import javafx.beans.property.StringProperty;
  */
 public class ViewState {
 
-    private final BooleanProperty atShowing = new SimpleBooleanProperty(); //final: is this case means it always refer to the same object but it still can change the value
-
-    public BooleanProperty atShowingProperty() {
-        return atShowing;
-    }
-
-    public final boolean isAtShowing() {
-        return atShowingProperty().get();
-    }
-
-    public final void setAtShowing(boolean atShowing) {
-        atShowingProperty().set(atShowing);
-    }
+//    private final BooleanProperty atShowing = new SimpleBooleanProperty(); //final: is this case means it always refer to the same object but it still can change the value
+//
+//    
+//    
+//    
+//    public BooleanProperty atShowingProperty() {
+//        return atShowing;
+//    }
+//
+//    public final boolean isAtShowing() {
+//        return atShowingProperty().get();
+//    }
+//
+//    public final void setAtShowing(boolean atShowing) {
+//        atShowingProperty().set(atShowing);
+//    }
 
     //------------------------------------Main-----------------------------------
     //final: is this case means it always refer to the same object but it still can change the value
@@ -42,8 +45,8 @@ public class ViewState {
         return mainShowingProperty().get();
     }
 
-    public final void setMainShowing(String mainShow) {
-        mainShowingProperty().set(mainShow);
+    public final void setMainShowing(String buttonID) {
+        mainShowingProperty().set(buttonID);
     }
     //--------------------------------------------------------------------------
 }
