@@ -1,4 +1,4 @@
-package dik.adp.app.mainscene;
+package dik.adp.app.gui.mainscene;
 
 /*
  * #%L
@@ -19,16 +19,16 @@ package dik.adp.app.mainscene;
  * limitations under the License.
  * #L%
  */
-import dik.adp.app.at.AtPresenter;
-import dik.adp.app.at.AtView;
-import dik.adp.app.breadcrumbbar.BreadcrumbbarPresenter;
-import dik.adp.app.breadcrumbbar.BreadcrumbbarView;
-import dik.adp.app.dfd.DfdPresenter;
-import dik.adp.app.dfd.DfdView;
-import dik.adp.app.menue.MenuePresenter;
-import dik.adp.app.menue.MenueView;
-import dik.adp.app.navigation.NavigationView;
-import dik.adp.app.sharedcommunicationmodel.ViewState;
+import dik.adp.app.gui.at.AtPresenter;
+import dik.adp.app.gui.at.AtView;
+import dik.adp.app.gui.breadcrumbbar.BreadcrumbbarPresenter;
+import dik.adp.app.gui.breadcrumbbar.BreadcrumbbarView;
+import dik.adp.app.gui.dfd.DfdPresenter;
+import dik.adp.app.gui.dfd.DfdView;
+import dik.adp.app.gui.menue.MenuePresenter;
+import dik.adp.app.gui.menue.MenueView;
+import dik.adp.app.gui.navigation.NavigationView;
+import dik.adp.app.gui.sharedcommunicationmodel.ViewState;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

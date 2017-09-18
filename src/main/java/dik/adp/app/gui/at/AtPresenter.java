@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dik.adp.app.at;
+package dik.adp.app.gui.at;
 
-import dik.adp.app.mainscene.MainscenePresenter;
+import dik.adp.app.gui.mainscene.MainscenePresenter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;

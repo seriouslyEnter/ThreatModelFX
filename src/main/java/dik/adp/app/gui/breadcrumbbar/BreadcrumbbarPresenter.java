@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dik.adp.app.breadcrumbbar;
+package dik.adp.app.gui.breadcrumbbar;
 
-import dik.adp.app.sharedcommunicationmodel.ViewState;
+import dik.adp.app.gui.sharedcommunicationmodel.ViewState;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

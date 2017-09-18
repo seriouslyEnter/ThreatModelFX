@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import org.controlsfx.control.BreadCrumbBar?>
 
-<AnchorPane id="AnchorPane" fx:id="breadCrumbAnchorPainI" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.breadcrumbbar.BreadcrumbbarPresenter">
+<AnchorPane id="AnchorPane" fx:id="breadCrumbAnchorPainI" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.breadcrumbbar.BreadcrumbbarPresenter">
     <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
         <URL value="@breadcrumbbar.css" />
     </stylesheets>

@@ -22,7 +22,7 @@ package dik.adp.app;
  * #L%
  */
 
-import dik.adp.app.mainscene.MainsceneView;
+import dik.adp.app.gui.mainscene.MainsceneView;
 import com.airhacks.afterburner.injection.Injector;
 import java.time.LocalDate;
 import java.time.Month;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dik.adp.app.menue;
+package dik.adp.app.gui.at;
 
 import com.airhacks.afterburner.views.FXMLView;
 
@@ -11,10 +11,10 @@ import com.airhacks.afterburner.views.FXMLView;
  *
  * @author gu35nxt
  */
-public class MenueView extends FXMLView {
+public class AtView extends FXMLView {
     
-    public MenuePresenter getRealPresenter() {
-        return (MenuePresenter) super.getPresenter();
+    public AtPresenter getRealPresenter() {
+        return (AtPresenter) super.getPresenter();
     }
     
 }

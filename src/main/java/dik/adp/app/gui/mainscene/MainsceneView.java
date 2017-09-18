@@ -1,4 +1,4 @@
-package dik.adp.app.mainscene;
+package dik.adp.app.gui.mainscene;
 
 /*
  * #%L

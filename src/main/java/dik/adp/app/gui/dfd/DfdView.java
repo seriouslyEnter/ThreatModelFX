@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dik.adp.app.at;
+package dik.adp.app.gui.dfd;
 
 import com.airhacks.afterburner.views.FXMLView;
 
@@ -11,10 +11,10 @@ import com.airhacks.afterburner.views.FXMLView;
  *
  * @author gu35nxt
  */
-public class AtView extends FXMLView {
+public class DfdView extends FXMLView {
     
-    public AtPresenter getRealPresenter() {
-        return (AtPresenter) super.getPresenter();
+    public DfdPresenter getRealPresenter() {
+        return (DfdPresenter) super.getPresenter();
     }
     
 }

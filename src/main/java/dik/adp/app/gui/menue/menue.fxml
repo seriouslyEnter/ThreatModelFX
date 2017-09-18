@@ -6,7 +6,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" fx:id="menueAnchorPaneI" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.menue.MenuePresenter">
+<AnchorPane id="AnchorPane" fx:id="menueAnchorPaneI" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.menue.MenuePresenter">
     <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
         <URL value="@menue.css" />
     </stylesheets>

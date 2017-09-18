@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dik.adp.app.dfd;
+package dik.adp.app.gui.dfd;
 
 import java.net.URL;
 import java.util.ResourceBundle;
