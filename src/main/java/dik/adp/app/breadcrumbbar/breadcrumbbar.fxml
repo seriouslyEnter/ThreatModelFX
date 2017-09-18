@@ -9,6 +9,6 @@
         <URL value="@breadcrumbbar.css" />
     </stylesheets>
    <children>
-      <BreadCrumbBar fx:id="breadCrumbBar" rotate="90.0" />
+      <BreadCrumbBar fx:id="breadCrumbBar" />
    </children>
 </AnchorPane>
