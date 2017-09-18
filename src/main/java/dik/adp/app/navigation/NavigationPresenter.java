@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javax.inject.Inject;
@@ -46,6 +46,8 @@ public class NavigationPresenter implements Initializable {
     @Inject
     private ViewState viewState;
 
+    private ToggleButton previouslySelectedToggleButton;
+
 //    @Inject
 //    MainscenePresenter mainscene;
     private ResourceBundle resources = null;
@@ -53,6 +55,10 @@ public class NavigationPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
+
+        //set this on startup, to prevent null
+        this.previouslySelectedToggleButton = dfdNavButton;
+
     }
 
 //    @FXML
@@ -73,17 +79,31 @@ public class NavigationPresenter implements Initializable {
 //    void hideDfd(ActionEvent event) {
 //        viewState.setDfdShowing(false);
 //    }
-    
     @FXML
     void navButtonAction(ActionEvent event) {
-        //get selcted Button from ToggleGroup
-        ToggleButton selectedNavButton
-                = (ToggleButton) navToggleGroup.getSelectedToggle();
 
-        //get id(not fxid) of the selected Button
-        String buttonID = selectedNavButton.getId();
+        Toggle selectedToggle;
+        ToggleButton selectedNavButton;
 
-        //set view state
-        viewState.setMainShowing(buttonID);
+        selectedToggle = navToggleGroup.getSelectedToggle();
+
+        /*Wenn ein Button kann selectiert und unselectiert werden,
+        deshalb checken wir ob null (kein button slectiert),
+        dann wird auf alten button selectiert,
+        oder wenn selectiert dann gehts weiter
+        !null -> ok -> get selectedNavButton
+        null means -> unselected -> set to previous selected -> get selectedNavButton
+         */
+        if (selectedToggle != null) { //
+            selectedNavButton = (ToggleButton) selectedToggle;
+            this.previouslySelectedToggleButton = selectedNavButton;
+        } else {
+            navToggleGroup.selectToggle(this.previouslySelectedToggleButton);
+            selectedToggle = navToggleGroup.getSelectedToggle();
+            selectedNavButton = (ToggleButton) selectedToggle;
+        }
+
+        //update view state
+        viewState.setMainShowing(selectedNavButton.getId());
     }
 }
