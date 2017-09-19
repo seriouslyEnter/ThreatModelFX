@@ -5,9 +5,15 @@
  */
 package dik.adp.app.gui.dfd;
 
+import dik.adp.app.orientdb.odb2DAO;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javax.inject.Inject;
 
 /**
  *
@@ -15,11 +21,32 @@ import javafx.fxml.Initializable;
  */
 public class DfdPresenter implements Initializable {
 
-    private ResourceBundle resources = null;
+    @FXML
+    private Button createNewDfdButton;
     
+    @FXML
+    private ComboBox dfdComboBox;
+    
+    @Inject
+    private odb2DAO odb;
+    
+    
+    private ResourceBundle resources = null;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
+        
+        dfdComboBox.getItems().addAll("safgds","sfgaaf");
+        dfdComboBox.getItems().add("dsfgsfdg");
+        
+        odb.listOfDfds();
+        
     }
-    
+
+    @FXML
+    void createNewDfd(ActionEvent event) {
+
+    }
+
 }
