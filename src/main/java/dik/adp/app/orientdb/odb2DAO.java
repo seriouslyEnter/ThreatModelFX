@@ -37,9 +37,11 @@ public class odb2DAO {
 
     }
 
-    public void listOfDfds() { //maybe static
+    public String listOfDfds() { //maybe static
+        String result;
+        result = "no result";
         // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10);
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
 
         // EVERY TIME YOU NEED A GRAPH INSTANCE
         OrientGraph graph = factory.getTx();
@@ -49,11 +51,13 @@ public class odb2DAO {
                     new OCommandSQL(
                             "SELECT name FROM DFD")).execute()) {
                 System.out.println("Name: " + v);
+                result = v.toString();
             }
 
         } finally {
             graph.shutdown();
         }
+        return result;
 
     }
 }

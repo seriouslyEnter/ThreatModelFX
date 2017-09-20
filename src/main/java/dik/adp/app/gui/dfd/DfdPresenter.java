@@ -42,6 +42,9 @@ public class DfdPresenter implements Initializable {
         
         odb.listOfDfds();
         
+        
+        dfdComboBox.getItems().add(odb.listOfDfds());
+        
     }
 
     @FXML
