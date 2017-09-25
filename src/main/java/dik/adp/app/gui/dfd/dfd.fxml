@@ -27,8 +27,8 @@
                   <Label prefHeight="25.0" text="Neu:" />
                   <TextField fx:id="newDfdTextField" maxWidth="1.7976931348623157E308" prefHeight="25.0" promptText="Name des neuen DFDs" HBox.hgrow="ALWAYS" />
                   <Button fx:id="createNewDfdButton" mnemonicParsing="false" onAction="#createNewDfd" text="Erstellen" />
-                  <Label prefHeight="25.0" text="DFD auswählen" />
-                  <ComboBox fx:id="dfdComboBox" prefWidth="150.0" promptText="DFDs" />
+                  <Label prefHeight="25.0" text="DFD auswählen:" />
+                  <ComboBox fx:id="dfdComboBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="DFDs" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

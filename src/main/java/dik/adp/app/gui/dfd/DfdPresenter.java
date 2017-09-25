@@ -26,37 +26,50 @@ public class DfdPresenter implements Initializable {
 
     @FXML
     private Button createNewDfdButton;
-    
+
     @FXML
     private ComboBox dfdComboBox;
-    
+
     @FXML
-    private TextField newDTextField;
-    
+    private TextField newDfdTextField;
+
     @Inject
     private odb2DAO odb;
-    
-    private ArrayList listOfDfds;
-    
-    
+
+    private ArrayList<Vertex> listOfDfds;
+
     private ResourceBundle resources = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        
+
         //populate ComboBox on start
-        addVertexToComboBox(odb.getDfds());       
+        addVertexToComboBox(odb.getDfds());
     }
 
-    private void addVertexToComboBox(ArrayList<Vertex> listOfDfds){
-        for(Vertex v : listOfDfds){
+    private void addVertexToComboBox(ArrayList<Vertex> listOfDfds) {
+        for (Vertex v : listOfDfds) {
             dfdComboBox.getItems().add(v.getProperty("name"));
         }
     }
     
+    private void updateComboBox() {
+        dfdComboBox.getItems().clear();
+        this.listOfDfds = odb.getDfds();
+        for (Vertex v : listOfDfds) {
+            dfdComboBox.getItems().add(v.getProperty("name"));
+        }
+    }
+
     @FXML
     void createNewDfd(ActionEvent event) {
-
+        String newDfd;
+        if (!newDfdTextField.getText().isEmpty() || !" ".equals(newDfdTextField.getText())) {
+            newDfd = newDfdTextField.getText();
+            odb.addDfdToDb(newDfd);
+            newDfdTextField.clear();
+            updateComboBox();
+        }
     }
 }

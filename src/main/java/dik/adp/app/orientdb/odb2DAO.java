@@ -59,6 +59,21 @@ public class odb2DAO {
             graph.shutdown();
         }
         return dfdList;
+    }
 
+    public void addDfdToDb(String newDfd) {
+        // AT THE BEGINNING
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+
+        // EVERY TIME YOU NEED A GRAPH INSTANCE
+        OrientGraph graph = factory.getTx();
+        try {
+            Vertex v = graph.addVertex("class:DFD");
+            v.setProperty("name", newDfd);
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+            graph.shutdown();
+        }
     }
 }
