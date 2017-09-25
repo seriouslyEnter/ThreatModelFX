@@ -9,6 +9,7 @@ import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
+import java.util.ArrayList;
 
 /**
  *
@@ -37,9 +38,9 @@ public class odb2DAO {
 
     }
 
-    public String listOfDfds() { //maybe static
-        String result;
-        result = "no result";
+    public ArrayList getDfds() { //maybe static
+        ArrayList<Vertex> dfdList = new ArrayList<>();
+
         // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
 
@@ -49,15 +50,15 @@ public class odb2DAO {
 
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
-                            "SELECT name FROM DFD")).execute()) {
-                System.out.println("Name: " + v);
-                result = v.toString();
+                            "SELECT FROM DFD")).execute()) {
+                System.out.println("Name: " + v + " " + v.getProperty("name"));
+                dfdList.add(v);
             }
 
         } finally {
             graph.shutdown();
         }
-        return result;
+        return dfdList;
 
     }
 }

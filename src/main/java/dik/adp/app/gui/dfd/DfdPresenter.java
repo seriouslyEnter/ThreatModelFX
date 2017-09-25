@@ -5,14 +5,17 @@
  */
 package dik.adp.app.gui.dfd;
 
+import com.tinkerpop.blueprints.Vertex;
 import dik.adp.app.orientdb.odb2DAO;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javax.inject.Inject;
 
 /**
@@ -27,8 +30,13 @@ public class DfdPresenter implements Initializable {
     @FXML
     private ComboBox dfdComboBox;
     
+    @FXML
+    private TextField newDTextField;
+    
     @Inject
     private odb2DAO odb;
+    
+    private ArrayList listOfDfds;
     
     
     private ResourceBundle resources = null;
@@ -37,19 +45,18 @@ public class DfdPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         
-        dfdComboBox.getItems().addAll("safgds","sfgaaf");
-        dfdComboBox.getItems().add("dsfgsfdg");
-        
-        odb.listOfDfds();
-        
-        
-        dfdComboBox.getItems().add(odb.listOfDfds());
-        
+        //populate ComboBox on start
+        addVertexToComboBox(odb.getDfds());       
     }
 
+    private void addVertexToComboBox(ArrayList<Vertex> listOfDfds){
+        for(Vertex v : listOfDfds){
+            dfdComboBox.getItems().add(v.getProperty("name"));
+        }
+    }
+    
     @FXML
     void createNewDfd(ActionEvent event) {
 
     }
-
 }
