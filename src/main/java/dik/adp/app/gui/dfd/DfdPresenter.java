@@ -7,9 +7,14 @@ package dik.adp.app.gui.dfd;
 
 import com.tinkerpop.blueprints.Vertex;
 import dik.adp.app.orientdb.odb2DAO;
+import dik.adp.app.orientdb.odb2Klassen.dfdVertex;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,37 +30,43 @@ import javax.inject.Inject;
 public class DfdPresenter implements Initializable {
 
     @FXML
-    private Button createNewDfdButton;
-    @FXML
     private ComboBox dfdComboBox;
     @FXML
     private TextField newDfdTextField;
-    
+
     @Inject
     private odb2DAO odb;
 
-    private ArrayList<Vertex> listOfDfds;
+//    private ArrayList<Vertex> listOfDfds;
+    private ObservableList<dfdVertex> obsListOfDfds = FXCollections.<dfdVertex>observableArrayList();
+
     private ResourceBundle resources = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         //populate ComboBox on start
-        addVertexToComboBox(odb.getDfds());
+//        addVertexToComboBox(odb.getDfds());
+
+        updateComboBox();
     }
 
-    private void addVertexToComboBox(ArrayList<Vertex> listOfDfds) {
-        for (Vertex v : listOfDfds) {
-            dfdComboBox.getItems().add(v.getProperty("name"));
-        }
-    }
-    
+//    private void addVertexToComboBox(ArrayList<Vertex> listOfDfds) {
+//        for (Vertex v : listOfDfds) {
+//            dfdComboBox.getItems().add(v.getProperty("name"));
+//        }
+//    }
+
     private void updateComboBox() {
         dfdComboBox.getItems().clear();
-        this.listOfDfds = odb.getDfds();
-        for (Vertex v : listOfDfds) {
-            dfdComboBox.getItems().add(v.getProperty("name"));
-        }
+        odb.getDfds(obsListOfDfds);
+        dfdComboBox.setItems(obsListOfDfds);
+
+//        //aus DB in ArrayList in ComboBox
+//        this.listOfDfds = odb.getDfds();    
+//        for (Vertex v : listOfDfds) {
+//            dfdComboBox.getItems().add(v.getProperty("name"));
+//        }
     }
 
     @FXML
