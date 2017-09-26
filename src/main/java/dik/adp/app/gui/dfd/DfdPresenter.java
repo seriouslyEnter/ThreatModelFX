@@ -26,24 +26,20 @@ public class DfdPresenter implements Initializable {
 
     @FXML
     private Button createNewDfdButton;
-
     @FXML
     private ComboBox dfdComboBox;
-
     @FXML
     private TextField newDfdTextField;
-
+    
     @Inject
     private odb2DAO odb;
 
     private ArrayList<Vertex> listOfDfds;
-
     private ResourceBundle resources = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-
         //populate ComboBox on start
         addVertexToComboBox(odb.getDfds());
     }
@@ -65,7 +61,7 @@ public class DfdPresenter implements Initializable {
     @FXML
     void createNewDfd(ActionEvent event) {
         String newDfd;
-        if (!newDfdTextField.getText().isEmpty() || !" ".equals(newDfdTextField.getText())) {
+        if (!newDfdTextField.getText().isEmpty()) {
             newDfd = newDfdTextField.getText();
             odb.addDfdToDb(newDfd);
             newDfdTextField.clear();

@@ -8,7 +8,7 @@
    <children>
       <VBox fx:id="vBox" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane fx:id="menueAnchorPane" prefHeight="50.0" />
+            <AnchorPane fx:id="menueAnchorPane" />
             <AnchorPane fx:id="breadcrumbAnchorPane" prefHeight="50.0" />
             <AnchorPane fx:id="mainAnchorPane" VBox.vgrow="ALWAYS" />
             <AnchorPane fx:id="navigationAnchorPane">
@@ -17,9 +17,6 @@
                </VBox.margin>
             </AnchorPane>
          </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
       </VBox>
    </children>
 </AnchorPane>
