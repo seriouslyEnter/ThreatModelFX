@@ -1,44 +1,51 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dik.adp.app.gui.dfd;
 
-import com.tinkerpop.blueprints.Vertex;
 import dik.adp.app.orientdb.odb2DAO;
-import dik.adp.app.orientdb.odb2Klassen.dfdVertex;
+import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
+import dik.adp.app.orientdb.odb2Klassen.fxDfdElement;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javax.inject.Inject;
 
 /**
- *
  * @author gu35nxt
  */
 public class DfdPresenter implements Initializable {
 
+    //----------------New DFD---------------------------------------------------
     @FXML
     private ComboBox dfdComboBox;
     @FXML
     private TextField newDfdTextField;
+    private ObservableList<DfdDiagram> obsListOfDfds = FXCollections.<DfdDiagram>observableArrayList();
+    //--------------------------------------------------------------------------
+
+    //-----------------Table----------------------------------------------------
+    @FXML // fx:id="tableVDfdElements"
+    private TableView<?> tableVDfdElements; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tableCDfdId"
+    private TableColumn<?, ?> tableCDfdId; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tableCDfdType"
+    private TableColumn<?, ?> tableCDfdType; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tableCDfdName"
+    private TableColumn<?, ?> tableCDfdName; // Value injected by FXMLLoader
+    //--------------------------------------------------------------------------
 
     @Inject
     private odb2DAO odb;
-
-//    private ArrayList<Vertex> listOfDfds;
-    private ObservableList<dfdVertex> obsListOfDfds = FXCollections.<dfdVertex>observableArrayList();
 
     private ResourceBundle resources = null;
 
@@ -49,13 +56,10 @@ public class DfdPresenter implements Initializable {
 //        addVertexToComboBox(odb.getDfds());
 
         updateComboBox();
-    }
 
-//    private void addVertexToComboBox(ArrayList<Vertex> listOfDfds) {
-//        for (Vertex v : listOfDfds) {
-//            dfdComboBox.getItems().add(v.getProperty("name"));
-//        }
-//    }
+        //??????????????????????????????????????????????????????????????
+        tableCDfdName.setCellValueFactory(new PropertyValueFactory("name"));
+    }
 
     private void updateComboBox() {
         dfdComboBox.getItems().clear();
@@ -79,4 +83,5 @@ public class DfdPresenter implements Initializable {
             updateComboBox();
         }
     }
+
 }

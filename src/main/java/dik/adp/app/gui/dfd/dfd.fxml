@@ -31,38 +31,36 @@
                   <ComboBox fx:id="dfdComboBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="DFDs" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </HBox>
-            <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+            <SplitPane dividerPositions="0.14345403899721448, 0.4972144846796657, 0.7618384401114207" VBox.vgrow="ALWAYS">
                <items>
                   <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
-                  <SplitPane dividerPositions="0.33, 0.66" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                    <items>
-                        <TableView prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                            <TableColumn prefWidth="110.0" text="Prozesse" />
-                            <TableColumn prefWidth="110.0" text="Speicher" />
-                              <TableColumn prefWidth="110.0" text="Schnittstelle" />
-                              <TableColumn prefWidth="110.0" text="Vertrauensgrenze" />
-                          </columns>
-                        </TableView>
-                        <TableView prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="Datenfluss" />
-                            <TableColumn prefWidth="75.0" text="von" />
-                              <TableColumn prefWidth="75.0" text="nach" />
-                          </columns>
-                        </TableView>
-                        <TableView prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                            <TableColumn prefWidth="215.0" text="Elemente (Datenflusse automatisch)" />
-                            <TableColumn minWidth="0.0" prefWidth="105.0" text="Vertrauensgrenze" />
-                          </columns>
-                        </TableView>
-                    </items>
-                  </SplitPane>
+                  <TableView fx:id="tableVDfdElements">
+                    <columns>
+                      <TableColumn fx:id="tableCDfdId" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD ID" />
+                      <TableColumn fx:id="tableCDfdType" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Typ" />
+                        <TableColumn fx:id="tableCDfdName" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Name" />
+                    </columns>
+                  </TableView>
+                  <TableView fx:id="tableVDataFlows">
+                    <columns>
+                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Datenfluss" />
+                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="von" />
+                        <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="nach" />
+                    </columns>
+                  </TableView>
+                  <TableView fx:id="tableVTrustBoundaries">
+                    <columns>
+                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Elemente (Datenflusse automatisch)" />
+                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Vertrauensgrenze" />
+                    </columns>
+                  </TableView>
                </items>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
             </SplitPane>
          </children>
       </VBox>

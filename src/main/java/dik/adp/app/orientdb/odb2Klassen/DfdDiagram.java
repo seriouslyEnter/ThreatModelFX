@@ -11,11 +11,11 @@ import java.util.Objects;
  *
  * @author gu35nxt
  */
-public class dfdVertex {
+public class DfdDiagram {
 
     private String name;
 
-    public dfdVertex(String name) {
+    public DfdDiagram(String name) {
         this.name = name;
     }
 
@@ -51,7 +51,7 @@ public class dfdVertex {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final dfdVertex other = (dfdVertex) obj;
+        final DfdDiagram other = (DfdDiagram) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }

@@ -9,8 +9,7 @@ import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
-import dik.adp.app.orientdb.odb2Klassen.dfdVertex;
-import java.util.ArrayList;
+import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import java.util.Collections;
 import javafx.collections.ObservableList;
 
@@ -35,7 +34,7 @@ public class odb2DAO {
         }
     }
 
-    public ObservableList<dfdVertex> getDfds(ObservableList<dfdVertex> obsListOfDfds) { //maybe static
+    public ObservableList<DfdDiagram> getDfds(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
         // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         // EVERY TIME YOU NEED A GRAPH INSTANCE
@@ -45,7 +44,7 @@ public class odb2DAO {
                     new OCommandSQL(
                             "SELECT FROM DFD")).execute()) {
                 System.out.println("Name: " + v + " " + v.getProperty("name"));
-                dfdVertex dV = new dfdVertex(v.getProperty("name"));
+                DfdDiagram dV = new DfdDiagram(v.getProperty("name"));
                 obsListOfDfds.add(dV);
             }
         } finally {
