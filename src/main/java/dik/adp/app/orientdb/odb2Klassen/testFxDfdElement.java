@@ -5,7 +5,6 @@
  */
 package dik.adp.app.orientdb.odb2Klassen;
 
-import com.sun.javafx.beans.IDProperty;
 import java.util.Objects;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,32 +16,17 @@ import javafx.collections.ObservableList;
  * @author gu35nxt
  */
 //DFD Element als ein JavaFX Bean um in ObservableList zu benutzen
-public class fxDfdElement {
+public class testFxDfdElement {
 
     private StringProperty id;
     private StringProperty type;
     private StringProperty name;
-    private ObservableList<fxDfdElement> elements = FXCollections.observableArrayList();
+    private ObservableList<testFxDfdElement> elements = FXCollections.observableArrayList();
 
-    public fxDfdElement(String id, String type, String name) {
+    public testFxDfdElement(String id, String type, String name) {
         setId(id);
         setType(type);
         setName(name);
-    }
-
-    public final String getName() {
-        return nameProperty().get();
-    }
-
-    public final void setName(String name) {
-        nameProperty().set(name);
-    }
-
-    public StringProperty nameProperty() {
-        if (name == null) {
-            name = new SimpleStringProperty();
-        }
-        return name;
     }
 
     public final String getId() {
@@ -75,7 +59,22 @@ public class fxDfdElement {
         return type;
     }
 
-    public ObservableList<fxDfdElement> employeesProperty() {
+    public final String getName() {
+        return nameProperty().get();
+    }
+
+    public final void setName(String name) {
+        nameProperty().set(name);
+    }
+
+    public StringProperty nameProperty() {
+        if (name == null) {
+            name = new SimpleStringProperty();
+        }
+        return name;
+    }
+
+    public ObservableList<testFxDfdElement> employeesProperty() {
         return elements;
     }
 
@@ -100,7 +99,7 @@ public class fxDfdElement {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final fxDfdElement other = (fxDfdElement) obj;
+        final testFxDfdElement other = (testFxDfdElement) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
