@@ -10,7 +10,7 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
-import dik.adp.app.orientdb.odb2Klassen.testFxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.collections.ObservableList;
@@ -91,7 +91,7 @@ public class odb2DAO {
     }
     
 //   public ArrayList<FxDfdElement> queryDfdElements (ArrayList<FxDfdElement> listDfdElemente) {
-    public ObservableList<testFxDfdElement> queryDfdElements (ObservableList<testFxDfdElement> listDfdElemente) {
+    public ObservableList<FxDfdElement> queryDfdElements (ObservableList<FxDfdElement> listDfdElemente) {
                // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         // EVERY TIME YOU NEED A GRAPH INSTANCE
@@ -101,7 +101,7 @@ public class odb2DAO {
                     new OCommandSQL(
                             "SELECT FROM DfdElement")).execute()) {
                 System.out.println("Id: " + v + " " + v.getProperty("id"));
-                testFxDfdElement eV = new testFxDfdElement(v.getProperty("id"), v.getProperty("type"), v.getProperty("name"));
+                FxDfdElement eV = new FxDfdElement(v.getProperty("id"), v.getProperty("type"), v.getProperty("name"));
                 listDfdElemente.add(eV);
             }
         } finally {

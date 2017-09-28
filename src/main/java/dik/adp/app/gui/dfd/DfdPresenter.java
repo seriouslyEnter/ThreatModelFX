@@ -2,7 +2,7 @@ package dik.adp.app.gui.dfd;
 
 import dik.adp.app.orientdb.odb2DAO;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
-import dik.adp.app.orientdb.odb2Klassen.testFxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -34,10 +34,10 @@ public class DfdPresenter implements Initializable {
 
     //-----------------Table----------------------------------------------------
     @FXML // fx:id="tableVDfdElements"
-    private TableView<testFxDfdElement> tableVDfdElements; // Value injected by FXMLLoader
+    private TableView<FxDfdElement> tableVDfdElements; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdId"
-    private TableColumn<testFxDfdElement, String> tableColDfdId; // Value injected by FXMLLoader
+    private TableColumn<FxDfdElement, String> tableColDfdId; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdType"
     private TableColumn<?, ?> tableColDfdType; // Value injected by FXMLLoader
@@ -66,7 +66,7 @@ public class DfdPresenter implements Initializable {
 //        );
         //hier DB abfrage
 //        ArrayList<FxDfdElement> listDfdElemente = new ArrayList<>();
-        ObservableList<testFxDfdElement> listDfdElemente = FXCollections.<testFxDfdElement>observableArrayList();
+        ObservableList<FxDfdElement> listDfdElemente = FXCollections.<FxDfdElement>observableArrayList();
         odb.queryDfdElements(listDfdElemente);
         tableVDfdElements.getItems().addAll(listDfdElemente);
 
@@ -79,7 +79,7 @@ public class DfdPresenter implements Initializable {
 
         //Table Edit
         tableVDfdElements.setEditable(true);
-        tableColDfdId.setCellFactory(TextFieldTableCell.<testFxDfdElement>forTableColumn());
+        tableColDfdId.setCellFactory(TextFieldTableCell.<FxDfdElement>forTableColumn());
 
         System.out.println(listDfdElemente);
         

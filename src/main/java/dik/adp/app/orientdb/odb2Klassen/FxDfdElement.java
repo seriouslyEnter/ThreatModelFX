@@ -16,14 +16,14 @@ import javafx.collections.ObservableList;
  * @author gu35nxt
  */
 //DFD Element als ein JavaFX Bean um in ObservableList zu benutzen
-public class testFxDfdElement {
+public class FxDfdElement {
 
     private StringProperty id;
     private StringProperty type;
     private StringProperty name;
-    private ObservableList<testFxDfdElement> elements = FXCollections.observableArrayList();
+    private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
 
-    public testFxDfdElement(String id, String type, String name) {
+    public FxDfdElement(String id, String type, String name) {
         setId(id);
         setType(type);
         setName(name);
@@ -74,7 +74,7 @@ public class testFxDfdElement {
         return name;
     }
 
-    public ObservableList<testFxDfdElement> employeesProperty() {
+    public ObservableList<FxDfdElement> employeesProperty() {
         return elements;
     }
 
@@ -99,7 +99,7 @@ public class testFxDfdElement {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final testFxDfdElement other = (testFxDfdElement) obj;
+        final FxDfdElement other = (FxDfdElement) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
