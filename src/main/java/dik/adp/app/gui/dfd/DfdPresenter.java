@@ -4,6 +4,7 @@ import dik.adp.app.orientdb.odb2DAO;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javax.inject.Inject;
 
 /**
@@ -35,13 +37,13 @@ public class DfdPresenter implements Initializable {
     private TableView<FxDfdElement> tableVDfdElements; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdId"
-    private TableColumn<FxDfdElement, String> tableCDfdId; // Value injected by FXMLLoader
+    private TableColumn<FxDfdElement, String> tableColDfdId; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdType"
-    private TableColumn<?, ?> tableCDfdType; // Value injected by FXMLLoader
+    private TableColumn<?, ?> tableColDfdType; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdName"
-    private TableColumn<?, ?> tableCDfdName; // Value injected by FXMLLoader
+    private TableColumn<?, ?> tableColDfdName; // Value injected by FXMLLoader
     //--------------------------------------------------------------------------
 
     @Inject
@@ -58,22 +60,36 @@ public class DfdPresenter implements Initializable {
         updateComboBox();
 
         //??????????????????????????????????????????????????????????????
-        
-        tableVDfdElements.getItems().addAll(
-            new FxDfdElement("P1", "Prozess", "asdfasfd"),
-            new FxDfdElement( "P2", "Prozess", "bbbbbbbb")
-        );
-        
+//        tableVDfdElements.getItems().addAll(
+//            new FxDfdElement("P1", "Prozess", "asdfasfd"),
+//            new FxDfdElement( "P2", "Prozess", "bbbbbbbb")
+//        );
         //hier DB abfrage
-        
-        tableCDfdId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        tableCDfdType.setCellValueFactory(new PropertyValueFactory<>("type"));
-        tableCDfdName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    }
+//        ArrayList<FxDfdElement> listDfdElemente = new ArrayList<>();
+        ObservableList<FxDfdElement> listDfdElemente = FXCollections.<FxDfdElement>observableArrayList();
+        odb.queryDfdElements(listDfdElemente);
+        tableVDfdElements.getItems().addAll(listDfdElemente);
 
-    private void updateComboBox() {
+        //tableView must be set to editable true. TableColumn and Cell are editable by default
+        tableVDfdElements.setEditable(true);
+
+        tableColDfdId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        tableColDfdType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        tableColDfdName.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        //Table Edit
+        tableVDfdElements.setEditable(true);
+        tableColDfdId.setCellFactory(TextFieldTableCell.<FxDfdElement>forTableColumn());
+
+        System.out.println(listDfdElemente);
+        
+       
+
+}
+
+private void updateComboBox() {
         dfdComboBox.getItems().clear();
-        odb.getDfdDiagram(obsListOfDfds);
+        odb.queryDfdDiagram(obsListOfDfds);
         dfdComboBox.setItems(obsListOfDfds);
 
 //        //aus DB in ArrayList in ComboBox

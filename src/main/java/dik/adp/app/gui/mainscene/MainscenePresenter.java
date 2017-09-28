@@ -83,9 +83,9 @@ public class MainscenePresenter implements Initializable {
         navigationAnchorPane.getChildren().add(navViewParent);
         //----------------------------------------------------------------------
 
+        
         //-----------------------main Anchor control view state-----------------
         //controls what is shown in the mainAnchorPane
-        
         //show dfd on startup
         this.dfdView = new DfdView();
         this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
@@ -127,6 +127,5 @@ public class MainscenePresenter implements Initializable {
 //            }
         });
         //----------------------------------------------------------------------
-
     }
 }

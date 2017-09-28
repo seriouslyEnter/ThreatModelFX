@@ -12,7 +12,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane id="AnchorPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.dfd.DfdPresenter">
@@ -37,13 +40,36 @@
             <SplitPane dividerPositions="0.14345403899721448, 0.4972144846796657, 0.7618384401114207" VBox.vgrow="ALWAYS">
                <items>
                   <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
-                  <TableView fx:id="tableVDfdElements">
-                    <columns>
-                      <TableColumn fx:id="tableCDfdId" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD ID" />
-                      <TableColumn fx:id="tableCDfdType" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Typ" />
-                        <TableColumn fx:id="tableCDfdName" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Name" />
-                    </columns>
-                  </TableView>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <TableView fx:id="tableVDfdElements" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="tableColDfdId" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD ID" />
+                            <TableColumn fx:id="tableColDfdType" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Typ" />
+                              <TableColumn fx:id="tableColDfdName" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Name" />
+                          </columns>
+                        </TableView>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                            <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints vgrow="SOMETIMES" />
+                            <RowConstraints vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Button mnemonicParsing="false" text="add" GridPane.rowIndex="1" />
+                              <Button mnemonicParsing="false" text="edit" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button mnemonicParsing="false" text="delete" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <TextField prefHeight="25.0" prefWidth="60.0" promptText="name" GridPane.columnIndex="2" />
+                              <TextField prefHeight="25.0" prefWidth="60.0" promptText="id" />
+                              <TextField prefHeight="25.0" prefWidth="60.0" promptText="type" GridPane.columnIndex="1" />
+                           </children>
+                        </GridPane>
+                     </children>
+                  </VBox>
                   <TableView fx:id="tableVDataFlows">
                     <columns>
                       <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Datenfluss" />

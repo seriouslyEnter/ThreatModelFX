@@ -10,6 +10,8 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import java.util.ArrayList;
 import java.util.Collections;
 import javafx.collections.ObservableList;
 
@@ -34,7 +36,7 @@ public class odb2DAO {
         }
     }
 
-    public ObservableList<DfdDiagram> getDfdDiagram(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
+    public ObservableList<DfdDiagram> queryDfdDiagram(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
         // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         // EVERY TIME YOU NEED A GRAPH INSTANCE
@@ -79,7 +81,7 @@ public class odb2DAO {
         // EVERY TIME YOU NEED A GRAPH INSTANCE
         OrientGraph graph = factory.getTx();
         try {
-            Vertex v = graph.addVertex("class:DFD");
+            Vertex v = graph.addVertex("class:DfdDiagram");
             v.setProperty("name", newDfd);
             graph.commit();
         } catch (Exception e) {
@@ -87,4 +89,33 @@ public class odb2DAO {
             graph.shutdown();
         }
     }
+    
+//   public ArrayList<FxDfdElement> queryDfdElements (ArrayList<FxDfdElement> listDfdElemente) {
+    public ObservableList<FxDfdElement> queryDfdElements (ObservableList<FxDfdElement> listDfdElemente) {
+               // AT THE BEGINNING
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        // EVERY TIME YOU NEED A GRAPH INSTANCE
+        OrientGraph graph = factory.getTx();
+        try {
+            for (Vertex v : (Iterable<Vertex>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DfdElement")).execute()) {
+                System.out.println("Id: " + v + " " + v.getProperty("id"));
+                FxDfdElement eV = new FxDfdElement(v.getProperty("id"), v.getProperty("type"), v.getProperty("name"));
+                listDfdElemente.add(eV);
+            }
+        } finally {
+            graph.shutdown();
+        }     
+        //sortiere Ergebnis nach name Stichowort "Comparator"
+        Collections.sort(listDfdElemente, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
+        return listDfdElemente;
+   }
+    
+    
+    
+    
+    
+    
+    
 }
