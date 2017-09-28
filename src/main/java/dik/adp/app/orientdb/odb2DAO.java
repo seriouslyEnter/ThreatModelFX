@@ -34,7 +34,7 @@ public class odb2DAO {
         }
     }
 
-    public ObservableList<DfdDiagram> getDfds(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
+    public ObservableList<DfdDiagram> getDfdDiagram(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
         // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         // EVERY TIME YOU NEED A GRAPH INSTANCE
@@ -42,7 +42,7 @@ public class odb2DAO {
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DFD")).execute()) {
+                            "SELECT FROM DfdDiagram")).execute()) {
                 System.out.println("Name: " + v + " " + v.getProperty("name"));
                 DfdDiagram dV = new DfdDiagram(v.getProperty("name"));
                 obsListOfDfds.add(dV);

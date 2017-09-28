@@ -2,7 +2,7 @@ package dik.adp.app.gui.dfd;
 
 import dik.adp.app.orientdb.odb2DAO;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
-import dik.adp.app.orientdb.odb2Klassen.fxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -32,10 +32,10 @@ public class DfdPresenter implements Initializable {
 
     //-----------------Table----------------------------------------------------
     @FXML // fx:id="tableVDfdElements"
-    private TableView<?> tableVDfdElements; // Value injected by FXMLLoader
+    private TableView<FxDfdElement> tableVDfdElements; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdId"
-    private TableColumn<?, ?> tableCDfdId; // Value injected by FXMLLoader
+    private TableColumn<FxDfdElement, String> tableCDfdId; // Value injected by FXMLLoader
 
     @FXML // fx:id="tableCDfdType"
     private TableColumn<?, ?> tableCDfdType; // Value injected by FXMLLoader
@@ -58,12 +58,22 @@ public class DfdPresenter implements Initializable {
         updateComboBox();
 
         //??????????????????????????????????????????????????????????????
-        tableCDfdName.setCellValueFactory(new PropertyValueFactory("name"));
+        
+        tableVDfdElements.getItems().addAll(
+            new FxDfdElement("P1", "Prozess", "asdfasfd"),
+            new FxDfdElement( "P2", "Prozess", "bbbbbbbb")
+        );
+        
+        //hier DB abfrage
+        
+        tableCDfdId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        tableCDfdType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        tableCDfdName.setCellValueFactory(new PropertyValueFactory<>("name"));
     }
 
     private void updateComboBox() {
         dfdComboBox.getItems().clear();
-        odb.getDfds(obsListOfDfds);
+        odb.getDfdDiagram(obsListOfDfds);
         dfdComboBox.setItems(obsListOfDfds);
 
 //        //aus DB in ArrayList in ComboBox
