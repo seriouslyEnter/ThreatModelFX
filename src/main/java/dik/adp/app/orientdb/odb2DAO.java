@@ -127,4 +127,21 @@ public class odb2DAO {
         }
     }
 
+    public void deleteDfdElement(FxDfdElement selectedDfdElement) {
+        // AT THE BEGINNING
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        // EVERY TIME YOU NEED A GRAPH INSTANCE
+        OrientGraph graph = factory.getTx();
+        try {
+//            for (Vertex v : graph.getVertices("DfdElement.key", "DfdElement.type", "DfdElement.name")) {
+            for (Vertex v : graph.getVertices("DfdElement.key", selectedDfdElement.getKey())) {
+                System.out.println("Delete vertex: " + v);
+                graph.removeVertex(v);
+            }
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+        }
+    }
+
 }

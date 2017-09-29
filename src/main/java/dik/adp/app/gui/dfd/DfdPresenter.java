@@ -6,14 +6,17 @@ import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -43,7 +46,7 @@ public class DfdPresenter implements Initializable {
     private TableColumn<?, ?> tableColDfdName; // Value injected by FXMLLoader
     //--------------------------------------------------------------------------
 
-    //----------------------------DFD Elements Controls------------------------
+    //----------------------------DFD Elements Controls-------------------------
     @FXML
     private Button addDfdElementButton;
     @FXML
@@ -56,6 +59,9 @@ public class DfdPresenter implements Initializable {
     private TextField typeDfdElementTextField;
     @FXML
     private TextField nameDfdElementTextField;
+
+    private FxDfdElement selectedDfdElement;
+    private TableViewSelectionModel<FxDfdElement> tsm;
     //--------------------------------------------------------------------------
 
     @Inject
@@ -70,22 +76,23 @@ public class DfdPresenter implements Initializable {
 //        addVertexToComboBox(odb.getDfds());
 
         updateComboBox();
+
         setupDfdElementsTable();
+        updateDfdElementsTable();
     }
 
-    private void setupDfdElementsTable() {
-        //??????????????????????????????????????????????????????????????
-//        tableVDfdElements.getItems().addAll(
-//            new FxDfdElement("P1", "Prozess", "asdfasfd"),
-//            new FxDfdElement( "P2", "Prozess", "bbbbbbbb")
-//        );
-        //hier DB abfrage
-//        ArrayList<FxDfdElement> listDfdElemente = new ArrayList<>();
+    private void updateDfdElementsTable() {
         ObservableList<FxDfdElement> listDfdElemente = FXCollections.<FxDfdElement>observableArrayList();
         odb.queryDfdElements(listDfdElemente);
+
         tableVDfdElements.getItems().clear();
         tableVDfdElements.getItems().addAll(listDfdElemente);
 
+        System.out.println(listDfdElemente);
+    }
+
+    private void setupDfdElementsTable() {
+        //
         tableColDfdKey.setCellValueFactory(new PropertyValueFactory<>("key"));
         tableColDfdType.setCellValueFactory(new PropertyValueFactory<>("type"));
         tableColDfdName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -95,7 +102,41 @@ public class DfdPresenter implements Initializable {
         tableVDfdElements.setEditable(true);
         tableColDfdKey.setCellFactory(TextFieldTableCell.<FxDfdElement>forTableColumn());
 
-        System.out.println(listDfdElemente);
+        //-----------setup for selection abilities------------------------------
+        // Turn on single/multiple-selection mode for the TableView. Default ist single.
+        this.tsm = tableVDfdElements.getSelectionModel();
+        this.tsm.setSelectionMode(SelectionMode.SINGLE);
+        // Disable/Enable cell-level selection. Default ist Disable anyway
+        this.tsm.setCellSelectionEnabled(false);
+        //Liste mit Changelistener um auf selection change reagieren zu können
+        ObservableList<Integer> list = this.tsm.getSelectedIndices();
+        // Add a ListChangeListener
+        list.addListener((ListChangeListener.Change<? extends Integer> change) -> {
+            this.selectedDfdElement = this.tsm.getSelectedItem();
+            updateDfdElementsTextFields();
+            System.out.println("Row selection has changed");
+        });
+        //----------------------------------------------------------------------
+    }
+
+    private void updateDfdElementsTextFields() {
+        if (this.selectedDfdElement != null) {
+            //updates Textfields with selected Dfd Element
+            keyDfdElementTextField.setText(this.selectedDfdElement.getKey());
+            typeDfdElementTextField.setText(this.selectedDfdElement.getType());
+            nameDfdElementTextField.setText(this.selectedDfdElement.getName());
+        } else {
+            keyDfdElementTextField.clear();
+            typeDfdElementTextField.clear();
+            nameDfdElementTextField.clear();
+        }
+    }
+
+    private void clearDfdElementsTextFields() {
+        keyDfdElementTextField.clear();
+        typeDfdElementTextField.clear();
+        nameDfdElementTextField.clear();
+
     }
 
     private void updateComboBox() {
@@ -130,12 +171,15 @@ public class DfdPresenter implements Initializable {
         );
         System.out.println(newDfdElement);
         odb.addNewDfdElementToDb(newDfdElement);
-        setupDfdElementsTable();
+        clearDfdElementsTextFields();
+        updateDfdElementsTable();
     }
 
     @FXML
     void deleteDfdElement(ActionEvent event) {
-
+        odb.deleteDfdElement(this.selectedDfdElement);
+        this.tsm.clearSelection();
+        updateDfdElementsTable();
     }
 
     @FXML
