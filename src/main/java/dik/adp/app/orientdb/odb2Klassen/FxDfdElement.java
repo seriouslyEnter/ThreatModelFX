@@ -18,30 +18,30 @@ import javafx.collections.ObservableList;
 //DFD Element als ein JavaFX Bean um in ObservableList zu benutzen
 public class FxDfdElement {
 
-    private StringProperty id;
+    private StringProperty key; //cant use "id" its a reserved word in ThinkerPop
     private StringProperty type;
     private StringProperty name;
     private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
 
-    public FxDfdElement(String id, String type, String name) {
-        setId(id);
+    public FxDfdElement(String key, String type, String name) {
+        setKey(key);
         setType(type);
         setName(name);
     }
 
-    public final String getId() {
-        return idProperty().get();
+    public final String getKey() {
+        return keyProperty().get();
     }
 
-    public final void setId(String id) {
-        idProperty().set(id);
+    public final void setKey(String key) {
+        keyProperty().set(key);
     }
 
-    public StringProperty idProperty() {
-        if (id == null) {
-            id = new SimpleStringProperty();
+    public StringProperty keyProperty() {
+        if (key == null) {
+            key = new SimpleStringProperty();
         }
-        return id;
+        return key;
     }
 
     public final String getType() {
@@ -81,7 +81,7 @@ public class FxDfdElement {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 61 * hash + Objects.hashCode(this.id);
+        hash = 61 * hash + Objects.hashCode(this.key);
         hash = 61 * hash + Objects.hashCode(this.type);
         hash = 61 * hash + Objects.hashCode(this.name);
         hash = 61 * hash + Objects.hashCode(this.elements);
@@ -100,7 +100,7 @@ public class FxDfdElement {
             return false;
         }
         final FxDfdElement other = (FxDfdElement) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.key, other.key)) {
             return false;
         }
         if (!Objects.equals(this.type, other.type)) {
@@ -117,7 +117,7 @@ public class FxDfdElement {
 
     @Override
     public String toString() {
-        return "fxDfdElement{" + "id=" + id + ", type=" + type + ", name=" + name + ", elements=" + elements + '}';
+        return "fxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", elements=" + elements + '}';
     }
 
 }

@@ -29,9 +29,9 @@
                <children>
                   <Label prefHeight="25.0" text="Neu:" />
                   <TextField fx:id="newDfdTextField" maxWidth="1.7976931348623157E308" prefHeight="25.0" promptText="Name des neuen DFDs" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="createNewDfdButton" mnemonicParsing="false" onAction="#createNewDfd" text="Erstellen" />
+                  <Button fx:id="createNewDfdDiagramButton" mnemonicParsing="false" onAction="#createNewDfdDiagram" text="Erstellen" />
                   <Label prefHeight="25.0" text="DFD auswählen:" />
-                  <ComboBox fx:id="dfdComboBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="DFDs" HBox.hgrow="ALWAYS" />
+                  <ComboBox fx:id="dfdComboBox" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="DFDs" visibleRowCount="15" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -44,7 +44,7 @@
                      <children>
                         <TableView fx:id="tableVDfdElements" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn fx:id="tableColDfdId" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD ID" />
+                            <TableColumn fx:id="tableColDfdKey" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Key" />
                             <TableColumn fx:id="tableColDfdType" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Typ" />
                               <TableColumn fx:id="tableColDfdName" maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="DFD Name" />
                           </columns>
@@ -60,27 +60,27 @@
                             <RowConstraints vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Button mnemonicParsing="false" text="add" GridPane.rowIndex="1" />
-                              <Button mnemonicParsing="false" text="edit" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button mnemonicParsing="false" text="delete" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <TextField prefHeight="25.0" prefWidth="60.0" promptText="name" GridPane.columnIndex="2" />
-                              <TextField prefHeight="25.0" prefWidth="60.0" promptText="id" />
-                              <TextField prefHeight="25.0" prefWidth="60.0" promptText="type" GridPane.columnIndex="1" />
+                              <Button fx:id="addDfdElementButton" mnemonicParsing="false" onAction="#addDfdElement" text="add" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                              <Button fx:id="editDfdElementButton" mnemonicParsing="false" onAction="#editDfdElement" text="edit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                              <Button fx:id="deleteDfdElementButton" mnemonicParsing="false" onAction="#deleteDfdElement" text="delete" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                              <TextField fx:id="nameDfdElementTextField" prefHeight="25.0" prefWidth="60.0" promptText="name" GridPane.columnIndex="2" />
+                              <TextField fx:id="keyDfdElementTextField" prefHeight="25.0" prefWidth="60.0" promptText="key" />
+                              <TextField fx:id="typeDfdElementTextField" prefHeight="25.0" prefWidth="60.0" promptText="type" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </children>
                   </VBox>
                   <TableView fx:id="tableVDataFlows">
                     <columns>
-                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Datenfluss" />
+                      <TableColumn maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="Datenfluss" />
                       <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="von" />
                         <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="nach" />
                     </columns>
                   </TableView>
                   <TableView fx:id="tableVTrustBoundaries">
                     <columns>
-                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Elemente (Datenflusse automatisch)" />
-                      <TableColumn maxWidth="-1.0" minWidth="50.0" prefWidth="-1.0" text="Vertrauensgrenze" />
+                      <TableColumn maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="Elemente (Datenflusse automatisch)" />
+                      <TableColumn maxWidth="-1.0" minWidth="80.0" prefWidth="-1.0" text="Vertrauensgrenze" />
                     </columns>
                   </TableView>
                </items>
