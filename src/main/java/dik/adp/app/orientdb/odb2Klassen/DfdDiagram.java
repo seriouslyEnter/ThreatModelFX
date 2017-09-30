@@ -28,15 +28,9 @@ public class DfdDiagram {
     }
 
     @Override
-    public String toString() {
-//        return "dfdVertex{" + "name=" + name + '}';
-        return name;
-    }
-
-    @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.name);
+        int hash = 3;
+        hash = 61 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -57,5 +51,11 @@ public class DfdDiagram {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
 
 }

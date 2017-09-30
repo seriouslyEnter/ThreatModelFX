@@ -27,7 +27,7 @@ import javax.inject.Inject;
  */
 public class DfdPresenter implements Initializable {
 
-    //----------------New DFD---------------------------------------------------
+    //----------------New DFD Diagram-------------------------------------------
     @FXML
     private ComboBox dfdComboBox;
     @FXML
@@ -78,12 +78,30 @@ public class DfdPresenter implements Initializable {
         updateComboBox();
 
         setupDfdElementsTable();
-        updateDfdElementsTable();
+//        updateDfdElementsTable();
+        setupDfdDiagramComboBox();
+    }
+
+    private void setupDfdDiagramComboBox() {
+//        obsListOfDfds.setOnAction(e -> System.out.println("Value changed"));
+
+//        this.dfdComboBox.getSelectionModel().selectedItemProperty().addListener(this::updateDfdElementsTable);
+        this.dfdComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            updateDfdElementsTable();
+        });
+
     }
 
     private void updateDfdElementsTable() {
+        //DFD Diagram aus ComboBox aber was wenn noch nicht ausgwählt
+        //create empty DfdDiagram to prevent NLP error. But consider the following DB query
+        DfdDiagram dfdcmbbx = new DfdDiagram("");
+        if (dfdComboBox.getSelectionModel().getSelectedItem() != null) {
+            dfdcmbbx = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        }
+
         ObservableList<FxDfdElement> listDfdElemente = FXCollections.<FxDfdElement>observableArrayList();
-        odb.queryDfdElements(listDfdElemente);
+        odb.queryDfdElements(listDfdElemente, dfdcmbbx);
 
         tableVDfdElements.getItems().clear();
         tableVDfdElements.getItems().addAll(listDfdElemente);
@@ -143,6 +161,7 @@ public class DfdPresenter implements Initializable {
         dfdComboBox.getItems().clear();
         odb.queryDfdDiagram(obsListOfDfds);
         dfdComboBox.setItems(obsListOfDfds);
+//        dfdComboBox.getItems().addAll(obsListOfDfds);
 
 //        //aus DB in ArrayList in ComboBox
 //        this.listOfDfds = odb.getDfds();    
@@ -164,12 +183,15 @@ public class DfdPresenter implements Initializable {
 
     @FXML
     void addDfdElement(ActionEvent event) {
+        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
         FxDfdElement newDfdElement = new FxDfdElement(
                 keyDfdElementTextField.getText(),
                 typeDfdElementTextField.getText(),
-                nameDfdElementTextField.getText()
+                nameDfdElementTextField.getText(),
+                selectedDfdDiagram.getName()
         );
         System.out.println(newDfdElement);
+        System.out.println("textfeld " + nameDfdElementTextField.getText());
         odb.addNewDfdElementToDb(newDfdElement);
         clearDfdElementsTextFields();
         updateDfdElementsTable();

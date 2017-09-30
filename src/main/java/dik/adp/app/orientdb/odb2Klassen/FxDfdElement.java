@@ -21,12 +21,15 @@ public class FxDfdElement {
     private StringProperty key; //cant use "id" its a reserved word in ThinkerPop
     private StringProperty type;
     private StringProperty name;
+    private StringProperty diagram;
+
     private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
 
-    public FxDfdElement(String key, String type, String name) {
+    public FxDfdElement(String key, String type, String name, String diagram) {
         setKey(key);
         setType(type);
         setName(name);
+        setDiagram(diagram);
     }
 
     public final String getKey() {
@@ -74,17 +77,33 @@ public class FxDfdElement {
         return name;
     }
 
+    public final String getDiagram() {
+        return diagramProperty().get();
+    }
+
+    public final void setDiagram(String diagram) {
+        diagramProperty().set(diagram);
+    }
+
+    public StringProperty diagramProperty() {
+        if (diagram == null) {
+            diagram = new SimpleStringProperty();
+        }
+        return diagram;
+    }
+
     public ObservableList<FxDfdElement> employeesProperty() {
         return elements;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 61 * hash + Objects.hashCode(this.key);
-        hash = 61 * hash + Objects.hashCode(this.type);
-        hash = 61 * hash + Objects.hashCode(this.name);
-        hash = 61 * hash + Objects.hashCode(this.elements);
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.key);
+        hash = 67 * hash + Objects.hashCode(this.type);
+        hash = 67 * hash + Objects.hashCode(this.name);
+        hash = 67 * hash + Objects.hashCode(this.diagram);
+        hash = 67 * hash + Objects.hashCode(this.elements);
         return hash;
     }
 
@@ -109,6 +128,9 @@ public class FxDfdElement {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
+        if (!Objects.equals(this.diagram, other.diagram)) {
+            return false;
+        }
         if (!Objects.equals(this.elements, other.elements)) {
             return false;
         }
@@ -117,7 +139,7 @@ public class FxDfdElement {
 
     @Override
     public String toString() {
-        return "fxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", elements=" + elements + '}';
+        return "FxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", elements=" + elements + '}';
     }
 
 }

@@ -20,21 +20,6 @@ import javafx.collections.ObservableList;
  */
 public class odb2DAO {
 
-    public void eineMethode() {
-        // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("plocal:/tmp/graph/db", "username", "password").setupPool(1, 10);
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
-        OrientGraph graph = factory.getTx();
-        try {
-            int modified = graph.command(
-                    new OCommandSQL(
-                            "UPDATE Customer SET local = TRUE "
-                            + "WHERE 'Rome' IN out('lives').name")).execute();
-        } finally {
-            graph.shutdown();
-        }
-    }
-
     public ObservableList<DfdDiagram> queryDfdDiagram(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
         // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
@@ -89,7 +74,7 @@ public class odb2DAO {
         }
     }
 
-    public ObservableList<FxDfdElement> queryDfdElements(ObservableList<FxDfdElement> listDfdElemente) {
+    public ObservableList<FxDfdElement> queryDfdElements(ObservableList<FxDfdElement> listDfdElemente, DfdDiagram selectedDiagram) {
         // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         // EVERY TIME YOU NEED A GRAPH INSTANCE
@@ -97,9 +82,9 @@ public class odb2DAO {
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DfdElement")).execute()) {
+                            "SELECT FROM DfdElement WHERE " + "diagram = '" + selectedDiagram.getName() + "'")).execute()) {
                 System.out.println("Key: " + v + " " + v.getProperty("key"));
-                FxDfdElement eV = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"));
+                FxDfdElement eV = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"));
                 listDfdElemente.add(eV);
             }
         } finally {
@@ -120,6 +105,7 @@ public class odb2DAO {
             v.setProperty("key", newDfdElement.getKey());
             v.setProperty("type", newDfdElement.getType());
             v.setProperty("name", newDfdElement.getName());
+            v.setProperty("diagram", newDfdElement.getDiagram());
             graph.commit();
         } catch (Exception e) {
             graph.rollback();
@@ -133,8 +119,13 @@ public class odb2DAO {
         // EVERY TIME YOU NEED A GRAPH INSTANCE
         OrientGraph graph = factory.getTx();
         try {
-//            for (Vertex v : graph.getVertices("DfdElement.key", "DfdElement.type", "DfdElement.name")) {
-            for (Vertex v : graph.getVertices("DfdElement.key", selectedDfdElement.getKey())) {
+//            for (Vertex v : graph.getVertices("DfdElement.key", selectedDfdElement.getKey()   )) {
+//                System.out.println("Delete vertex: " + v);
+//                graph.removeVertex(v);
+//            }
+            for (Vertex v : (Iterable<Vertex>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DfdElement WHERE diagram = '" + selectedDfdElement.getDiagram() + "' and key = '" + selectedDfdElement.getKey() + "'")).execute()) {
                 System.out.println("Delete vertex: " + v);
                 graph.removeVertex(v);
             }
