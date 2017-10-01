@@ -135,4 +135,32 @@ public class odb2DAO {
         }
     }
 
+    public void updateDfdElement(FxDfdElement selectedDfdElement, FxDfdElement editedDfdElement) {
+        // AT THE BEGINNING
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        // EVERY TIME YOU NEED A GRAPH INSTANCE
+        OrientGraph graph = factory.getTx();
+        try {
+//            for (Vertex v : graph.getVertices("DfdElement.key", selectedDfdElement.getKey()   )) {
+//                System.out.println("Delete vertex: " + v);
+//                graph.removeVertex(v);
+//            }
+            for (Vertex v : (Iterable<Vertex>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DfdElement WHERE diagram = '" + selectedDfdElement.getDiagram()
+                            + "' and key = '" + selectedDfdElement.getKey() + "'"
+                    )).execute()) {
+                System.out.println("Edit vertex: " + v);
+                //                graph.removeVertex(v);
+                v.setProperty("key", editedDfdElement.getKey());
+                v.setProperty("type", editedDfdElement.getType());
+                v.setProperty("name", editedDfdElement.getName());
+System.out.println("Edit vertex nach edit: " + v);
+            }
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+        }
+    }
+
 }

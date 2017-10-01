@@ -206,6 +206,14 @@ public class DfdPresenter implements Initializable {
 
     @FXML
     void editDfdElement(ActionEvent event) {
-
+        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        FxDfdElement editedDfdElement = new FxDfdElement(
+                keyDfdElementTextField.getText(),
+                typeDfdElementTextField.getText(),
+                nameDfdElementTextField.getText(),
+                selectedDfdDiagram.getName()
+        );
+        odb.updateDfdElement(this.selectedDfdElement, editedDfdElement);
+        updateDfdElementsTable();
     }
 }
