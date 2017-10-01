@@ -69,48 +69,28 @@ public class DfdPresenter implements Initializable {
 
     private ResourceBundle resources = null;
 
+    //Füllen der Controls beim ersten start
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        //populate ComboBox on start
-//        addVertexToComboBox(odb.getDfds());
 
         updateComboBox();
-
         setupDfdElementsTable();
-//        updateDfdElementsTable();
         setupDfdDiagramComboBox();
     }
 
+    //Setup der Diagram Combobox nur einmal beim Start aufgerufen
     private void setupDfdDiagramComboBox() {
-//        obsListOfDfds.setOnAction(e -> System.out.println("Value changed"));
-
-//        this.dfdComboBox.getSelectionModel().selectedItemProperty().addListener(this::updateDfdElementsTable);
+        //Für die Diagram Combobox einen Listener setzen   
         this.dfdComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             updateDfdElementsTable();
         });
 
     }
 
-    private void updateDfdElementsTable() {
-        //DFD Diagram aus ComboBox aber was wenn noch nicht ausgwählt
-        //create empty DfdDiagram to prevent NLP error. But consider the following DB query
-        DfdDiagram dfdcmbbx = new DfdDiagram("");
-        if (dfdComboBox.getSelectionModel().getSelectedItem() != null) {
-            dfdcmbbx = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
-        }
-
-        ObservableList<FxDfdElement> listDfdElemente = FXCollections.<FxDfdElement>observableArrayList();
-        odb.queryDfdElements(listDfdElemente, dfdcmbbx);
-
-        tableVDfdElements.getItems().clear();
-        tableVDfdElements.getItems().addAll(listDfdElemente);
-
-        System.out.println(listDfdElemente);
-    }
-
+    //Einmal beim start die Tabelle für Dfd Elemente konfigurieren
     private void setupDfdElementsTable() {
-        //
+        //?
         tableColDfdKey.setCellValueFactory(new PropertyValueFactory<>("key"));
         tableColDfdType.setCellValueFactory(new PropertyValueFactory<>("type"));
         tableColDfdName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -137,6 +117,25 @@ public class DfdPresenter implements Initializable {
         //----------------------------------------------------------------------
     }
 
+    //Immer dann aufrufen um änderungen an den Dfd Element in der Tabelle sichtbar zu machen
+    private void updateDfdElementsTable() {
+        //DFD Diagram aus ComboBox aber was wenn noch nicht ausgwählt
+        DfdDiagram dfdcmbbx = new DfdDiagram("");
+        if (dfdComboBox.getSelectionModel().getSelectedItem() != null) {
+            dfdcmbbx = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        }
+
+        ObservableList<FxDfdElement> listDfdElemente = FXCollections.<FxDfdElement>observableArrayList();
+        odb.queryDfdElements(listDfdElemente, dfdcmbbx);
+
+        tableVDfdElements.getItems().clear();
+        tableVDfdElements.getItems().addAll(listDfdElemente);
+
+        System.out.println(listDfdElemente);
+    }
+
+    
+    //Füllt die Textfelder mit Daten des ausgewählten Dfd Elements
     private void updateDfdElementsTextFields() {
         if (this.selectedDfdElement != null) {
             //updates Textfields with selected Dfd Element
@@ -150,6 +149,7 @@ public class DfdPresenter implements Initializable {
         }
     }
 
+    //reseted/leert die Textfelder wieder
     private void clearDfdElementsTextFields() {
         keyDfdElementTextField.clear();
         typeDfdElementTextField.clear();
@@ -157,19 +157,14 @@ public class DfdPresenter implements Initializable {
 
     }
 
+    //ruft alle Dfd Diagramme von der Datenbank ab und setzt sie in Combobox
     private void updateComboBox() {
         dfdComboBox.getItems().clear();
         odb.queryDfdDiagram(obsListOfDfds);
         dfdComboBox.setItems(obsListOfDfds);
-//        dfdComboBox.getItems().addAll(obsListOfDfds);
-
-//        //aus DB in ArrayList in ComboBox
-//        this.listOfDfds = odb.getDfds();    
-//        for (Vertex v : listOfDfds) {
-//            dfdComboBox.getItems().add(v.getProperty("name"));
-//        }
     }
 
+    //Event um neues Dfd Diagramm zu erstellen bei drücken des Buttons Erstellen
     @FXML
     void createNewDfdDiagram(ActionEvent event) {
         String newDfd;
@@ -181,6 +176,7 @@ public class DfdPresenter implements Initializable {
         }
     }
 
+    //Bei drücken des Button add wird ein neues Dfd Element hinzugefügt
     @FXML
     void addDfdElement(ActionEvent event) {
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
@@ -197,6 +193,7 @@ public class DfdPresenter implements Initializable {
         updateDfdElementsTable();
     }
 
+    //Bei drücken des Button delete wird das ausgewählte Dfd Element gelöscht
     @FXML
     void deleteDfdElement(ActionEvent event) {
         odb.deleteDfdElement(this.selectedDfdElement);
@@ -204,6 +201,7 @@ public class DfdPresenter implements Initializable {
         updateDfdElementsTable();
     }
 
+    //Bei drücken des edit Buttons wird das ausgewählte Dfd Elment mit den Daten der Textfelder geupdated
     @FXML
     void editDfdElement(ActionEvent event) {
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
