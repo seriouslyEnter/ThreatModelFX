@@ -2,6 +2,7 @@ package dik.adp.app.gui.dfd;
 
 import dik.adp.app.orientdb.odb2DAO;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
+import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -11,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -27,42 +27,62 @@ import javax.inject.Inject;
  */
 public class DfdPresenter implements Initializable {
 
-    //----------------New DFD Diagram-------------------------------------------
+    //===============================DFD Diagram================================
     @FXML
     private ComboBox dfdComboBox;
     @FXML
     private TextField newDfdTextField;
     private ObservableList<DfdDiagram> obsListOfDfds = FXCollections.<DfdDiagram>observableArrayList();
-    //--------------------------------------------------------------------------
+    //==========================================================================
 
-    //-----------------DFD Table------------------------------------------------
+    //==========================================================================
+    //-----------------DFD Elements Table------------------------------------------------
     @FXML // fx:id="tableVDfdElements"
     private TableView<FxDfdElement> tableVDfdElements; // Value injected by FXMLLoader
     @FXML // fx:id="tableCDfdId"
     private TableColumn<FxDfdElement, String> tableColDfdKey; // Value injected by FXMLLoader
     @FXML // fx:id="tableCDfdType"
-    private TableColumn<?, ?> tableColDfdType; // Value injected by FXMLLoader
+    private TableColumn<FxDfdElement, String> tableColDfdType; // Value injected by FXMLLoader
     @FXML // fx:id="tableCDfdName"
-    private TableColumn<?, ?> tableColDfdName; // Value injected by FXMLLoader
+    private TableColumn<FxDfdElement, String> tableColDfdName; // Value injected by FXMLLoader
+    private TableViewSelectionModel<FxDfdElement> tsmDfdElement;
+    private FxDfdElement selectedDfdElement;
     //--------------------------------------------------------------------------
 
     //----------------------------DFD Elements Controls-------------------------
-    @FXML
-    private Button addDfdElementButton;
-    @FXML
-    private Button editDfdElementButton;
-    @FXML
-    private Button deleteDfdElementButton;
     @FXML
     private TextField keyDfdElementTextField;
     @FXML
     private TextField typeDfdElementTextField;
     @FXML
     private TextField nameDfdElementTextField;
-
-    private FxDfdElement selectedDfdElement;
-    private TableViewSelectionModel<FxDfdElement> tsm;
     //--------------------------------------------------------------------------
+    //==========================================================================
+
+    //=======================Data Flow==========================================
+    @FXML
+    private TableView<FxDFlow> tableVDataFlows;
+    @FXML
+    private TableColumn<FxDFlow, String> tColDfKey;
+    @FXML
+    private TableColumn<FxDFlow, String> tColDfName;
+    @FXML
+    private TableColumn<FxDFlow, String> tColFromE;
+    @FXML
+    private TableColumn<FxDFlow, String> tColToE;
+
+    private TableViewSelectionModel<FxDFlow> tsmDFlow;
+    private FxDFlow selectedDFlow;
+
+    @FXML
+    private TextField keyDFlowTextField;
+    @FXML
+    private TextField nameDFlowTextField;
+    @FXML
+    private TextField fromDFlowTextField;
+    @FXML
+    private TextField toDFlowTextField;
+    //==========================================================================
 
     @Inject
     private odb2DAO odb;
@@ -77,17 +97,42 @@ public class DfdPresenter implements Initializable {
         updateComboBox();
         setupDfdElementsTable();
         setupDfdDiagramComboBox();
+
+        setupDFlowTable();
+        updateDFlowTable();
     }
 
+    //==========================DFD Diagram=====================================
     //Setup der Diagram Combobox nur einmal beim Start aufgerufen
     private void setupDfdDiagramComboBox() {
         //Für die Diagram Combobox einen Listener setzen   
         this.dfdComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             updateDfdElementsTable();
+            updateDFlowTable();
         });
-
     }
 
+    //ruft alle Dfd Diagramme von der Datenbank ab und setzt sie in Combobox
+    private void updateComboBox() {
+        dfdComboBox.getItems().clear();
+        odb.queryDfdDiagram(obsListOfDfds);
+        dfdComboBox.setItems(obsListOfDfds);
+    }
+
+    //Event um neues Dfd Diagramm zu erstellen bei drücken des Buttons Erstellen
+    @FXML
+    void createNewDfdDiagram(ActionEvent event) {
+        String newDfd;
+        if (!newDfdTextField.getText().isEmpty()) {
+            newDfd = newDfdTextField.getText();
+            odb.addDfdToDb(newDfd);
+            newDfdTextField.clear();
+            updateComboBox();
+        }
+    }
+    //==========================================================================
+
+    //==========================Elements Table==================================
     //Einmal beim start die Tabelle für Dfd Elemente konfigurieren
     private void setupDfdElementsTable() {
         //?
@@ -97,20 +142,20 @@ public class DfdPresenter implements Initializable {
 
         //Table Edit
         //tableView must be set to editable true. TableColumn and Cell are editable by default
-        tableVDfdElements.setEditable(true);
+//        tableVDfdElements.setEditable(true);
         tableColDfdKey.setCellFactory(TextFieldTableCell.<FxDfdElement>forTableColumn());
 
         //-----------setup for selection abilities------------------------------
         // Turn on single/multiple-selection mode for the TableView. Default ist single.
-        this.tsm = tableVDfdElements.getSelectionModel();
-        this.tsm.setSelectionMode(SelectionMode.SINGLE);
+        this.tsmDfdElement = tableVDfdElements.getSelectionModel();
+        this.tsmDfdElement.setSelectionMode(SelectionMode.SINGLE);
         // Disable/Enable cell-level selection. Default ist Disable anyway
-        this.tsm.setCellSelectionEnabled(false);
+        this.tsmDfdElement.setCellSelectionEnabled(false);
         //Liste mit Changelistener um auf selection change reagieren zu können
-        ObservableList<Integer> list = this.tsm.getSelectedIndices();
+        ObservableList<Integer> list = this.tsmDfdElement.getSelectedIndices();
         // Add a ListChangeListener
         list.addListener((ListChangeListener.Change<? extends Integer> change) -> {
-            this.selectedDfdElement = this.tsm.getSelectedItem();
+            this.selectedDfdElement = this.tsmDfdElement.getSelectedItem();
             updateDfdElementsTextFields();
             System.out.println("Row selection has changed");
         });
@@ -134,7 +179,6 @@ public class DfdPresenter implements Initializable {
         System.out.println(listDfdElemente);
     }
 
-    
     //Füllt die Textfelder mit Daten des ausgewählten Dfd Elements
     private void updateDfdElementsTextFields() {
         if (this.selectedDfdElement != null) {
@@ -154,26 +198,6 @@ public class DfdPresenter implements Initializable {
         keyDfdElementTextField.clear();
         typeDfdElementTextField.clear();
         nameDfdElementTextField.clear();
-
-    }
-
-    //ruft alle Dfd Diagramme von der Datenbank ab und setzt sie in Combobox
-    private void updateComboBox() {
-        dfdComboBox.getItems().clear();
-        odb.queryDfdDiagram(obsListOfDfds);
-        dfdComboBox.setItems(obsListOfDfds);
-    }
-
-    //Event um neues Dfd Diagramm zu erstellen bei drücken des Buttons Erstellen
-    @FXML
-    void createNewDfdDiagram(ActionEvent event) {
-        String newDfd;
-        if (!newDfdTextField.getText().isEmpty()) {
-            newDfd = newDfdTextField.getText();
-            odb.addDfdToDb(newDfd);
-            newDfdTextField.clear();
-            updateComboBox();
-        }
     }
 
     //Bei drücken des Button add wird ein neues Dfd Element hinzugefügt
@@ -197,7 +221,7 @@ public class DfdPresenter implements Initializable {
     @FXML
     void deleteDfdElement(ActionEvent event) {
         odb.deleteDfdElement(this.selectedDfdElement);
-        this.tsm.clearSelection();
+        this.tsmDfdElement.clearSelection();
         updateDfdElementsTable();
     }
 
@@ -214,4 +238,101 @@ public class DfdPresenter implements Initializable {
         odb.updateDfdElement(this.selectedDfdElement, editedDfdElement);
         updateDfdElementsTable();
     }
+    //==========================================================================
+
+    //=========================Datenfluss=======================================
+    private void setupDFlowTable() {
+        //?
+        tColDfKey.setCellValueFactory(new PropertyValueFactory<>("key"));
+        tColDfName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tColFromE.setCellValueFactory(new PropertyValueFactory<>("from"));
+        tColToE.setCellValueFactory(new PropertyValueFactory<>("to"));
+
+        //Table Edit
+        //tableView must be set to editable true. TableColumn and Cell are editable by default
+//        tableVDfdElements.setEditable(true);
+//        tableColDfdKey.setCellFactory(TextFieldTableCell.<FxDfdElement>forTableColumn());
+        //-----------setup for selection abilities------------------------------
+        // Turn on single/multiple-selection mode for the TableView. Default ist single.
+        this.tsmDFlow = tableVDataFlows.getSelectionModel();
+        this.tsmDFlow.setSelectionMode(SelectionMode.SINGLE);
+        // Disable/Enable cell-level selection. Default ist Disable anyway
+        this.tsmDFlow.setCellSelectionEnabled(false);
+        //Liste mit Changelistener um auf selection change reagieren zu können
+        ObservableList<Integer> list = this.tsmDFlow.getSelectedIndices();
+        // Add a ListChangeListener
+        list.addListener((ListChangeListener.Change<? extends Integer> change) -> {
+            this.selectedDFlow = this.tsmDFlow.getSelectedItem();
+            updateDFlowTextFields();
+            System.out.println("Row selection has changed");
+        });
+        //----------------------------------------------------------------------  
+    }
+
+    //Immer dann aufrufen um änderungen an den Dfd Element in der Tabelle sichtbar zu machen
+    private void updateDFlowTable() {
+        //DFD Diagram aus ComboBox aber was wenn noch nicht ausgwählt
+        DfdDiagram dfdcmbbx = new DfdDiagram("");
+        if (dfdComboBox.getSelectionModel().getSelectedItem() != null) {
+            dfdcmbbx = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        }
+
+        ObservableList<FxDFlow> listDFlow = FXCollections.<FxDFlow>observableArrayList();
+        odb.queryFxDFlows(listDFlow, dfdcmbbx);
+
+        tableVDataFlows.getItems().clear();
+        tableVDataFlows.getItems().addAll(listDFlow);
+
+        System.out.println(listDFlow);
+    }
+
+    private void updateDFlowTextFields() {
+        if (this.selectedDFlow != null) {
+            //updates Textfields with selected Dfd Element
+            keyDFlowTextField.setText(this.selectedDFlow.getKey());
+            nameDFlowTextField.setText(this.selectedDFlow.getName());
+            fromDFlowTextField.setText(this.selectedDFlow.getFrom());
+            toDFlowTextField.setText(this.selectedDFlow.getTo());
+        } else {
+            keyDFlowTextField.clear();
+            nameDFlowTextField.clear();
+            fromDFlowTextField.clear();
+            toDFlowTextField.clear();
+        }
+    }
+
+    @FXML //on Button add for DF
+    void addDFlow(ActionEvent event) {
+        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        FxDFlow newDFlow = new FxDFlow(
+                keyDFlowTextField.getText(),
+                nameDFlowTextField.getText(),
+                selectedDfdDiagram.getName(),
+                fromDFlowTextField.getText(),
+                toDFlowTextField.getText()
+        );
+        System.out.println(newDFlow);
+        odb.addDFlowToDB(newDFlow);
+        clearDFlowTextFields();
+        updateDFlowTable();
+    }
+
+    private void clearDFlowTextFields() {
+        keyDFlowTextField.clear();
+        nameDFlowTextField.clear();
+        fromDFlowTextField.clear();
+        toDFlowTextField.clear();
+    }
+
+    @FXML
+    void deleteDFlow(ActionEvent event) {
+
+    }
+
+    @FXML
+    void editDFlow(ActionEvent event) {
+
+    }
+    //==========================================================================
+
 }

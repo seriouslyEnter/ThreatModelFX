@@ -6,10 +6,13 @@
 package dik.adp.app.orientdb;
 
 import com.orientechnologies.orient.core.sql.OCommandSQL;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
+import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.util.Collections;
 import javafx.collections.ObservableList;
@@ -84,7 +87,7 @@ public class odb2DAO {
                     new OCommandSQL(
                             "SELECT FROM DfdElement WHERE " + "diagram = '" + selectedDiagram.getName() + "'")).execute()) {
                 System.out.println("Key: " + v + " " + v.getProperty("key"));
-                FxDfdElement eV = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"));
+                FxDfdElement eV = vertexToFxDfdElement(v);
                 listDfdElemente.add(eV);
             }
         } finally {
@@ -93,6 +96,11 @@ public class odb2DAO {
         //sortiere Ergebnis nach name Stichowort "Comparator"
         Collections.sort(listDfdElemente, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
         return listDfdElemente;
+    }
+
+    private FxDfdElement vertexToFxDfdElement(Vertex v) {
+        FxDfdElement eV = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"));
+        return eV;
     }
 
     public void addNewDfdElementToDb(FxDfdElement newDfdElement) {
@@ -155,12 +163,69 @@ public class odb2DAO {
                 v.setProperty("key", editedDfdElement.getKey());
                 v.setProperty("type", editedDfdElement.getType());
                 v.setProperty("name", editedDfdElement.getName());
-System.out.println("Edit vertex nach edit: " + v);
+                System.out.println("Edit vertex nach edit: " + v);
             }
             graph.commit();
         } catch (Exception e) {
             graph.rollback();
         }
+    }
+
+    public void addDFlowToDB(FxDFlow newDFlow) {
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraph graph = factory.getTx();
+        try {
+            Vertex outVertex = null;
+            Vertex inVertex = null;
+            for (Vertex v : graph.getVertices("DfdElement.key", newDFlow.getFrom())) {
+                outVertex = v;
+            }
+            for (Vertex v : graph.getVertices("DfdElement.key", newDFlow.getTo())) {
+                inVertex = v;
+            }
+            Edge e;
+            if (outVertex != null & inVertex != null) {
+                e = graph.addEdge(this, outVertex, inVertex, "DFlow");
+                e.setProperty("key", newDFlow.getKey());
+                e.setProperty("name", newDFlow.getName());
+                e.setProperty("diagram", newDFlow.getDiagram());
+            }
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+            graph.shutdown();
+        }
+    }
+
+    public ObservableList<FxDFlow> queryFxDFlows(ObservableList<FxDFlow> listFxDFlow, DfdDiagram selectedDiagram) {
+        // AT THE BEGINNING
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        // EVERY TIME YOU NEED A GRAPH INSTANCE
+        OrientGraph graph = factory.getTx();
+        try {
+            for (Edge e : (Iterable<Edge>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DFlow WHERE " + "diagram = '" + selectedDiagram.getName() + "'")).execute()) {
+                System.out.println("Key: " + e + " " + e.getProperty("key"));
+                FxDFlow eE = edgeToFxDFlow(e);
+                listFxDFlow.add(eE);
+            }
+        } finally {
+            graph.shutdown();
+        }
+        //sortiere Ergebnis nach name Stichowort "Comparator"
+        Collections.sort(listFxDFlow, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
+        return listFxDFlow;
+    }
+
+    private FxDFlow edgeToFxDFlow(Edge e) throws IllegalArgumentException {
+        FxDFlow eE = new FxDFlow(e.getProperty("key"), e.getProperty("name"), e.getProperty("diagram"), null, null);
+        Vertex v;
+        v = e.getVertex(Direction.OUT);
+        eE.setFrom(v.getProperty("key"));
+        v = e.getVertex(Direction.IN);
+        eE.setTo(v.getProperty("key"));
+        return eE;
     }
 
 }
