@@ -36,7 +36,6 @@ public class DfdPresenter implements Initializable {
     //==========================================================================
 
     //==========================================================================
-    //-----------------DFD Elements Table------------------------------------------------
     @FXML // fx:id="tableVDfdElements"
     private TableView<FxDfdElement> tableVDfdElements; // Value injected by FXMLLoader
     @FXML // fx:id="tableCDfdId"
@@ -45,11 +44,10 @@ public class DfdPresenter implements Initializable {
     private TableColumn<FxDfdElement, String> tableColDfdType; // Value injected by FXMLLoader
     @FXML // fx:id="tableCDfdName"
     private TableColumn<FxDfdElement, String> tableColDfdName; // Value injected by FXMLLoader
+    
     private TableViewSelectionModel<FxDfdElement> tsmDfdElement;
     private FxDfdElement selectedDfdElement;
-    //--------------------------------------------------------------------------
 
-    //----------------------------DFD Elements Controls-------------------------
     @FXML
     private TextField keyDfdElementTextField;
     @FXML
@@ -84,6 +82,13 @@ public class DfdPresenter implements Initializable {
     private TextField toDFlowTextField;
     //==========================================================================
 
+    //=========================Vertrauensgrenze=================================
+    
+    
+    //==========================================================================
+    
+    
+    
     @Inject
     private odb2DAO odb;
 
@@ -348,4 +353,10 @@ public class DfdPresenter implements Initializable {
     }
     //==========================================================================
 
+    //=========================Vertrauensgrenze=================================
+    
+    
+    //==========================================================================
+    
+    
 }
