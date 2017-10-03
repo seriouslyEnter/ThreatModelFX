@@ -326,12 +326,25 @@ public class DfdPresenter implements Initializable {
 
     @FXML
     void deleteDFlow(ActionEvent event) {
-
+        odb.deleteDFlow(this.selectedDFlow);
+        this.tsmDFlow.clearSelection();
+        updateDFlowTable();
     }
 
+    //Es kann nur der name für DFlow/Edge geändert werden.
+    //Für alle anderen Änderungen muss DFlow/Edge gelöscht und neu erstellt werden.
     @FXML
     void editDFlow(ActionEvent event) {
-
+        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        FxDFlow editedDFlow = new FxDFlow(
+                keyDFlowTextField.getText(),
+                nameDFlowTextField.getText(),
+                selectedDfdDiagram.getName(),
+                fromDFlowTextField.getText(),
+                toDFlowTextField.getText()
+        );
+        odb.updateDFlow(this.selectedDFlow, editedDFlow);
+        updateDFlowTable();
     }
     //==========================================================================
 

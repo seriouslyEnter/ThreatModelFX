@@ -228,4 +228,44 @@ public class odb2DAO {
         return eE;
     }
 
+    public void deleteDFlow(FxDFlow selectedDFlow) {
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraph graph = factory.getTx();
+        try {
+            for (Edge e: (Iterable<Edge>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DFlow WHERE diagram = '" + selectedDFlow.getDiagram() + "' and key = '" + selectedDFlow.getKey() + "'")).execute()) {
+                System.out.println("Delete vertex: " + e);
+                graph.removeEdge(e);
+            }
+
+//            for (Edge e : (Iterable<Edge>) graph.getEdges("DFlow.key", selectedDFlow.getKey())) {
+//                System.out.println("Delete edge: " + e);
+//                graph.removeEdge(e);
+//            }
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+        }
+    }
+
+    public void updateDFlow(FxDFlow selectedDFlow, FxDFlow editedDFlow) {
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraph graph = factory.getTx();
+        try {
+            for (Edge e : (Iterable<Edge>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DFlow WHERE diagram = '" + selectedDFlow.getDiagram()
+                            + "' and key = '" + selectedDFlow.getKey() + "'"
+                    )).execute()) {
+                System.out.println("Edit edge: " + e);
+                e.setProperty("name", editedDFlow.getName());
+                System.out.println("Edit edge nach edit: " + e);
+            }
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+        }
+    }
+
 }
