@@ -14,7 +14,9 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import java.util.ArrayList;
 import java.util.Collections;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
@@ -85,7 +87,8 @@ public class odb2DAO {
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DfdElement WHERE " + "diagram = '" + selectedDiagram.getName() + "'")).execute()) {
+                            "SELECT FROM DfdElement WHERE " + "diagram = '" + selectedDiagram.getName() + "'"
+                    )).execute()) {
                 System.out.println("Key: " + v + " " + v.getProperty("key"));
                 FxDfdElement eV = vertexToFxDfdElement(v);
                 listDfdElemente.add(eV);
@@ -133,7 +136,9 @@ public class odb2DAO {
 //            }
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DfdElement WHERE diagram = '" + selectedDfdElement.getDiagram() + "' and key = '" + selectedDfdElement.getKey() + "'")).execute()) {
+                            "SELECT FROM DfdElement WHERE diagram = '" + selectedDfdElement.getDiagram() + "' "
+                            + "and key = '" + selectedDfdElement.getKey() + "'"
+                    )).execute()) {
                 System.out.println("Delete vertex: " + v);
                 graph.removeVertex(v);
             }
@@ -205,7 +210,8 @@ public class odb2DAO {
         try {
             for (Edge e : (Iterable<Edge>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DFlow WHERE " + "diagram = '" + selectedDiagram.getName() + "'")).execute()) {
+                            "SELECT FROM DFlow WHERE " + "diagram = '" + selectedDiagram.getName() + "'"
+                    )).execute()) {
                 System.out.println("Key: " + e + " " + e.getProperty("key"));
                 FxDFlow eE = edgeToFxDFlow(e);
                 listFxDFlow.add(eE);
@@ -232,9 +238,11 @@ public class odb2DAO {
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         OrientGraph graph = factory.getTx();
         try {
-            for (Edge e: (Iterable<Edge>) graph.command(
+            for (Edge e : (Iterable<Edge>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DFlow WHERE diagram = '" + selectedDFlow.getDiagram() + "' and key = '" + selectedDFlow.getKey() + "'")).execute()) {
+                            "SELECT FROM DFlow WHERE diagram = '" + selectedDFlow.getDiagram() + "' "
+                            + "and key = '" + selectedDFlow.getKey() + "'"
+                    )).execute()) {
                 System.out.println("Delete vertex: " + e);
                 graph.removeEdge(e);
             }
@@ -255,8 +263,8 @@ public class odb2DAO {
         try {
             for (Edge e : (Iterable<Edge>) graph.command(
                     new OCommandSQL(
-                            "SELECT FROM DFlow WHERE diagram = '" + selectedDFlow.getDiagram()
-                            + "' and key = '" + selectedDFlow.getKey() + "'"
+                            "SELECT FROM DFlow WHERE diagram = '" + selectedDFlow.getDiagram() + "' "
+                            + "and key = '" + selectedDFlow.getKey() + "'"
                     )).execute()) {
                 System.out.println("Edit edge: " + e);
                 e.setProperty("name", editedDFlow.getName());
@@ -266,6 +274,27 @@ public class odb2DAO {
         } catch (Exception e) {
             graph.rollback();
         }
+    }
+
+    public ObservableList<String> queryTrustBoundaries(FxDfdElement trustBoundary) {
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraph graph = factory.getTx();
+        ObservableList<String> listBoundary = FXCollections.<String>observableArrayList();
+        try {
+            for (Vertex v : (Iterable<Vertex>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DfdElement WHERE " + "diagram = '" + trustBoundary.getDiagram() + "' "
+                            + "and type ='" + trustBoundary.getType() + "'"
+                    )).execute()) {
+                listBoundary.add(v.getProperty("key"));
+                System.out.println(listBoundary);
+            }
+        } finally {
+            graph.shutdown();
+        }
+        //sortiere Ergebnis nach name Stichowort "Comparator"
+        Collections.sort(listBoundary, (a, b) -> a.compareToIgnoreCase(b));
+        return listBoundary;
     }
 
 }

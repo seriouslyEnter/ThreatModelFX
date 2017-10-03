@@ -5,19 +5,24 @@ import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javax.inject.Inject;
@@ -44,7 +49,7 @@ public class DfdPresenter implements Initializable {
     private TableColumn<FxDfdElement, String> tableColDfdType; // Value injected by FXMLLoader
     @FXML // fx:id="tableCDfdName"
     private TableColumn<FxDfdElement, String> tableColDfdName; // Value injected by FXMLLoader
-    
+
     private TableViewSelectionModel<FxDfdElement> tsmDfdElement;
     private FxDfdElement selectedDfdElement;
 
@@ -83,12 +88,17 @@ public class DfdPresenter implements Initializable {
     //==========================================================================
 
     //=========================Vertrauensgrenze=================================
-    
-    
+    @FXML
+    private TableView<FxDfdElement> tableVTrustBoundaries;
+    @FXML
+    private TableColumn<FxDfdElement, String> tColElements;
+    @FXML
+    private TableColumn<FxDfdElement, String> tColTrustBoundary;
+
+    private ChoiceBox boundaryChoiceBox;
+    private ObservableList<FxDfdElement> obsListOfBoundary = FXCollections.<FxDfdElement>observableArrayList();
+//    private ArrayList<FxDfdElement> listOfBoundary = new ArrayList<>();
     //==========================================================================
-    
-    
-    
     @Inject
     private odb2DAO odb;
 
@@ -114,6 +124,7 @@ public class DfdPresenter implements Initializable {
         this.dfdComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             updateDfdElementsTable();
             updateDFlowTable();
+            updateTrustBoundaryTable();
         });
     }
 
@@ -354,9 +365,30 @@ public class DfdPresenter implements Initializable {
     //==========================================================================
 
     //=========================Vertrauensgrenze=================================
-    
-    
-    //==========================================================================
-    
-    
+    private void updateTrustBoundaryTable() {
+
+//        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
+//        tColTrustBoundary.setCellValueFactory(new PropertyValueFactory<>("key"));
+        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+        FxDfdElement trustBoundary = new FxDfdElement("", "Boundary", "", selectedDfdDiagram.getName());
+
+        
+
+        ObservableList<String> obsListOfStrings = FXCollections.<String>observableArrayList();
+        obsListOfStrings = this.odb.queryTrustBoundaries(trustBoundary);
+        obsListOfStrings.add("");
+
+        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
+        // Set a cell factory, so it can be edited using a ComboBox S.644
+        tColTrustBoundary.setCellFactory(ComboBoxTableCell.<FxDfdElement, String>forTableColumn(obsListOfStrings)); //muss String sein wie Column oder einen Stringconverter nutzen siehe Strg+Leerzeichen(forTableColumn)
+
+        tableVTrustBoundaries.getItems().clear();
+        ObservableList<FxDfdElement> obsListOfFxDfdElement = FXCollections.<FxDfdElement>observableArrayList();
+        tableVTrustBoundaries.getItems().addAll(this.odb.queryDfdElements(obsListOfFxDfdElement, selectedDfdDiagram));
+
+        
+//        TODO: save edits
+    }
+
+//==========================================================================
 }
