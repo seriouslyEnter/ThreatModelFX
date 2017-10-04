@@ -298,4 +298,32 @@ public class odb2DAO {
         return listBoundary;
     }
 
+    public void updateBoundary(FxDfdElement elementWithNewBoundary) {
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraph graph = factory.getTx();
+        try {
+            for (Vertex v : (Iterable<Vertex>) graph.command(
+                    new OCommandSQL(
+                            "SELECT FROM DfdElement WHERE diagram = '" + elementWithNewBoundary.getDiagram()
+                            + "' and key = '" + elementWithNewBoundary.getKey() + "'"
+                    )).execute()) {
+                //entferne vorher den alten inBoundary Edge
+                for (Edge e : (Iterable<Edge>) v.getEdges(Direction.OUT, "inBoundary")) {
+                    e.remove();
+                }
+                //füge neuen inBoundary Edge hinzu
+                for (Vertex b : (Iterable<Vertex>) graph.command(
+                        new OCommandSQL(
+                                "SELECT FROM DfdElement WHERE diagram = '" + elementWithNewBoundary.getDiagram()
+                                + "' and key = '" + elementWithNewBoundary.getBoundary() + "'"
+                        )).execute()) {
+                    graph.addEdge(null, v, b, "inBoundary");
+                }
+            }
+            graph.commit();
+        } catch (Exception e) {
+            graph.rollback();
+        }
+    }
+
 }

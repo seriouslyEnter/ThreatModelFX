@@ -122,10 +122,9 @@ public class DfdPresenter implements Initializable {
 //      
         String bildURL = DfdPresenter.class.getClassLoader().getResource("dik/adp/app/gui/dfd/images/bpmn.png").toExternalForm();
 //        String bildURL = this.getClass().getClassLoader().getResource("images/dfd/bpmn.png").toExternalForm(); //Nicht löschen: dieser funktioniert für Dateien in src/main/resouces
-        Image bpmnImage = new Image(bildURL,true);
+        Image bpmnImage = new Image(bildURL, true);
         bpmnView.setImage(bpmnImage);
         bpmnView.fitWidthProperty().bind(imageAnchorPane.widthProperty());
-
 
 //    imageAnchorPane.setCenter(bpmnImage);
         updateComboBox();
@@ -421,6 +420,40 @@ public class DfdPresenter implements Initializable {
         tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
         //den aktuellen Wert für TrustBoundary Column setzen
         tColTrustBoundary.setCellValueFactory(new PropertyValueFactory<>("boundary"));
+
+        // Add an event handler to handle the edit commit event.
+// It displays the selected value on the standard output
+        tColTrustBoundary.setOnEditCommit(e -> {
+            int row = e.getTablePosition().getRow();
+//            String boundary = e.getRowValue();
+            String boundary = e.getNewValue();
+            System.out.println("edit "+ boundary);
+            FxDfdElement elementWithNewBoundary = e.getRowValue();
+            elementWithNewBoundary.setBoundary(boundary);
+//            e.getRowValue().setBoundary(boundary);
+            System.out.println("edit "+ e.getRowValue().toString());
+            
+            odb.updateBoundary(elementWithNewBoundary);
+            
+            updateTrustBoundaryTable();
+
+
+            
+            
+//System.out.println("Gender changed for " +
+//person.getFirstName() + " " + person.getLastName() +
+//" at row " + (row + 1) + " to " + e.getNewValue());
+        });
     }
 //==========================================================================
+
+    @FXML
+    void chooseBoundaryForElement(ActionEvent event) {
+        System.err.println("EDIT");
+//        tableVTrustBoundaries.gets
+//    }
+//genderCol.setOnEditCommit(e -> {
+//int row = e.getTablePosition().getRow();
+//Person person = e.getRowValue();
+    }
 }
