@@ -14,7 +14,6 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
-import java.util.ArrayList;
 import java.util.Collections;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -80,9 +79,7 @@ public class odb2DAO {
     }
 
     public ObservableList<FxDfdElement> queryDfdElements(ObservableList<FxDfdElement> listDfdElemente, DfdDiagram selectedDiagram) {
-        // AT THE BEGINNING
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
         OrientGraph graph = factory.getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
@@ -90,8 +87,8 @@ public class odb2DAO {
                             "SELECT FROM DfdElement WHERE " + "diagram = '" + selectedDiagram.getName() + "'"
                     )).execute()) {
                 System.out.println("Key: " + v + " " + v.getProperty("key"));
-                FxDfdElement eV = vertexToFxDfdElement(v);
-                listDfdElemente.add(eV);
+                FxDfdElement vFx = vertexToFxDfdElement(v);
+                listDfdElemente.add(vFx);
             }
         } finally {
             graph.shutdown();
@@ -102,8 +99,12 @@ public class odb2DAO {
     }
 
     private FxDfdElement vertexToFxDfdElement(Vertex v) {
-        FxDfdElement eV = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"));
-        return eV;
+        FxDfdElement vFx = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"), "");
+        //den Elementen die Trustboundary hinzufügen
+        for (Vertex b : (Iterable<Vertex>) v.getVertices(Direction.OUT, "inBoundary")) {
+            vFx.setBoundary(b.getProperty("key"));
+        }
+        return vFx;
     }
 
     public void addNewDfdElementToDb(FxDfdElement newDfdElement) {

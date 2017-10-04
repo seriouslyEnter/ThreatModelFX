@@ -22,14 +22,16 @@ public class FxDfdElement {
     private StringProperty type;
     private StringProperty name;
     private StringProperty diagram;
+    private StringProperty boundary;
 
     private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
 
-    public FxDfdElement(String key, String type, String name, String diagram) {
+    public FxDfdElement(String key, String type, String name, String diagram, String boundary) {
         setKey(key);
         setType(type);
         setName(name);
         setDiagram(diagram);
+        setBoundary(boundary);
     }
 
     public final String getKey() {
@@ -91,6 +93,22 @@ public class FxDfdElement {
         }
         return diagram;
     }
+    
+    
+        public final String getBoundary() {
+        return boundaryProperty().get();
+    }
+
+    public final void setBoundary(String boundary) {
+        boundaryProperty().set(boundary);
+    }
+
+    public StringProperty boundaryProperty() {
+        if (boundary == null) {
+            boundary = new SimpleStringProperty();
+        }
+        return boundary;
+    }
 
     public ObservableList<FxDfdElement> employeesProperty() {
         return elements;
@@ -98,12 +116,13 @@ public class FxDfdElement {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.key);
-        hash = 67 * hash + Objects.hashCode(this.type);
-        hash = 67 * hash + Objects.hashCode(this.name);
-        hash = 67 * hash + Objects.hashCode(this.diagram);
-        hash = 67 * hash + Objects.hashCode(this.elements);
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.key);
+        hash = 53 * hash + Objects.hashCode(this.type);
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.diagram);
+        hash = 53 * hash + Objects.hashCode(this.boundary);
+        hash = 53 * hash + Objects.hashCode(this.elements);
         return hash;
     }
 
@@ -131,6 +150,9 @@ public class FxDfdElement {
         if (!Objects.equals(this.diagram, other.diagram)) {
             return false;
         }
+        if (!Objects.equals(this.boundary, other.boundary)) {
+            return false;
+        }
         if (!Objects.equals(this.elements, other.elements)) {
             return false;
         }
@@ -139,7 +161,9 @@ public class FxDfdElement {
 
     @Override
     public String toString() {
-        return "FxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", elements=" + elements + '}';
+        return "FxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", boundary=" + boundary + ", elements=" + elements + '}';
     }
+
+    
 
 }

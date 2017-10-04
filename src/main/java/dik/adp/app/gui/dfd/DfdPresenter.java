@@ -5,9 +5,7 @@ import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -21,10 +19,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javax.inject.Inject;
 
 /**
@@ -99,6 +99,14 @@ public class DfdPresenter implements Initializable {
     private ObservableList<FxDfdElement> obsListOfBoundary = FXCollections.<FxDfdElement>observableArrayList();
 //    private ArrayList<FxDfdElement> listOfBoundary = new ArrayList<>();
     //==========================================================================
+
+//    @FXML
+//    private SplitPane dfdSplitPane;
+    @FXML
+    private ImageView bpmnView;
+    @FXML
+    private AnchorPane imageAnchorPane;
+
     @Inject
     private odb2DAO odb;
 
@@ -109,12 +117,25 @@ public class DfdPresenter implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
 
+//        System.out.println(imageAnchorPane.widthProperty().toString());
+//        System.out.println(bpmnView.getImage().getWidth()); 
+//      
+        String bildURL = DfdPresenter.class.getClassLoader().getResource("dik/adp/app/gui/dfd/images/bpmn.png").toExternalForm();
+//        String bildURL = this.getClass().getClassLoader().getResource("images/dfd/bpmn.png").toExternalForm(); //Nicht löschen: dieser funktioniert für Dateien in src/main/resouces
+        Image bpmnImage = new Image(bildURL,true);
+        bpmnView.setImage(bpmnImage);
+        bpmnView.fitWidthProperty().bind(imageAnchorPane.widthProperty());
+
+
+//    imageAnchorPane.setCenter(bpmnImage);
         updateComboBox();
         setupDfdElementsTable();
         setupDfdDiagramComboBox();
 
         setupDFlowTable();
         updateDFlowTable();
+
+        setupTrustBoundaryTable();
     }
 
     //==========================DFD Diagram=====================================
@@ -193,6 +214,10 @@ public class DfdPresenter implements Initializable {
         tableVDfdElements.getItems().addAll(listDfdElemente);
 
         System.out.println(listDfdElemente);
+
+        //Praktische jede änderung die zu update dieser Tabelle führt könnte relevant für TrustBoundary Table sein. Deshalb wird TrustBoundaryTable auch immer hier geupdated.
+        updateTrustBoundaryTable();
+
     }
 
     //Füllt die Textfelder mit Daten des ausgewählten Dfd Elements
@@ -224,7 +249,8 @@ public class DfdPresenter implements Initializable {
                 keyDfdElementTextField.getText(),
                 typeDfdElementTextField.getText(),
                 nameDfdElementTextField.getText(),
-                selectedDfdDiagram.getName()
+                selectedDfdDiagram.getName(),
+                ""
         );
         System.out.println(newDfdElement);
         System.out.println("textfeld " + nameDfdElementTextField.getText());
@@ -249,7 +275,8 @@ public class DfdPresenter implements Initializable {
                 keyDfdElementTextField.getText(),
                 typeDfdElementTextField.getText(),
                 nameDfdElementTextField.getText(),
-                selectedDfdDiagram.getName()
+                selectedDfdDiagram.getName(),
+                ""
         );
         odb.updateDfdElement(this.selectedDfdElement, editedDfdElement);
         updateDfdElementsTable();
@@ -370,25 +397,30 @@ public class DfdPresenter implements Initializable {
 //        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
 //        tColTrustBoundary.setCellValueFactory(new PropertyValueFactory<>("key"));
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
-        FxDfdElement trustBoundary = new FxDfdElement("", "Boundary", "", selectedDfdDiagram.getName());
-
-        
+        FxDfdElement trustBoundary = new FxDfdElement("", "Boundary", "", selectedDfdDiagram.getName(), "");
 
         ObservableList<String> obsListOfStrings = FXCollections.<String>observableArrayList();
         obsListOfStrings = this.odb.queryTrustBoundaries(trustBoundary);
         obsListOfStrings.add("");
 
-        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
+//        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
         // Set a cell factory, so it can be edited using a ComboBox S.644
-        tColTrustBoundary.setCellFactory(ComboBoxTableCell.<FxDfdElement, String>forTableColumn(obsListOfStrings)); //muss String sein wie Column oder einen Stringconverter nutzen siehe Strg+Leerzeichen(forTableColumn)
-
+//        tColTrustBoundary.setCellFactory(ComboBoxTableCell.<FxDfdElement, String>forTableColumn(obsListOfStrings)); //muss String sein wie Column oder einen Stringconverter nutzen siehe Strg+Leerzeichen(forTableColumn)
         tableVTrustBoundaries.getItems().clear();
         ObservableList<FxDfdElement> obsListOfFxDfdElement = FXCollections.<FxDfdElement>observableArrayList();
         tableVTrustBoundaries.getItems().addAll(this.odb.queryDfdElements(obsListOfFxDfdElement, selectedDfdDiagram));
 
-        
+        //eine ComboBox mit einer Auswahl für die Spalte setzen
+        tColTrustBoundary.setCellFactory(ComboBoxTableCell.<FxDfdElement, String>forTableColumn(obsListOfStrings));
+
 //        TODO: save edits
     }
 
+    private void setupTrustBoundaryTable() {
+        //die Spalte mit key Werten füllen
+        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
+        //den aktuellen Wert für TrustBoundary Column setzen
+        tColTrustBoundary.setCellValueFactory(new PropertyValueFactory<>("boundary"));
+    }
 //==========================================================================
 }
