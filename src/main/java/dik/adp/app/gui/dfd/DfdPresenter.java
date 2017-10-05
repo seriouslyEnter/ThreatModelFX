@@ -1,5 +1,6 @@
 package dik.adp.app.gui.dfd;
 
+import dik.adp.app.gui.sharedcommunicationmodel.SharedDiagram;
 import dik.adp.app.orientdb.odb2DAO;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
@@ -109,6 +110,8 @@ public class DfdPresenter implements Initializable {
 
     @Inject
     private odb2DAO odb;
+    @Inject
+    private SharedDiagram sharedDiagram;
 
     private ResourceBundle resources = null;
 
@@ -145,6 +148,8 @@ public class DfdPresenter implements Initializable {
             updateDfdElementsTable();
             updateDFlowTable();
             updateTrustBoundaryTable();
+            //speicher in shared diagram
+            sharedDiagram.setSelectedDiagram(this.dfdComboBox.getSelectionModel().getSelectedItem().toString());         
         });
     }
 

@@ -5,6 +5,7 @@
  */
 package dik.adp.app.gui.sharedcommunicationmodel;
 
+import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -49,4 +50,5 @@ public class ViewState {
         mainShowingProperty().set(buttonID);
     }
     //--------------------------------------------------------------------------
+
 }

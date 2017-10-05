@@ -6,6 +6,8 @@
 package dik.adp.app.orientdb.odb2Klassen;
 
 import java.util.Objects;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
@@ -29,8 +31,8 @@ public class DfdDiagram {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 61 * hash + Objects.hashCode(this.name);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -56,6 +58,7 @@ public class DfdDiagram {
     public String toString() {
         return name;
     }
+
 
 
 }

@@ -2,13 +2,28 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="atAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="147.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.at.AtPresenter">
+<AnchorPane id="AnchorPane" fx:id="atAnchorPane" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.at.AtPresenter">
     <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
         <URL value="@at.css" />
     </stylesheets>
    <children>
-      <Button fx:id="atClearButton" layoutX="268.0" layoutY="61.0" mnemonicParsing="false" onAction="#clearMain" text="AT Scene" />
+      <VBox spacing="10.0">
+         <children>
+            <Label text="Welche Angreifer-Typen wollen Sie untersuchen?" />
+            <HBox spacing="10.0">
+               <children>
+                  <Button fx:id="createButton" mnemonicParsing="false" onAction="#createNewAT" text="create" />
+                  <TextField fx:id="newATTextField" promptText="neuer Angreifertyp" />
+               </children>
+            </HBox>
+            <VBox fx:id="atVBox" spacing="10.0" />
+         </children>
+      </VBox>
    </children>
 </AnchorPane>
