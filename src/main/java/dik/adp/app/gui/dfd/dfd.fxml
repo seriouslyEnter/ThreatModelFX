@@ -106,11 +106,11 @@
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button fx:id="addDFlowButton" mnemonicParsing="false" onAction="#addDFlow" text="add" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                              <Button fx:id="addDFlowButton" disable="true" mnemonicParsing="false" text="add" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                               <Button fx:id="editDFlowButton" mnemonicParsing="false" onAction="#editDFlow" text="edit" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                               <Button fx:id="deleteDFlowButton" mnemonicParsing="false" onAction="#deleteDFlow" text="delete" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                              <TextField fx:id="keyDFlowTextField" prefWidth="60.0" promptText="key" />
-                              <TextField fx:id="nameDFlowTextField" prefWidth="60.0" promptText="name" GridPane.columnIndex="1" />
+                              <TextField fx:id="keyDFlowTextField" editable="false" prefWidth="60.0" promptText="key" />
+                              <TextField fx:id="nameDFlowTextField" editable="false" prefWidth="60.0" promptText="name" GridPane.columnIndex="1" />
                               <TextField fx:id="fromDFlowTextField" prefWidth="40.0" promptText="from" GridPane.columnIndex="2" />
                               <TextField fx:id="toDFlowTextField" prefWidth="40.0" promptText="to" GridPane.columnIndex="3" />
                            </children>

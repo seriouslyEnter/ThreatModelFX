@@ -261,6 +261,7 @@ public class DfdPresenter implements Initializable {
         odb.addNewDfdElementToDb(newDfdElement);
         clearDfdElementsTextFields();
         updateDfdElementsTable();
+        updateDFlowTable();
     }
 
     //Bei drücken des Button delete wird das ausgewählte Dfd Element gelöscht
@@ -284,6 +285,7 @@ public class DfdPresenter implements Initializable {
         );
         odb.updateDfdElement(this.selectedDfdElement, editedDfdElement);
         updateDfdElementsTable();
+        updateDFlowTable();
     }
     //==========================================================================
 
@@ -348,21 +350,21 @@ public class DfdPresenter implements Initializable {
         }
     }
 
-    @FXML //on Button add for DF
-    void addDFlow(ActionEvent event) {
-        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
-        FxDFlow newDFlow = new FxDFlow(
-                keyDFlowTextField.getText(),
-                nameDFlowTextField.getText(),
-                selectedDfdDiagram.getName(),
-                fromDFlowTextField.getText(),
-                toDFlowTextField.getText()
-        );
-        System.out.println(newDFlow);
-        odb.addDFlowToDB(newDFlow);
-        clearDFlowTextFields();
-        updateDFlowTable();
-    }
+//    @FXML //on Button add for DF
+//    void addDFlow(ActionEvent event) {
+//        DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
+//        FxDFlow newDFlow = new FxDFlow(
+//                keyDFlowTextField.getText(),
+//                nameDFlowTextField.getText(),
+//                selectedDfdDiagram.getName(),
+//                fromDFlowTextField.getText(),
+//                toDFlowTextField.getText()
+//        );
+//        System.out.println(newDFlow);
+//        odb.addDFlowToDB(newDFlow);
+//        clearDFlowTextFields();
+//        updateDFlowTable();
+//    }
 
     private void clearDFlowTextFields() {
         keyDFlowTextField.clear();
@@ -378,8 +380,7 @@ public class DfdPresenter implements Initializable {
         updateDFlowTable();
     }
 
-    //Es kann nur der name für DFlow/Edge geändert werden.
-    //Für alle anderen Änderungen muss DFlow/Edge gelöscht und neu erstellt werden.
+//änder Verbindungen
     @FXML
     void editDFlow(ActionEvent event) {
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
