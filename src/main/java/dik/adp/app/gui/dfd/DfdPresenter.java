@@ -6,6 +6,7 @@ import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -56,8 +57,10 @@ public class DfdPresenter implements Initializable {
 
     @FXML
     private TextField keyDfdElementTextField;
+//    @FXML
+//    private TextField typeDfdElementTextField;
     @FXML
-    private TextField typeDfdElementTextField;
+    private ComboBox typeDfdElementComboBox;
     @FXML
     private TextField nameDfdElementTextField;
     //--------------------------------------------------------------------------
@@ -201,6 +204,12 @@ public class DfdPresenter implements Initializable {
             System.out.println("Row selection has changed");
         });
         //----------------------------------------------------------------------
+        
+        //-----------------------------setup for type Combobox------------------
+        ObservableList<String> typeList = FXCollections.<String>observableArrayList();
+        typeList.addAll("Process", "Memory", "DFlow", "Boundary");
+        typeDfdElementComboBox.setItems(typeList);
+        //----------------------------------------------------------------------
     }
 
     //Immer dann aufrufen um änderungen an den Dfd Element in der Tabelle sichtbar zu machen
@@ -229,11 +238,12 @@ public class DfdPresenter implements Initializable {
         if (this.selectedDfdElement != null) {
             //updates Textfields with selected Dfd Element
             keyDfdElementTextField.setText(this.selectedDfdElement.getKey());
-            typeDfdElementTextField.setText(this.selectedDfdElement.getType());
+//            typeDfdElementTextField.setText(this.selectedDfdElement.getType());
+typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getType());
             nameDfdElementTextField.setText(this.selectedDfdElement.getName());
         } else {
             keyDfdElementTextField.clear();
-            typeDfdElementTextField.clear();
+//            typeDfdElementTextField.clear();
             nameDfdElementTextField.clear();
         }
     }
@@ -241,7 +251,7 @@ public class DfdPresenter implements Initializable {
     //reseted/leert die Textfelder wieder
     private void clearDfdElementsTextFields() {
         keyDfdElementTextField.clear();
-        typeDfdElementTextField.clear();
+//        typeDfdElementTextField.clear();
         nameDfdElementTextField.clear();
     }
 
@@ -251,7 +261,8 @@ public class DfdPresenter implements Initializable {
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
         FxDfdElement newDfdElement = new FxDfdElement(
                 keyDfdElementTextField.getText(),
-                typeDfdElementTextField.getText(),
+//                typeDfdElementTextField.getText(),
+                typeDfdElementComboBox.getSelectionModel().getSelectedItem().toString(),
                 nameDfdElementTextField.getText(),
                 selectedDfdDiagram.getName(),
                 ""
@@ -278,7 +289,8 @@ public class DfdPresenter implements Initializable {
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
         FxDfdElement editedDfdElement = new FxDfdElement(
                 keyDfdElementTextField.getText(),
-                typeDfdElementTextField.getText(),
+//                typeDfdElementTextField.getText(),
+                typeDfdElementComboBox.getSelectionModel().getSelectedItem().toString(),
                 nameDfdElementTextField.getText(),
                 selectedDfdDiagram.getName(),
                 ""

@@ -35,6 +35,9 @@ public class AtPresenter implements Initializable {
     private VBox atVBox;
 
     @FXML
+    private VBox listATVBox;
+
+    @FXML
     private TextField newATTextField;
 
     @Inject
@@ -53,6 +56,13 @@ public class AtPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
+
+        //Notwendig weil das für Injected fxml das nicht nicht SceneBuilder gesetzt werden kann
+        AnchorPane.setRightAnchor(atVBox, 0.0);
+        AnchorPane.setLeftAnchor(atVBox, 0.0);
+        AnchorPane.setRightAnchor(atVBox, 0.0);
+//        AnchorPane.setBottomAnchor(atVBox, 0.0);
+
         setupATCheckBoxes();
     }
 
@@ -65,13 +75,13 @@ public class AtPresenter implements Initializable {
         obsListAT = odb2at.queryAT(obsListAT, selectedDiagram.isSelectedDiagram());
         //erste alte checkboxen entfernen
         checkBoxes.clear();
-        atVBox.getChildren().clear();
+        listATVBox.getChildren().clear();
         //immer alle checkboxen geimeinsam hinzufügen
         for (String atName : obsListAT) {
             CheckBox cb = new CheckBox(atName);
             this.checkBoxes.add(cb);
         }
-        atVBox.getChildren().addAll(checkBoxes);
+        listATVBox.getChildren().addAll(checkBoxes);
     }
 
     @FXML

@@ -56,7 +56,7 @@ public class MainscenePresenter implements Initializable {
     private AnchorPane mainAnchorPane; //This is the main View
     @FXML
     AnchorPane navigationAnchorPane;
-
+    
     private MenuePresenter menuePresenter;
     private MenueView menueView;
     private BreadcrumbbarPresenter bcrumbPresenter;
@@ -65,7 +65,7 @@ public class MainscenePresenter implements Initializable {
     private DfdView dfdView;
     private AtPresenter atPresenter;
     private AtView atView;
-
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -83,14 +83,13 @@ public class MainscenePresenter implements Initializable {
         navigationAnchorPane.getChildren().add(navViewParent);
         //----------------------------------------------------------------------
 
-        
         //-----------------------main Anchor control view state-----------------
         //controls what is shown in the mainAnchorPane
         //show dfd on startup
         this.dfdView = new DfdView();
         this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
         this.mainAnchorPane.getChildren().add(this.dfdView.getView());
-
+        
         this.viewState.mainShowingProperty().addListener((obs, wasShowing, isMainShowing) -> {
             //first turn all off
             this.mainAnchorPane.getChildren().clear();
@@ -102,7 +101,7 @@ public class MainscenePresenter implements Initializable {
             final String raNavButtonID = "raNavButtonID";
             final String kkNavButtonID = "kkNavButtonID";
             final String sumNavButtonID = "sumNavButtonID";
-
+            
             if (isMainShowing.equals(dfdNavButtonID)) {
 //                this.dfdView = new DfdView();
                 this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
