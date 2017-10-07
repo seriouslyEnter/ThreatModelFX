@@ -5,12 +5,13 @@
  */
 package dik.adp.app.gui.at;
 
-import dik.adp.app.gui.mainscene.MainscenePresenter;
 import dik.adp.app.gui.sharedcommunicationmodel.SharedDiagram;
 import dik.adp.app.orientdb.odb2AT;
+import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,8 +47,9 @@ public class AtPresenter implements Initializable {
     @Inject
     odb2AT odb2at;
 
-    private ArrayList<CheckBox> checkBoxes = new ArrayList<>();
-    ObservableList<String> obsListAT = FXCollections.<String>observableArrayList();
+//    private ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+    ObservableList<FxAT> obsListAT = FXCollections.<FxAT>observableArrayList();
+    ObservableList<CheckBox> checkBoxList = FXCollections.<CheckBox>observableArrayList();
 
 //    @Inject
 //    MainscenePresenter mainscene;
@@ -68,20 +70,38 @@ public class AtPresenter implements Initializable {
 
     private void setupATCheckBoxes() {
         updateATCheckBoxes();
+
     }
 
     private void updateATCheckBoxes() {
         obsListAT.clear();
         obsListAT = odb2at.queryAT(obsListAT, selectedDiagram.isSelectedDiagram());
         //erste alte checkboxen entfernen
-        checkBoxes.clear();
+        checkBoxList.clear();
         listATVBox.getChildren().clear();
         //immer alle checkboxen geimeinsam hinzufügen
-        for (String atName : obsListAT) {
-            CheckBox cb = new CheckBox(atName);
-            this.checkBoxes.add(cb);
+        for (FxAT at : obsListAT) {
+            CheckBox cb = new CheckBox(at.getName());
+            cb.setSelected(at.getSelected());
+            this.checkBoxList.add(cb);
+            //addlistener
+            cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue ov,Boolean oldVal, Boolean newVal) {
+                        System.out.println("CHECKBOX: " + newVal.toString());
+                        System.out.println(cb.getText());
+                        odb2at.saveSelectedAT(selectedDiagram.isSelectedDiagram(), cb.getText(), newVal);
+                }
+            });
+            //add buttons to aktivate
         }
-        listATVBox.getChildren().addAll(checkBoxes);
+        listATVBox.getChildren().addAll(checkBoxList);
+
+//        add and remove listener in loop here
+    }
+
+    private void change() {
+
     }
 
     @FXML

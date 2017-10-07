@@ -10,6 +10,7 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
+import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import java.util.Collections;
 import javafx.collections.ObservableList;
 
@@ -26,6 +27,8 @@ public class odb2AT {
             //create new AT
             Vertex at = graph.addVertex("class:AT");
             at.setProperty("name", newATextField);
+            //on creation alwys false for selected
+            at.setProperty("selected", false);
             //get DFD from DB
             Vertex dfd = null;
             for (Vertex d : (Iterable<Vertex>) graph.getVertices("DfdDiagram.name", selectedDiagramShowing)) {
@@ -40,19 +43,18 @@ public class odb2AT {
         }
     }
 
-    public ObservableList<String> queryAT(ObservableList<String> obsListAT, String selectedDiagram) {
+    public ObservableList<FxAT> queryAT(ObservableList<FxAT> obsListAT, String selectedDiagram) {
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
         OrientGraph graph = factory.getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
-                            "SELECT out('hasAT').name AS name "
-                                    + "FROM DfdDiagram "
-                                    + "WHERE name='" + selectedDiagram + "' "
-                                            + "UNWIND name")).execute()
-                    ) {
-                System.out.println("Name : " + v.getProperty("name"));
-                String at = v.getProperty("name");
+                            "SELECT expand(out('hasAT'))"
+                            + "FROM DfdDiagram "
+                            + "WHERE name='" + selectedDiagram + "'"
+                    )).execute()) {
+                System.out.println("Name : " + v.getProperty("name") + " selecte: " + v.getProperty("selected"));
+                FxAT at = new FxAT(v.getProperty("name"), v.getProperty("selected"), v.getProperty("diagram"));
                 if (at != null) {
                     obsListAT.add(at);
                 }
@@ -61,8 +63,25 @@ public class odb2AT {
             graph.shutdown();
         }
         //sortiere Ergebnis nach name Stichowort "Comparator"
-        Collections.sort(obsListAT, (a, b) -> a.compareToIgnoreCase(b));
+        Collections.sort(obsListAT, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
         return obsListAT;
+    }
+
+    public void saveSelectedAT(String selectedDiagram, String at, Boolean newVal) {
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraph graph = factory.getTx();
+        try {
+            for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                            "SELECT FROM AT WHERE name='" + at + "' "
+                                    + "AND in('hasAT').name = '" + selectedDiagram +"'"
+                    )).execute()) {
+                System.out.println("Name : " + v.getProperty("name"));
+                v.setProperty("selected", newVal.toString());
+            }
+            graph.commit();
+        } finally {
+            graph.shutdown();
+        }
     }
 
 }
