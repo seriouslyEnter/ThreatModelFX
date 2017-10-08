@@ -5,10 +5,13 @@
  */
 package dik.adp.app.gui.at;
 
-import dik.adp.app.gui.sharedcommunicationmodel.SharedDiagram;
+import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.odb2AT;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +22,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javax.inject.Inject;
 
@@ -35,14 +40,16 @@ public class AtPresenter implements Initializable {
     @FXML
     private VBox atVBox;
 
+//    @FXML
+//    private VBox listATVBox;
     @FXML
-    private VBox listATVBox;
+    private GridPane atGridPane;
 
     @FXML
     private TextField newATTextField;
 
     @Inject
-    SharedDiagram selectedDiagram;
+    SelectedState selectedState;
 
     @Inject
     odb2AT odb2at;
@@ -50,6 +57,7 @@ public class AtPresenter implements Initializable {
 //    private ArrayList<CheckBox> checkBoxes = new ArrayList<>();
     ObservableList<FxAT> obsListAT = FXCollections.<FxAT>observableArrayList();
     ObservableList<CheckBox> checkBoxList = FXCollections.<CheckBox>observableArrayList();
+    private List<ToggleButton> toggleButtonList = new ArrayList<>();
 
 //    @Inject
 //    MainscenePresenter mainscene;
@@ -75,40 +83,76 @@ public class AtPresenter implements Initializable {
 
     private void updateATCheckBoxes() {
         obsListAT.clear();
-        obsListAT = odb2at.queryAT(obsListAT, selectedDiagram.isSelectedDiagram());
+        obsListAT = odb2at.queryAT(obsListAT, selectedState.isSelectedDiagram());
         //erste alte checkboxen entfernen
         checkBoxList.clear();
-        listATVBox.getChildren().clear();
+//        listATVBox.getChildren().clear();
+        atGridPane.getChildren().clear();
         //immer alle checkboxen geimeinsam hinzufügen
         for (FxAT at : obsListAT) {
             CheckBox cb = new CheckBox(at.getName());
+            cb.setId(at.getName());
             cb.setSelected(at.getSelected());
-            this.checkBoxList.add(cb);
+//            checkBoxList.add(cb);
+            atGridPane.add(cb, 0, obsListAT.indexOf(at));
             //addlistener
-            cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue ov,Boolean oldVal, Boolean newVal) {
-                        System.out.println("CHECKBOX: " + newVal.toString());
-                        System.out.println(cb.getText());
-                        odb2at.saveSelectedAT(selectedDiagram.isSelectedDiagram(), cb.getText(), newVal);
+//                        cb.selectedProperty().addListener((ObservableValue ov, Boolean oldVal, Boolean newVal) -> {
+            cb.selectedProperty().addListener((ov, oldVal, newVal) -> {
+                System.out.println("CHECKBOX: " + newVal.toString());
+                System.out.println(cb.getText());
+                odb2at.saveSelectedAT(selectedState.isSelectedDiagram(), cb.getText(), newVal);
+                updateATCheckBoxes();
+                //selected State zurücksetzen falls der ausgeschaltete checkox gerade aktiv geschaltete ist
+                if (selectedState.isSelectedAt() != null) {
+                    if (selectedState.isSelectedAt().equals(cb.getId())) {
+                        selectedState.setSelectedAt(null);
+                        System.out.println("Selected AT State: " + selectedState.isSelectedAt());
+                    }
                 }
             });
-            //add buttons to aktivate
-        }
-        listATVBox.getChildren().addAll(checkBoxList);
+            //ToggleButton
+            ToggleButton tb = new ToggleButton("inactivate");
+            //zu einer List hinzufügen um später für activateToggleButton() zu benutzen
+            toggleButtonList.add(tb);
+            atGridPane.add(tb, 1, obsListAT.indexOf(at));
+            tb.setId(at.getName());
+            tb.setDisable(!cb.isSelected());
+            tb.setOnAction(e -> activateToggleButton(tb.getId()));
 
+        }
+//        listATVBox.getChildren().addAll(checkBoxList);
 //        add and remove listener in loop here
     }
 
-    private void change() {
+    void activateToggleButton(String toggleButtonId) {
+        System.out.println("ToggleButton");
+        //erst alle auf fals unselected setzen
 
+        for (ToggleButton toggleButton : toggleButtonList) {
+            {
+                if (!toggleButton.getId().equals(toggleButtonId)) {
+                    toggleButton.setSelected(false);
+                    toggleButton.setText("inactive");
+                } else {
+                    if (true) {
+                        //dann den einen Button auf selected(true) setzen
+                        toggleButton.setSelected(true);
+                        toggleButton.setText("active");
+                        //save selceted AT in shared State
+                        selectedState.setSelectedAt(toggleButtonId);
+                    }
+                }
+            }
+        }
+        System.out.println("Selected AT State: " + selectedState.isSelectedAt());
     }
 
     @FXML
-    void createNewAT(ActionEvent event) {
-        System.out.println(selectedDiagram.isSelectedDiagram());
+    void createNewAT(ActionEvent event
+    ) {
+        System.out.println(selectedState.isSelectedDiagram());
         System.out.println(newATTextField.getText());
-        odb2at.addATtoDB(newATTextField.getText(), selectedDiagram.isSelectedDiagram());
+        odb2at.addATtoDB(newATTextField.getText(), selectedState.isSelectedDiagram());
         newATTextField.clear();
         updateATCheckBoxes();
     }

@@ -12,7 +12,9 @@ import javafx.beans.property.StringProperty;
  *
  * @author gu35nxt
  */
-public class SharedDiagram {
+public class SelectedState {
+
+    //==============================Diagram=====================================
     private final StringProperty selectedDiagram = new SimpleStringProperty();
 
     public StringProperty selectedDiagramProperty() {
@@ -26,4 +28,22 @@ public class SharedDiagram {
     public final void setSelectedDiagram(String selectedDiagram) {
         selectedDiagramProperty().set(selectedDiagram);
     }
+    //==========================================================================
+
+    //==============================AT==========================================
+    private final StringProperty selectedAt = new SimpleStringProperty();
+
+    public StringProperty selectedAtProperty() {
+        return selectedAt;
+    }
+
+    public final String isSelectedAt() {
+        return selectedAtProperty().get();
+    }
+
+    public final void setSelectedAt(String selectedAt) {
+        selectedAtProperty().set(selectedAt);
+    }
+    //==========================================================================
+
 }
