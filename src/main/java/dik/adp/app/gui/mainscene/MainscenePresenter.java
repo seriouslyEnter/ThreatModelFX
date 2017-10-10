@@ -21,6 +21,8 @@ package dik.adp.app.gui.mainscene;
  */
 import dik.adp.app.gui.at.AtPresenter;
 import dik.adp.app.gui.at.AtView;
+import dik.adp.app.gui.ba.BaPresenter;
+import dik.adp.app.gui.ba.BaView;
 import dik.adp.app.gui.breadcrumbbar.BreadcrumbbarPresenter;
 import dik.adp.app.gui.breadcrumbbar.BreadcrumbbarView;
 import dik.adp.app.gui.dfd.DfdPresenter;
@@ -56,7 +58,7 @@ public class MainscenePresenter implements Initializable {
     private AnchorPane mainAnchorPane; //This is the main View
     @FXML
     AnchorPane navigationAnchorPane;
-    
+
     private MenuePresenter menuePresenter;
     private MenueView menueView;
     private BreadcrumbbarPresenter bcrumbPresenter;
@@ -65,7 +67,9 @@ public class MainscenePresenter implements Initializable {
     private DfdView dfdView;
     private AtPresenter atPresenter;
     private AtView atView;
-    
+    private BaPresenter baPresenter;
+    private BaView baView;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -89,7 +93,7 @@ public class MainscenePresenter implements Initializable {
         this.dfdView = new DfdView();
         this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
         this.mainAnchorPane.getChildren().add(this.dfdView.getView());
-        
+
         this.viewState.mainShowingProperty().addListener((obs, wasShowing, isMainShowing) -> {
             //first turn all off
             this.mainAnchorPane.getChildren().clear();
@@ -101,7 +105,7 @@ public class MainscenePresenter implements Initializable {
             final String raNavButtonID = "raNavButtonID";
             final String kkNavButtonID = "kkNavButtonID";
             final String sumNavButtonID = "sumNavButtonID";
-            
+
             if (isMainShowing.equals(dfdNavButtonID)) {
 //                this.dfdView = new DfdView();
                 this.dfdPresenter = (DfdPresenter) this.dfdView.getPresenter();
@@ -112,9 +116,12 @@ public class MainscenePresenter implements Initializable {
                 this.atPresenter = (AtPresenter) this.atView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.atView.getView());
             }
-//            if (isMainShowing.equals(baNavButtonID)) {
+            if (isMainShowing.equals(baNavButtonID)) {
+                this.baView = new BaView();
+                this.baPresenter = (BaPresenter) this.baView.getPresenter();
+                this.mainAnchorPane.getChildren().add(this.baView.getView());
 //                this.mainAnchorPane.getChildren().add(this.baView.getView());
-//            }
+            }
 //            if (isMainShowing.equals(raNavButtonID)) {
 //                this.mainAnchorPane.getChildren().add(this.raView.getView());
 //            }
