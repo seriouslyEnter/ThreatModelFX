@@ -1,14 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.ba.BaPresenter">
-    <stylesheets> <!-- TODO check the tags 'styleClass' and 'stylesheets' same result? -->
-        <URL value="@ba.css" />
-    </stylesheets>
+<HBox fx:id="baHBox" alignment="CENTER" fillHeight="false" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.ba.BaPresenter">
    <children>
-      <Button layoutX="35.0" layoutY="52.0" mnemonicParsing="false" text="Prozesse" />
+      <VBox alignment="CENTER" spacing="10.0">
+         <children>
+            <ToggleButton fx:id="processToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Prozesse">
+               <toggleGroup>
+                  <ToggleGroup fx:id="baToggleGroup" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="komkanToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Kommunikationskanäle" toggleGroup="$baToggleGroup" />
+            <ToggleButton fx:id="speicherToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Speicher" toggleGroup="$baToggleGroup" />
+            <ToggleButton fx:id="datenToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Daten" toggleGroup="$baToggleGroup" />
+         </children>
+      </VBox>
+      <GridPane fx:id="baGridPane" hgap="10.0" vgap="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints fillHeight="false" vgrow="SOMETIMES" />
+          <RowConstraints />
+        </rowConstraints>
+         <children>
+            <Label text="S" GridPane.columnIndex="1">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="110.0" layoutY="51.0" text="T" GridPane.columnIndex="2">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="210.0" layoutY="51.0" text="I" GridPane.columnIndex="4">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="210.0" layoutY="51.0" text="R" GridPane.columnIndex="3">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="266.0" layoutY="51.0" text="D" GridPane.columnIndex="5">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+            <Label layoutX="277.0" layoutY="51.0" text="E" GridPane.columnIndex="6">
+               <font>
+                  <Font name="System Bold" size="36.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
    </children>
-</AnchorPane>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</HBox>
