@@ -14,15 +14,20 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import dik.adp.app.orientdb.Odb2Helper;
 import java.util.Collections;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javax.inject.Inject;
 
 /**
  *
  * @author gu35nxt
  */
 public class odb2DAO {
+    
+    @Inject
+    Odb2Helper odb2Helper;
 
     public ObservableList<DfdDiagram> queryDfdDiagram(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
         // AT THE BEGINNING
@@ -87,7 +92,7 @@ public class odb2DAO {
                             "SELECT FROM DfdElement WHERE " + "diagram = '" + selectedDiagram.getName() + "'"
                     )).execute()) {
                 System.out.println("Key: " + v + " " + v.getProperty("key"));
-                FxDfdElement vFx = vertexToFxDfdElement(v);
+                FxDfdElement vFx = odb2Helper.vertexToFxDfdElement(v);
                 listDfdElemente.add(vFx);
             }
         } finally {
@@ -96,15 +101,6 @@ public class odb2DAO {
         //sortiere Ergebnis nach name Stichowort "Comparator"
         Collections.sort(listDfdElemente, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
         return listDfdElemente;
-    }
-
-    private FxDfdElement vertexToFxDfdElement(Vertex v) {
-        FxDfdElement vFx = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"), "");
-        //den Elementen die Trustboundary hinzufügen
-        for (Vertex b : (Iterable<Vertex>) v.getVertices(Direction.OUT, "inBoundary")) {
-            vFx.setBoundary(b.getProperty("key"));
-        }
-        return vFx;
     }
 
     public void addNewDfdElementToDb(FxDfdElement newDfdElement) {
@@ -205,7 +201,6 @@ public class odb2DAO {
 //            graph.shutdown();
 //        }
 //    }
-
 //        public void addDFlowToDB(FxDFlow newDFlow) {
 //        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
 //        OrientGraph graph = factory.getTx();
@@ -242,7 +237,7 @@ public class odb2DAO {
                             + "type='DFlow'"
                     )).execute()) {
                 System.out.println("Key: " + v + " " + v.getProperty("key"));
-                FxDFlow eE = vertexToFxDFlow(v);
+                FxDFlow eE = odb2Helper.vertexToFxDFlow(v);
                 listFxDFlow.add(eE);
             }
         } finally {
@@ -272,17 +267,6 @@ public class odb2DAO {
 //        Collections.sort(listFxDFlow, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
 //        return listFxDFlow;
 //    }
-    private FxDFlow vertexToFxDFlow(Vertex v) throws IllegalArgumentException {
-        FxDFlow newFxDFlow = new FxDFlow(v.getProperty("key"), v.getProperty("name"), v.getProperty("diagram"), null, null);
-        for (Vertex from : (Iterable<Vertex>) v.getVertices(Direction.IN, "dFlow")) {
-            newFxDFlow.setFrom(from.getProperty("key"));
-        }
-        for (Vertex to : (Iterable<Vertex>) v.getVertices(Direction.OUT, "dFlow")) {
-            newFxDFlow.setTo(to.getProperty("key"));
-        }
-        return newFxDFlow;
-    }
-
     //only deletes the Edges keeps DfdElement(Dflow)
     public void deleteDFlow(FxDFlow selectedDFlow) {
         OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
@@ -415,4 +399,23 @@ public class odb2DAO {
         }
     }
 
+//    private FxDfdElement vertexToFxDfdElement(Vertex v) {
+//        FxDfdElement vFx = new FxDfdElement(v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"), "");
+//        //den Elementen die Trustboundary hinzufügen
+//        for (Vertex b : (Iterable<Vertex>) v.getVertices(Direction.OUT, "inBoundary")) {
+//            vFx.setBoundary(b.getProperty("key"));
+//        }
+//        return vFx;
+//    }
+//
+//    private FxDFlow vertexToFxDFlow(Vertex v) throws IllegalArgumentException {
+//        FxDFlow newFxDFlow = new FxDFlow(v.getProperty("key"), v.getProperty("name"), v.getProperty("diagram"), null, null);
+//        for (Vertex from : (Iterable<Vertex>) v.getVertices(Direction.IN, "dFlow")) {
+//            newFxDFlow.setFrom(from.getProperty("key"));
+//        }
+//        for (Vertex to : (Iterable<Vertex>) v.getVertices(Direction.OUT, "dFlow")) {
+//            newFxDFlow.setTo(to.getProperty("key"));
+//        }
+//        return newFxDFlow;
+//    }
 }

@@ -20,9 +20,9 @@
                   <ToggleGroup fx:id="baToggleGroup" />
                </toggleGroup>
             </ToggleButton>
-            <ToggleButton fx:id="komkanToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Kommunikationskanäle" toggleGroup="$baToggleGroup" />
             <ToggleButton fx:id="speicherToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Speicher" toggleGroup="$baToggleGroup" />
-            <ToggleButton fx:id="datenToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Daten" toggleGroup="$baToggleGroup" />
+            <ToggleButton fx:id="datenToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Daten(-flüsse)" toggleGroup="$baToggleGroup" />
+            <ToggleButton fx:id="komkanToggleButton" mnemonicParsing="false" onAction="#pressToggleButton" prefWidth="150.0" text="Kommunikationskanäle" toggleGroup="$baToggleGroup" />
          </children>
       </VBox>
       <GridPane fx:id="baGridPane" hgap="10.0" vgap="10.0">

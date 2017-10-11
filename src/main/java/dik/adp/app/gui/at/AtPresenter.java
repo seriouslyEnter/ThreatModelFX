@@ -10,11 +10,8 @@ import dik.adp.app.orientdb.odb2AT;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,10 +46,10 @@ public class AtPresenter implements Initializable {
     private TextField newATTextField;
 
     @Inject
-    SelectedState selectedState;
+    private SelectedState selectedState;
 
     @Inject
-    odb2AT odb2at;
+    private odb2AT odb2at;
 
 //    private ArrayList<CheckBox> checkBoxes = new ArrayList<>();
     ObservableList<FxAT> obsListAT = FXCollections.<FxAT>observableArrayList();
@@ -111,12 +108,15 @@ public class AtPresenter implements Initializable {
                 }
             });
             //ToggleButton
-            ToggleButton tb = new ToggleButton("inactivate");
+            ToggleButton tb = new ToggleButton("inactive");
             //zu einer List hinzufügen um später für activateToggleButton() zu benutzen
             toggleButtonList.add(tb);
             atGridPane.add(tb, 1, obsListAT.indexOf(at));
             tb.setId(at.getName());
             tb.setDisable(!cb.isSelected());
+            if (selectedState.isSelectedAt() != null && selectedState.isSelectedAt().equals(tb.getId())){
+                activateToggleButton(tb.getId());
+            }
             tb.setOnAction(e -> activateToggleButton(tb.getId()));
 
         }

@@ -207,7 +207,7 @@ public class DfdPresenter implements Initializable {
         
         //-----------------------------setup for type Combobox------------------
         ObservableList<String> typeList = FXCollections.<String>observableArrayList();
-        typeList.addAll("Process", "Memory", "DFlow", "Boundary");
+        typeList.addAll("Process", "Memory", "DFlow", "Boundary", "Kommunikationskanal");
         typeDfdElementComboBox.setItems(typeList);
         //----------------------------------------------------------------------
     }
