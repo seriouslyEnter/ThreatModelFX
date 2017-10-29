@@ -14,7 +14,7 @@ import java.util.Objects;
 public class FxAT {
 
     private String name;
-    private Boolean selected;
+    private Boolean selected; //only used for 
     private DfdDiagram diagram;
 
     public FxAT(String name, Boolean selected, String diagram) {
@@ -22,7 +22,6 @@ public class FxAT {
         this.selected = selected;
 //        this.diagram = diagram;
         this.diagram = new DfdDiagram(diagram);
-
     }
 
     public String getName() {

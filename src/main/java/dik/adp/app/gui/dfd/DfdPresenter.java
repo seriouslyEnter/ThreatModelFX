@@ -6,7 +6,6 @@ import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.FxDFlow;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -152,7 +151,7 @@ public class DfdPresenter implements Initializable {
             updateDFlowTable();
             updateTrustBoundaryTable();
             //speicher in shared diagram
-            sharedDiagram.setSelectedDiagram(this.dfdComboBox.getSelectionModel().getSelectedItem().toString());         
+            sharedDiagram.setSelectedDiagram(this.dfdComboBox.getSelectionModel().getSelectedItem().toString());
         });
     }
 
@@ -204,7 +203,7 @@ public class DfdPresenter implements Initializable {
             System.out.println("Row selection has changed");
         });
         //----------------------------------------------------------------------
-        
+
         //-----------------------------setup for type Combobox------------------
         ObservableList<String> typeList = FXCollections.<String>observableArrayList();
         typeList.addAll("Process", "Memory", "DFlow", "Boundary", "Kommunikationskanal");
@@ -239,7 +238,7 @@ public class DfdPresenter implements Initializable {
             //updates Textfields with selected Dfd Element
             keyDfdElementTextField.setText(this.selectedDfdElement.getKey());
 //            typeDfdElementTextField.setText(this.selectedDfdElement.getType());
-typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getType());
+            typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getType());
             nameDfdElementTextField.setText(this.selectedDfdElement.getName());
         } else {
             keyDfdElementTextField.clear();
@@ -261,7 +260,7 @@ typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getTyp
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
         FxDfdElement newDfdElement = new FxDfdElement(
                 keyDfdElementTextField.getText(),
-//                typeDfdElementTextField.getText(),
+                //                typeDfdElementTextField.getText(),
                 typeDfdElementComboBox.getSelectionModel().getSelectedItem().toString(),
                 nameDfdElementTextField.getText(),
                 selectedDfdDiagram.getName(),
@@ -289,7 +288,7 @@ typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getTyp
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
         FxDfdElement editedDfdElement = new FxDfdElement(
                 keyDfdElementTextField.getText(),
-//                typeDfdElementTextField.getText(),
+                //                typeDfdElementTextField.getText(),
                 typeDfdElementComboBox.getSelectionModel().getSelectedItem().toString(),
                 nameDfdElementTextField.getText(),
                 selectedDfdDiagram.getName(),
@@ -377,7 +376,6 @@ typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getTyp
 //        clearDFlowTextFields();
 //        updateDFlowTable();
 //    }
-
     private void clearDFlowTextFields() {
         keyDFlowTextField.clear();
         nameDFlowTextField.clear();
@@ -445,19 +443,16 @@ typeDfdElementComboBox.getSelectionModel().select(this.selectedDfdElement.getTyp
             int row = e.getTablePosition().getRow();
 //            String boundary = e.getRowValue();
             String boundary = e.getNewValue();
-            System.out.println("edit "+ boundary);
+            System.out.println("edit " + boundary);
             FxDfdElement elementWithNewBoundary = e.getRowValue();
             elementWithNewBoundary.setBoundary(boundary);
 //            e.getRowValue().setBoundary(boundary);
-            System.out.println("edit "+ e.getRowValue().toString());
-            
+            System.out.println("edit " + e.getRowValue().toString());
+
             odb.updateBoundary(elementWithNewBoundary);
-            
+
             updateTrustBoundaryTable();
 
-
-            
-            
 //System.out.println("Gender changed for " +
 //person.getFirstName() + " " + person.getLastName() +
 //" at row " + (row + 1) + " to " + e.getNewValue());

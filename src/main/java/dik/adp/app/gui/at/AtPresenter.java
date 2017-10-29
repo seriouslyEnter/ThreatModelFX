@@ -71,10 +71,12 @@ public class AtPresenter implements Initializable {
 //        AnchorPane.setBottomAnchor(atVBox, 0.0);
 
         setupATCheckBoxes();
+        // TODO: setup Button to show the active one
     }
 
     private void setupATCheckBoxes() {
         updateATCheckBoxes();
+        // TODO: seperate setup and update
 
     }
 
@@ -100,10 +102,10 @@ public class AtPresenter implements Initializable {
                 odb2at.saveSelectedAT(selectedState.isSelectedDiagram(), cb.getText(), newVal);
                 updateATCheckBoxes();
                 //selected State zurücksetzen falls der ausgeschaltete checkox gerade aktiv geschaltete ist
-                if (selectedState.isSelectedAt() != null) {
-                    if (selectedState.isSelectedAt().equals(cb.getId())) {
+                if (selectedState.getSelectedAt() != null) {
+                    if (selectedState.getSelectedAt().getName().equals(cb.getId())) {
                         selectedState.setSelectedAt(null);
-                        System.out.println("Selected AT State: " + selectedState.isSelectedAt());
+                        System.out.println("Selected AT State: " + selectedState.getSelectedAt());
                     }
                 }
             });
@@ -114,7 +116,7 @@ public class AtPresenter implements Initializable {
             atGridPane.add(tb, 1, obsListAT.indexOf(at));
             tb.setId(at.getName());
             tb.setDisable(!cb.isSelected());
-            if (selectedState.isSelectedAt() != null && selectedState.isSelectedAt().equals(tb.getId())){
+            if (selectedState.getSelectedAt() != null && selectedState.getSelectedAt().getName().equals(tb.getId())) {
                 activateToggleButton(tb.getId());
             }
             tb.setOnAction(e -> activateToggleButton(tb.getId()));
@@ -134,22 +136,20 @@ public class AtPresenter implements Initializable {
                     toggleButton.setSelected(false);
                     toggleButton.setText("inactive");
                 } else {
-                    if (true) {
-                        //dann den einen Button auf selected(true) setzen
-                        toggleButton.setSelected(true);
-                        toggleButton.setText("active");
-                        //save selceted AT in shared State
-                        selectedState.setSelectedAt(toggleButtonId);
-                    }
+                    //dann den einen Button auf selected(true) setzen
+                    toggleButton.setSelected(true);
+                    toggleButton.setText("active");
+                    //save selceted AT in shared State
+                    FxAT newAt = new FxAT(toggleButtonId, true, selectedState.isSelectedDiagram());
+                    selectedState.setSelectedAt(newAt);
                 }
             }
         }
-        System.out.println("Selected AT State: " + selectedState.isSelectedAt());
+        System.out.println("Selected AT State: " + selectedState.getSelectedAt());
     }
 
     @FXML
-    void createNewAT(ActionEvent event
-    ) {
+    void createNewAT(ActionEvent event) {
         System.out.println(selectedState.isSelectedDiagram());
         System.out.println(newATTextField.getText());
         odb2at.addATtoDB(newATTextField.getText(), selectedState.isSelectedDiagram());

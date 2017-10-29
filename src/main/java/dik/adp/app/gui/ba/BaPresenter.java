@@ -7,14 +7,21 @@ package dik.adp.app.gui.ba;
 
 import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Ba;
-import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxStride;
+import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -47,7 +54,9 @@ public class BaPresenter implements Initializable {
     @Inject
     SelectedState selectedState;
 
-    String[] stride = {"S", "T", "R", "I", "N", "G"};
+    String[] stride = {"S", "T", "R", "I", "D", "E", "EMPTY"};
+
+    ObservableList<CheckBox> cbList = FXCollections.<CheckBox>observableArrayList();
 
     private ResourceBundle resources = null;
 
@@ -70,7 +79,7 @@ public class BaPresenter implements Initializable {
     @FXML
     void pressToggleButton(ActionEvent event) {
         baGridPane.getChildren().clear();
-        List<FxDfdElement> atList = new ArrayList<>();
+        List<FxStride> elements = new ArrayList<>();
         ToggleButton selectedTB = (ToggleButton) baToggleGroup.getSelectedToggle();
         String type = null;
         switch (selectedTB.getId()) {
@@ -93,23 +102,54 @@ public class BaPresenter implements Initializable {
             Label stringLabel = new Label(stride[i]);
             stringLabel.setFont(Font.font("System", FontWeight.BOLD, 36));
             baGridPane.add(stringLabel, i + 1, 0);
+
         }
         //adding Query
         if (selectedTB != null) {
             System.out.println("ToggleButton: " + selectedTB.getId());
-            atList = odb.queryProcesses(atList, selectedState.isSelectedDiagram(), type);
+            elements = odb.queryProcesses(
+                    selectedState.getSelectedAt(),
+                    selectedState.isSelectedDiagram(),
+                    type
+            );
             //Rows
-            for (int i = 0; i < atList.size(); i++) {
-                Label lb = new Label(atList.get(i).getKey() + ": " + atList.get(i).getName());
-//                baGridPane.getChildren().remove(0, i + 1);
+            for (int i = 0; i < elements.size(); i++) {
+                Label lb = new Label(
+                        elements.get(i).getDfdElement().getKey()
+                        + ": "
+                        + elements.get(i).getDfdElement().getName()
+                );
                 baGridPane.add(lb, 0, i + 1);
+
                 //Columns
-                for (int j = 1; j < 7; j++) {
-                    CheckBox cb = new CheckBox();
-//                    baGridPane.getChildren().remove(j, i + 1);
-                    baGridPane.add(cb, j, i + 1);
+                int j = 0;
+                for (Stride stride : Stride.values()) {
+                    j++;
+                    elements.get(i).getCbs().get(stride).setOnAction(this::pressCheckbox);
+                    baGridPane.add(elements.get(i).getCbs().get(stride), j, i + 1);
+                    baGridPane.setHalignment(elements.get(i).getCbs().get(stride), HPos.CENTER);
+
+                    //add Listener
+//                    elements.get(i).getCbs().get(stride).selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//                        if (newValue = false) {
+//                            System.out.println("Checkbox aus");
+//                        } else if (newValue = true) {
+//                            System.out.println("Checkbox ein");
+//                        }
+//                    });
                 }
             }
         }
+
     }
+
+    void pressCheckbox(ActionEvent event) {
+        CheckBox cb = (CheckBox) event.getSource();
+        if (cb.isSelected() == false) {
+            System.out.println("Checkbox aus");
+        } else if (cb.isSelected() == true) {
+            System.out.println("Checkbox ein");
+        }
+    }
+
 }
