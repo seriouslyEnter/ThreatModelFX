@@ -24,22 +24,14 @@ public class NavigationPresenter implements Initializable {
 
     @FXML
     private ToggleButton dfdNavButton;
-
     @FXML
     private ToggleButton atNavButton;
-
     @FXML
     private ToggleButton baNavButton;
-
     @FXML
     private ToggleButton raNavButton;
-
-    @FXML
-    private ToggleButton kkNavButton;
-
     @FXML
     private ToggleButton sumNavButton;
-
     @FXML
     private ToggleGroup navToggleGroup;
 

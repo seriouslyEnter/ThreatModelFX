@@ -31,7 +31,7 @@ public class Odb2Ba {
         return graph;
     }
 
-    public List<FxStride> queryProcesses(FxAT at, String selectedDiagram, String type) {
+    public List<FxStride> queryDfdElements(FxAT at, String selectedDiagram, String type) {
         List<FxStride> result = new ArrayList<>();
         try {
             for (Vertex v : (Iterable<Vertex>) odbGraph().command(new OCommandSQL(

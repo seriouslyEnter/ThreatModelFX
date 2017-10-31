@@ -36,15 +36,13 @@ public class BreadcrumbbarPresenter implements Initializable {
         TreeItem<String> atTI = new TreeItem<>("AT");
         TreeItem<String> baTI = new TreeItem<>("BA");
         TreeItem<String> raTI = new TreeItem<>("RA");
-        TreeItem<String> kkTI = new TreeItem<>("KK");
 //        TreeItem<String> sumTI = new TreeItem<>("adgfdg"); //Unicode Character 'N-ARY SUMMATION' (U+2211), Summenzeichen
         TreeItem<String> sumTI = new TreeItem<>("\u2211"); //Unicode Character 'N-ARY SUMMATION' (U+2211), Summenzeichen
 
         dfdTI.getChildren().add(atTI);
         atTI.getChildren().add(baTI);
         baTI.getChildren().add(raTI);
-        raTI.getChildren().add(kkTI);
-        kkTI.getChildren().add(sumTI);
+        raTI.getChildren().add(sumTI);
 
         //startup on DFD
         breadCrumbBar.setSelectedCrumb(dfdTI);
@@ -55,7 +53,6 @@ public class BreadcrumbbarPresenter implements Initializable {
             final String atNavButtonID = "atNavButtonID";
             final String baNavButtonID = "baNavButtonID";
             final String raNavButtonID = "raNavButtonID";
-            final String kkNavButtonID = "kkNavButtonID";
             final String sumNavButtonID = "sumNavButtonID";
             
             if (isMainShowing.endsWith(dfdNavButtonID)){
@@ -66,8 +63,6 @@ public class BreadcrumbbarPresenter implements Initializable {
                 breadCrumbBar.setSelectedCrumb(baTI);
             } else if (isMainShowing.endsWith(raNavButtonID)){
                 breadCrumbBar.setSelectedCrumb(raTI);
-            } else if (isMainShowing.endsWith(kkNavButtonID)){
-                breadCrumbBar.setSelectedCrumb(kkTI);
             } else if (isMainShowing.endsWith(sumNavButtonID)){
                 breadCrumbBar.setSelectedCrumb(sumTI);
             }  

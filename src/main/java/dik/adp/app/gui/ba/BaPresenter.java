@@ -41,16 +41,13 @@ public class BaPresenter implements Initializable {
 
     @FXML
     HBox baHBox;
-
     @FXML
     ToggleGroup baToggleGroup;
-
     @FXML
     GridPane baGridPane;
 
     @Inject
     Odb2Ba odb;
-
     @Inject
     SelectedState selectedState;
 
@@ -73,7 +70,7 @@ public class BaPresenter implements Initializable {
     }
 
     private void setupToggleButtons() {
-
+        // setup alles in fxml
     }
 
     @FXML
@@ -81,19 +78,19 @@ public class BaPresenter implements Initializable {
         baGridPane.getChildren().clear();
         List<FxStride> elements = new ArrayList<>();
         ToggleButton selectedTB = (ToggleButton) baToggleGroup.getSelectedToggle();
-        String type = null;
+        String dfdElementType = null;
         switch (selectedTB.getId()) {
             case "processToggleButton":
-                type = "Process";
+                dfdElementType = "Process";
                 break;
             case "speicherToggleButton":
-                type = "Memory";
+                dfdElementType = "Memory";
                 break;
             case "datenToggleButton":
-                type = "DFlow";
+                dfdElementType = "DFlow";
                 break;
             case "komkanToggleButton":
-                type = "Kommunikationskanal";
+                dfdElementType = "Kommunikationskanal";
                 break;
         }
 
@@ -102,15 +99,14 @@ public class BaPresenter implements Initializable {
             Label stringLabel = new Label(stride[i]);
             stringLabel.setFont(Font.font("System", FontWeight.BOLD, 36));
             baGridPane.add(stringLabel, i + 1, 0);
-
         }
+
         //adding Query
         if (selectedTB != null) {
             System.out.println("ToggleButton: " + selectedTB.getId());
-            elements = odb.queryProcesses(
-                    selectedState.getSelectedAt(),
+            elements = odb.queryDfdElements(selectedState.getSelectedAt(),
                     selectedState.isSelectedDiagram(),
-                    type
+                    dfdElementType
             );
             //Rows
             for (int i = 0; i < elements.size(); i++) {
