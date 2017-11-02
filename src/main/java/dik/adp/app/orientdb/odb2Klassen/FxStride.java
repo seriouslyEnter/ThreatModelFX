@@ -6,8 +6,6 @@
 package dik.adp.app.orientdb.odb2Klassen;
 
 import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
 import javafx.scene.control.CheckBox;
 
@@ -19,7 +17,7 @@ public class FxStride {
 
     private FxDfdElement dfdElement;
     private FxAT at;
-    private Stride ba;
+    private Stride ba; //use when is selected/activated
     private CheckBox cb;
     private EnumMap<Stride, CheckBox> cbs = new EnumMap<>(Stride.class);
 

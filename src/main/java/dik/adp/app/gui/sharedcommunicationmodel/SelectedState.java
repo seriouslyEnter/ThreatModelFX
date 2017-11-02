@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dik.adp.app.gui.sharedcommunicationmodel;
 
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
@@ -63,9 +58,5 @@ public class SelectedState {
     public ObjectProperty<FxAT> selectedAtProperty() {
         return selectedAt;
     }
-    
 
-    
-    
-    
 }

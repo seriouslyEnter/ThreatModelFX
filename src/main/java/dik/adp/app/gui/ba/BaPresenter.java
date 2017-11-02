@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package dik.adp.app.gui.ba;
 
 import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
@@ -14,14 +9,11 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.Set;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -33,30 +25,26 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javax.inject.Inject;
 
-/**
- *
- * @author gu35nxt
- */
 public class BaPresenter implements Initializable {
-
+    
     @FXML
     HBox baHBox;
     @FXML
     ToggleGroup baToggleGroup;
     @FXML
     GridPane baGridPane;
-
+    
     @Inject
     Odb2Ba odb;
     @Inject
     SelectedState selectedState;
-
-    String[] stride = {"S", "T", "R", "I", "D", "E", "EMPTY"};
-
-    ObservableList<CheckBox> cbList = FXCollections.<CheckBox>observableArrayList();
-
+    
+    private String[] stride = {"S", "T", "R", "I", "D", "E", "EMPTY"};
+//    private ObservableList<CheckBox> cbList = FXCollections.<CheckBox>observableArrayList();
+    private List<FxStride> elements = new ArrayList<>();
+    
     private ResourceBundle resources = null;
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -65,18 +53,17 @@ public class BaPresenter implements Initializable {
         AnchorPane.setRightAnchor(baHBox, 0.0);
         AnchorPane.setTopAnchor(baHBox, 0.0);
         AnchorPane.setBottomAnchor(baHBox, 0.0);
-
+        
         this.resources = resources;
     }
-
+    
     private void setupToggleButtons() {
         // setup alles in fxml
     }
-
+    
     @FXML
     void pressToggleButton(ActionEvent event) {
         baGridPane.getChildren().clear();
-        List<FxStride> elements = new ArrayList<>();
         ToggleButton selectedTB = (ToggleButton) baToggleGroup.getSelectedToggle();
         String dfdElementType = null;
         switch (selectedTB.getId()) {
@@ -101,6 +88,10 @@ public class BaPresenter implements Initializable {
             baGridPane.add(stringLabel, i + 1, 0);
         }
 
+        setupCheckBoxes(selectedTB, dfdElementType);
+    }
+
+    private void setupCheckBoxes(ToggleButton selectedTB, String dfdElementType) {
         //adding Query
         if (selectedTB != null) {
             System.out.println("ToggleButton: " + selectedTB.getId());
@@ -112,18 +103,18 @@ public class BaPresenter implements Initializable {
             for (int i = 0; i < elements.size(); i++) {
                 Label lb = new Label(
                         elements.get(i).getDfdElement().getKey()
-                        + ": "
-                        + elements.get(i).getDfdElement().getName()
+                                + ": "
+                                + elements.get(i).getDfdElement().getName()
                 );
                 baGridPane.add(lb, 0, i + 1);
 
                 //Columns
                 int j = 0;
-                for (Stride stride : Stride.values()) {
+                for (Stride s : Stride.values()) {
                     j++;
-                    elements.get(i).getCbs().get(stride).setOnAction(this::pressCheckbox);
-                    baGridPane.add(elements.get(i).getCbs().get(stride), j, i + 1);
-                    baGridPane.setHalignment(elements.get(i).getCbs().get(stride), HPos.CENTER);
+                    elements.get(i).getCbs().get(s).setOnAction(this::pressCheckbox);
+                    baGridPane.add(elements.get(i).getCbs().get(s), j, i + 1);
+                    baGridPane.setHalignment(elements.get(i).getCbs().get(s), HPos.CENTER);
 
                     //add Listener
 //                    elements.get(i).getCbs().get(stride).selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -136,16 +127,79 @@ public class BaPresenter implements Initializable {
                 }
             }
         }
-
     }
 
+//    void pressCheckbox(ActionEvent event) {
+//        CheckBox cb = (CheckBox) event.getSource();
+//        if (cb.isSelected() == false) {
+//            System.out.println("Checkbox aus");
+//        } else if (cb.isSelected() == true) {
+//            System.out.println("Checkbox ein");
+//            findFxStrideFromCbAndSetBa(cb);
+//        }
+//        //            odb.addThreat()
+//    }
     void pressCheckbox(ActionEvent event) {
         CheckBox cb = (CheckBox) event.getSource();
-        if (cb.isSelected() == false) {
-            System.out.println("Checkbox aus");
-        } else if (cb.isSelected() == true) {
-            System.out.println("Checkbox ein");
+        FxStride foundFxStrideAndSetBa = null;
+        //für jedes element...
+        for (FxStride element : elements) {
+            //...die einzelnen STRIDE keys nach dem Object mit der CheckBox durchsuchen
+            for (Stride key : Stride.values()) {
+                if (cb.equals(element.getCbs().get(key))) {
+                    if (cb.isSelected() == true) {
+                        //die Bedrohung setzen
+                        element.setBa(key);
+                        odb.addThreatForElement(element);
+                    } else {
+                        //die Bedrohung entfernen
+                        element.setBa(key);
+                        odb.removeThreatForElement(element);
+                    }
+                    foundFxStrideAndSetBa = element;
+                    System.out.println(foundFxStrideAndSetBa.toString());
+                }
+            }
         }
+        System.out.println("fertig");
     }
 
+//    private FxStride findFxStrideFromCbAndSetBa(CheckBox cb) {
+//        FxStride foundFxStrideAndSetBa;
+//        for (FxStride element : elements) {
+////                element.getCbs().containsValue(cb);
+////                Set<Stride, CheckBox> cbs = element.getCbs();
+//            for (Stride key : Stride.values()) {
+//                if (cb.equals(element.getCbs().get(key))) {
+//                    if (cb.isSelected() == true) {
+//                        element.setBa(key);
+//                    } else {
+//                        element.setBa(null);
+//                    }
+//                    foundFxStrideAndSetBa = element;
+//                    return foundFxStrideAndSetBa;
+//                }
+//            }
+//        }
+//        System.out.println("nicht gefunden");
+//        return null;
+//    }
+//    private void findFxStrideFromCb(CheckBox cb) {
+//        FxStride foundFxStride;
+//        for (FxStride element : elements) {
+////                element.getCbs().containsValue(cb);
+////                Set<Stride, CheckBox> cbs = element.getCbs();
+//            for (EnumMap.Entry<Stride, CheckBox> e : element.getCbs().entrySet()) {
+//                if (cb.equals(e.getValue())) {
+//                    System.out.println("found");
+//                    foundFxStride = element;
+//                    
+//                    
+//                } else {
+//                    System.out.println("not");
+//                }
+//            }
+//        }
+//
+//    }
 }

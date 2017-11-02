@@ -10,14 +10,14 @@ package dik.adp.app.orientdb.odb2Klassen;
  * @author gu35nxt
  */
 public enum Stride {
-////    EMPTY,SPOOFING, TAMPERING, REPUDIATION, INFORMATION, DENIAL, ELEVATION;
-    EMPTY(""),
+
     SPOOFING("Spoofing of user identity"),
     TAMPERING("Tampering"),
     REPUDIATION("Repudiation"),
     INFORMATION("Information disclosure"),
     DENIAL("Denial of service"),
-    ELEVATION("Elevation of privilege");
+    ELEVATION("Elevation of privilege"),
+    EMPTY("");
 
     private String name;
 
@@ -29,9 +29,6 @@ public enum Stride {
         String returnThis = "";
 
         switch (stride) {
-            case EMPTY:
-                returnThis = "";
-                break;
             case SPOOFING:
                 returnThis = "Spoofing of user identity";
                 break;
@@ -49,6 +46,9 @@ public enum Stride {
                 break;
             case ELEVATION:
                 returnThis = "Elevation of privilege";
+                break;
+            case EMPTY:
+                returnThis = "";
                 break;
             default:
                 break;
