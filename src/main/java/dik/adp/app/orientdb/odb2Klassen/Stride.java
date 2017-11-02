@@ -17,7 +17,7 @@ public enum Stride {
     INFORMATION("Information disclosure"),
     DENIAL("Denial of service"),
     ELEVATION("Elevation of privilege"),
-    EMPTY("");
+    EMPTY("Empty");
 
     private String name;
 
@@ -48,7 +48,39 @@ public enum Stride {
                 returnThis = "Elevation of privilege";
                 break;
             case EMPTY:
-                returnThis = "";
+                returnThis = "Empty";
+                break;
+            default:
+                break;
+        }
+
+        return returnThis;
+    }
+    
+        public Stride fromString(String text) {
+        Stride returnThis = null;
+
+        switch (text) {
+            case "SPOOFING":
+                returnThis = Stride.SPOOFING;
+                break;
+            case "TAMPERING":
+                returnThis = Stride.TAMPERING;
+                break;
+            case "REPUDIATION":
+                returnThis = Stride.REPUDIATION;
+                break;
+            case "INFORMATION":
+                returnThis = Stride.INFORMATION;
+                break;
+            case "DENIAL":
+                returnThis = Stride.DENIAL;
+                break;
+            case "ELEVATION":
+                returnThis = Stride.ELEVATION;
+                break;
+            case "EMPTY":
+                returnThis = Stride.EMPTY;
                 break;
             default:
                 break;

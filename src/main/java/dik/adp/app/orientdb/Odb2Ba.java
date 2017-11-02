@@ -12,8 +12,10 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import dik.adp.app.orientdb.odb2Klassen.FxStride;
+import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.control.CheckBox;
 import javax.inject.Inject;
 
 /**
@@ -31,7 +33,7 @@ public class Odb2Ba {
         return factory;
     }
 
-    public List<FxStride> queryDfdElements(FxAT at, String selectedDiagram, String type) {
+    public List<FxStride> queryDfdElements(FxAT at, String selectedDiagram, String elementType) {
         OrientGraph graph = ogf().getTx();
         List<FxStride> result = new ArrayList<>();
         try {
@@ -39,9 +41,12 @@ public class Odb2Ba {
                     "SELECT "
                     + "FROM DfdElement "
                     + "WHERE diagram='" + selectedDiagram + "' "
-                    + "AND type='" + type + "'"
+                    + "AND type='" + elementType + "'"
             )).execute()) {
-                FxStride fxs = new FxStride(odb2helper.vertexToFxDfdElement(v), at, v.getProperty("threat"));
+                FxStride fxs = new FxStride(odb2helper.vertexToFxDfdElement(v), at);
+                //Hier nach BAs gucken
+                getTheBAsToDfdElement(fxs, v, at, selectedDiagram);
+
                 result.add(fxs);
             }
         } catch (Exception e) {
@@ -49,6 +54,31 @@ public class Odb2Ba {
             graph.shutdown();
         }
         return result;
+    }
+
+    public void getTheBAsToDfdElement(FxStride fxs, Vertex v, FxAT at, String selectedDiagram) {
+        OrientGraph graph = ogf().getTx();
+        try {
+            for (Vertex ba : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                    "SELECT"
+                    + " FROM"
+                    + " ("
+                    + "SELECT expand(in('targets'))"
+                    + " FROM " + v.getId()
+                    + ")"
+                    + " WHERE out('realized_by').name='" + at.getName() + "' "
+                    + "AND out('realized_by').in('hasAT').name='" + selectedDiagram + "'"
+            )).execute()) {
+                System.out.println(ba.toString());
+                for (Stride stride : Stride.values()) {
+                    if (stride.name().equals(ba.getProperty("threat"))){
+                        fxs.getCbs().get(stride).setSelected(true);
+                    }    
+                }
+            }
+        } catch (Exception e) {
+            graph.shutdown();
+        }
     }
 
     public void addThreatForElement(FxStride foundFxStrideAndSetBa) {
@@ -75,7 +105,7 @@ public class Odb2Ba {
         System.out.println(foundFxStrideAndSetBa.getBa());
         System.out.println(foundFxStrideAndSetBa.getDfdElement().getKey());
         System.out.println(foundFxStrideAndSetBa.getDfdElement().getDiagram());
-        
+
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT "

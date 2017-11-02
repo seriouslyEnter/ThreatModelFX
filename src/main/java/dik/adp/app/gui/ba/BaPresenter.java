@@ -6,10 +6,8 @@ import dik.adp.app.orientdb.odb2Klassen.FxStride;
 import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,7 +45,6 @@ public class BaPresenter implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         //Notwendig weil das für Injected fxml das nicht nicht SceneBuilder gesetzt werden kann
         AnchorPane.setLeftAnchor(baHBox, 0.0);
         AnchorPane.setRightAnchor(baHBox, 0.0);
@@ -80,14 +77,12 @@ public class BaPresenter implements Initializable {
                 dfdElementType = "Kommunikationskanal";
                 break;
         }
-
         //adding STRIDE Label
         for (int i = 0; i < stride.length; i++) {
             Label stringLabel = new Label(stride[i]);
             stringLabel.setFont(Font.font("System", FontWeight.BOLD, 36));
             baGridPane.add(stringLabel, i + 1, 0);
         }
-
         setupCheckBoxes(selectedTB, dfdElementType);
     }
 
@@ -107,7 +102,6 @@ public class BaPresenter implements Initializable {
                                 + elements.get(i).getDfdElement().getName()
                 );
                 baGridPane.add(lb, 0, i + 1);
-
                 //Columns
                 int j = 0;
                 for (Stride s : Stride.values()) {
@@ -129,16 +123,6 @@ public class BaPresenter implements Initializable {
         }
     }
 
-//    void pressCheckbox(ActionEvent event) {
-//        CheckBox cb = (CheckBox) event.getSource();
-//        if (cb.isSelected() == false) {
-//            System.out.println("Checkbox aus");
-//        } else if (cb.isSelected() == true) {
-//            System.out.println("Checkbox ein");
-//            findFxStrideFromCbAndSetBa(cb);
-//        }
-//        //            odb.addThreat()
-//    }
     void pressCheckbox(ActionEvent event) {
         CheckBox cb = (CheckBox) event.getSource();
         FxStride foundFxStrideAndSetBa = null;
@@ -163,43 +147,4 @@ public class BaPresenter implements Initializable {
         }
         System.out.println("fertig");
     }
-
-//    private FxStride findFxStrideFromCbAndSetBa(CheckBox cb) {
-//        FxStride foundFxStrideAndSetBa;
-//        for (FxStride element : elements) {
-////                element.getCbs().containsValue(cb);
-////                Set<Stride, CheckBox> cbs = element.getCbs();
-//            for (Stride key : Stride.values()) {
-//                if (cb.equals(element.getCbs().get(key))) {
-//                    if (cb.isSelected() == true) {
-//                        element.setBa(key);
-//                    } else {
-//                        element.setBa(null);
-//                    }
-//                    foundFxStrideAndSetBa = element;
-//                    return foundFxStrideAndSetBa;
-//                }
-//            }
-//        }
-//        System.out.println("nicht gefunden");
-//        return null;
-//    }
-//    private void findFxStrideFromCb(CheckBox cb) {
-//        FxStride foundFxStride;
-//        for (FxStride element : elements) {
-////                element.getCbs().containsValue(cb);
-////                Set<Stride, CheckBox> cbs = element.getCbs();
-//            for (EnumMap.Entry<Stride, CheckBox> e : element.getCbs().entrySet()) {
-//                if (cb.equals(e.getValue())) {
-//                    System.out.println("found");
-//                    foundFxStride = element;
-//                    
-//                    
-//                } else {
-//                    System.out.println("not");
-//                }
-//            }
-//        }
-//
-//    }
 }

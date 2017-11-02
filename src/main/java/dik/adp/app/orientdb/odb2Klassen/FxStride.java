@@ -33,6 +33,17 @@ public class FxStride {
         }
     }
 
+    public FxStride(FxDfdElement dfdElement, FxAT at) {
+        this.dfdElement = dfdElement;
+        this.at = at;
+        this.cb = new CheckBox();
+
+        for (Stride stride : Stride.values()) {
+            CheckBox mapCb = new CheckBox();
+            cbs.put(stride, mapCb);
+        }
+    }
+
     public FxDfdElement getDfdElement() {
         return dfdElement;
     }
