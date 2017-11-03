@@ -27,6 +27,8 @@ import dik.adp.app.gui.breadcrumbbar.BreadcrumbbarPresenter;
 import dik.adp.app.gui.breadcrumbbar.BreadcrumbbarView;
 import dik.adp.app.gui.dfd.DfdPresenter;
 import dik.adp.app.gui.dfd.DfdView;
+import dik.adp.app.gui.it.ItPresenter;
+import dik.adp.app.gui.it.ItView;
 import dik.adp.app.gui.menue.MenuePresenter;
 import dik.adp.app.gui.menue.MenueView;
 import dik.adp.app.gui.navigation.NavigationView;
@@ -69,6 +71,8 @@ public class MainscenePresenter implements Initializable {
     private AtView atView;
     private BaPresenter baPresenter;
     private BaView baView;
+    private ItPresenter itPresenter;
+    private ItView itView;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -102,8 +106,8 @@ public class MainscenePresenter implements Initializable {
             final String dfdNavButtonID = "dfdNavButtonID";
             final String atNavButtonID = "atNavButtonID";
             final String baNavButtonID = "baNavButtonID";
+            final String itNavButtonID = "itNavButtonID";
             final String raNavButtonID = "raNavButtonID";
-            final String kkNavButtonID = "kkNavButtonID";
             final String sumNavButtonID = "sumNavButtonID";
 
             if (isMainShowing.equals(dfdNavButtonID)) {
@@ -122,11 +126,11 @@ public class MainscenePresenter implements Initializable {
                 this.mainAnchorPane.getChildren().add(this.baView.getView());
 //                this.mainAnchorPane.getChildren().add(this.baView.getView());
             }
+            if (isMainShowing.equals(itNavButtonID)) {
+                this.mainAnchorPane.getChildren().add(this.itView.getView());
+            }
 //            if (isMainShowing.equals(raNavButtonID)) {
 //                this.mainAnchorPane.getChildren().add(this.raView.getView());
-//            }
-//            if (isMainShowing.equals(kkNavButtonID)) {
-//                this.mainAnchorPane.getChildren().add(this.kkView.getView());
 //            }
 //            if (isMainShowing.equals(sumNavButtonID)) {
 //                this.mainAnchorPane.getChildren().add(this.sumView.getView());

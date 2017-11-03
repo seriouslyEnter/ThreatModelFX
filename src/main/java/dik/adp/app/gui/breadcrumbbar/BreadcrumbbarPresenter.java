@@ -35,13 +35,15 @@ public class BreadcrumbbarPresenter implements Initializable {
         TreeItem<String> dfdTI = new TreeItem<>("DFD");
         TreeItem<String> atTI = new TreeItem<>("AT");
         TreeItem<String> baTI = new TreeItem<>("BA");
+        TreeItem<String> itTI = new TreeItem<>("IT");
         TreeItem<String> raTI = new TreeItem<>("RA");
 //        TreeItem<String> sumTI = new TreeItem<>("adgfdg"); //Unicode Character 'N-ARY SUMMATION' (U+2211), Summenzeichen
         TreeItem<String> sumTI = new TreeItem<>("\u2211"); //Unicode Character 'N-ARY SUMMATION' (U+2211), Summenzeichen
 
         dfdTI.getChildren().add(atTI);
         atTI.getChildren().add(baTI);
-        baTI.getChildren().add(raTI);
+        baTI.getChildren().add(itTI);
+        itTI.getChildren().add(raTI);
         raTI.getChildren().add(sumTI);
 
         //startup on DFD
@@ -52,20 +54,23 @@ public class BreadcrumbbarPresenter implements Initializable {
             final String dfdNavButtonID = "dfdNavButtonID";
             final String atNavButtonID = "atNavButtonID";
             final String baNavButtonID = "baNavButtonID";
+            final String itNavButtonID = "itNavButtonID";
             final String raNavButtonID = "raNavButtonID";
             final String sumNavButtonID = "sumNavButtonID";
-            
-            if (isMainShowing.endsWith(dfdNavButtonID)){
+
+            if (isMainShowing.endsWith(dfdNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(dfdTI);
-            } else if (isMainShowing.endsWith(atNavButtonID)){
+            } else if (isMainShowing.endsWith(atNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(atTI);
-            } else if (isMainShowing.endsWith(baNavButtonID)){
+            } else if (isMainShowing.endsWith(baNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(baTI);
-            } else if (isMainShowing.endsWith(raNavButtonID)){
+            } else if (isMainShowing.endsWith(itNavButtonID)) {
+                breadCrumbBar.setSelectedCrumb(itTI);
+            } else if (isMainShowing.endsWith(raNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(raTI);
-            } else if (isMainShowing.endsWith(sumNavButtonID)){
+            } else if (isMainShowing.endsWith(sumNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(sumTI);
-            }  
+            }
 
         });
 
