@@ -58,17 +58,30 @@ public class BreadcrumbbarPresenter implements Initializable {
             final String raNavButtonID = "raNavButtonID";
             final String sumNavButtonID = "sumNavButtonID";
 
-            if (isMainShowing.endsWith(dfdNavButtonID)) {
+//            if (isMainShowing.endsWith(dfdNavButtonID)) {
+//                breadCrumbBar.setSelectedCrumb(dfdTI);
+//            } else if (isMainShowing.endsWith(atNavButtonID)) {
+//                breadCrumbBar.setSelectedCrumb(atTI);
+//            } else if (isMainShowing.endsWith(baNavButtonID)) {
+//                breadCrumbBar.setSelectedCrumb(baTI);
+//            } else if (isMainShowing.endsWith(itNavButtonID)) {
+//                breadCrumbBar.setSelectedCrumb(itTI);
+//            } else if (isMainShowing.endsWith(raNavButtonID)) {
+//                breadCrumbBar.setSelectedCrumb(raTI);
+//            } else if (isMainShowing.endsWith(sumNavButtonID)) {
+//                breadCrumbBar.setSelectedCrumb(sumTI);
+//            }
+            if (isMainShowing.contentEquals(dfdNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(dfdTI);
-            } else if (isMainShowing.endsWith(atNavButtonID)) {
+            } else if (isMainShowing.contentEquals(atNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(atTI);
-            } else if (isMainShowing.endsWith(baNavButtonID)) {
+            } else if (isMainShowing.contentEquals(baNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(baTI);
-            } else if (isMainShowing.endsWith(itNavButtonID)) {
+            } else if (isMainShowing.contentEquals(itNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(itTI);
-            } else if (isMainShowing.endsWith(raNavButtonID)) {
+            } else if (isMainShowing.contentEquals(raNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(raTI);
-            } else if (isMainShowing.endsWith(sumNavButtonID)) {
+            } else if (isMainShowing.contentEquals(sumNavButtonID)) {
                 breadCrumbBar.setSelectedCrumb(sumTI);
             }
 

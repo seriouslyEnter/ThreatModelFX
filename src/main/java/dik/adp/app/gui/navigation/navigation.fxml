@@ -20,7 +20,7 @@
                </toggleGroup></ToggleButton>
                 <ToggleButton id="atNavButtonID" fx:id="atNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="AT" toggleGroup="$navToggleGroup" />
                 <ToggleButton id="baNavButtonID" fx:id="baNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="BA" toggleGroup="$navToggleGroup" />
-            <ToggleButton id="raNavButtonID" fx:id="itNavButton" layoutX="180.0" layoutY="15.0" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="IT" toggleGroup="$navToggleGroup" />
+            <ToggleButton id="itNavButtonID" fx:id="itNavButton" layoutX="180.0" layoutY="15.0" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="IT" toggleGroup="$navToggleGroup" />
                 <ToggleButton id="raNavButtonID" fx:id="raNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="RA" toggleGroup="$navToggleGroup" />
                 <ToggleButton id="sumNavButtonID" fx:id="sumNavButton" mnemonicParsing="false" onAction="#navButtonAction" prefWidth="50.0" text="SUM" toggleGroup="$navToggleGroup" />
             </children>

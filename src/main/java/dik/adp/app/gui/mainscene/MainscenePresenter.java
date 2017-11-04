@@ -53,13 +53,13 @@ public class MainscenePresenter implements Initializable {
 
     //Views get loaded in these Anchor Panes
     @FXML
-    AnchorPane menueAnchorPane;
+    private AnchorPane menueAnchorPane;
     @FXML
-    AnchorPane breadcrumbAnchorPane;
+    private AnchorPane breadcrumbAnchorPane;
     @FXML
     private AnchorPane mainAnchorPane; //This is the main View
     @FXML
-    AnchorPane navigationAnchorPane;
+    private AnchorPane navigationAnchorPane;
 
     private MenuePresenter menuePresenter;
     private MenueView menueView;
@@ -127,6 +127,8 @@ public class MainscenePresenter implements Initializable {
 //                this.mainAnchorPane.getChildren().add(this.baView.getView());
             }
             if (isMainShowing.equals(itNavButtonID)) {
+                this.itView = new ItView();
+                this.itPresenter = (ItPresenter) this.itView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.itView.getView());
             }
 //            if (isMainShowing.equals(raNavButtonID)) {
