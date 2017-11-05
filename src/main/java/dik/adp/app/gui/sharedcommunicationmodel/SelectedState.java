@@ -44,7 +44,7 @@ public class SelectedState {
 //    }
     //==========================================================================
 
-    //=========AT2============
+    //=========AT2==============================================================
     private ObjectProperty<FxAT> selectedAt = new SimpleObjectProperty<>();
 
     public FxAT getSelectedAt() {
@@ -59,4 +59,18 @@ public class SelectedState {
         return selectedAt;
     }
 
+    //=============================IT===========================================
+    private ObjectProperty<Integer> selectedIt = new SimpleObjectProperty<>();
+
+    public Integer getSelectedIt() {
+        return selectedIt.get();
+    }
+
+    public void setSelectedIt(Integer selectedIt) {
+        this.selectedIt.set(selectedIt);
+    }
+    
+    public ObjectProperty<Integer> selectedItProperty() {
+        return selectedIt;
+    }
 }
