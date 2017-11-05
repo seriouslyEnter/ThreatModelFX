@@ -56,11 +56,22 @@ public class ItPresenter implements Initializable {
             iterationRB.setText("Iteration: " + (i + 1));
             iterationRB.setUserData(i + 1);
             iterationRB.setOnAction(this::chooseRadioButton);
-            if ((Integer) iterationRB.getUserData() == 1 || (Integer) iterationRB.getUserData() == selectedState.getSelectedIt()) {
+//            if ((Integer) iterationRB.getUserData() == 1) {
+//                iterationRB.setSelected(true);
+//                selectedState.setSelectedIt(i + 1);
+//            } else if ((Integer) iterationRB.getUserData() == selectedState.getSelectedIt()) {
+//                
+//            }
+
+            if (selectedState.getSelectedIt() == null) {
+                selectedState.setSelectedIt(1);
+                iterationRB.setSelected(true);
+            } else if (selectedState.getSelectedIt() == (Integer) iterationRB.getUserData()) {
                 iterationRB.setSelected(true);
             }
             this.itViewVBox.getChildren().add(iterationRB);
         }
+        System.out.println("selected State for Iteration: " + selectedState.getSelectedIt());
     }
 
     @FXML
