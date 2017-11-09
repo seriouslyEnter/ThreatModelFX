@@ -38,10 +38,11 @@ public class ItPresenter implements Initializable {
         this.resources = resources;
 
         //Notwendig weil das für Injected fxml das nicht nicht SceneBuilder gesetzt werden kann
+
+        AnchorPane.setTopAnchor(itViewVBox, 0.0);
+        AnchorPane.setBottomAnchor(itViewVBox, 0.0);
         AnchorPane.setRightAnchor(itViewVBox, 0.0);
         AnchorPane.setLeftAnchor(itViewVBox, 0.0);
-        AnchorPane.setRightAnchor(itViewVBox, 0.0);
-//        AnchorPane.setBottomAnchor(atVBox, 0.0);
 
         setupRadioButton();
     }

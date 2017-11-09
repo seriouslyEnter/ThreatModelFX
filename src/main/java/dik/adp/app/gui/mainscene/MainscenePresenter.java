@@ -32,6 +32,8 @@ import dik.adp.app.gui.it.ItView;
 import dik.adp.app.gui.menue.MenuePresenter;
 import dik.adp.app.gui.menue.MenueView;
 import dik.adp.app.gui.navigation.NavigationView;
+import dik.adp.app.gui.ra.RaPresenter;
+import dik.adp.app.gui.ra.RaView;
 import dik.adp.app.gui.sharedcommunicationmodel.ViewState;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -73,6 +75,8 @@ public class MainscenePresenter implements Initializable {
     private BaView baView;
     private ItPresenter itPresenter;
     private ItView itView;
+    private RaPresenter raPresenter;
+    private RaView raView;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -131,9 +135,11 @@ public class MainscenePresenter implements Initializable {
                 this.itPresenter = (ItPresenter) this.itView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.itView.getView());
             }
-//            if (isMainShowing.equals(raNavButtonID)) {
-//                this.mainAnchorPane.getChildren().add(this.raView.getView());
-//            }
+            if (isMainShowing.equals(raNavButtonID)) {
+                this.raView = new RaView();
+                this.raPresenter = (RaPresenter) this.raView.getPresenter();
+                this.mainAnchorPane.getChildren().add(this.raView.getView());
+            }
 //            if (isMainShowing.equals(sumNavButtonID)) {
 //                this.mainAnchorPane.getChildren().add(this.sumView.getView());
 //            }

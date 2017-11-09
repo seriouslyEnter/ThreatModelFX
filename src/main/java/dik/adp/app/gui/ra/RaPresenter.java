@@ -5,9 +5,20 @@
  */
 package dik.adp.app.gui.ra;
 
+import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
+import dik.adp.app.orientdb.Odb2Ra;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javax.inject.Inject;
 
 /**
  *
@@ -15,11 +26,51 @@ import javafx.fxml.Initializable;
  */
 public class RaPresenter implements Initializable {
 
+    @FXML
+    private TreeView raTreeView;
+    @FXML
+    private HBox raViewHBox;
+//    @FXML
+//    private VBox raViewVBox;
+//    @FXML
+//    private AnchorPane raViewAnchorPane;
+
+    @Inject
+    private Odb2Ra odb;
+    @Inject
+    private SelectedState selectedState;
+
     private ResourceBundle resources = null;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
+
+        //Notwendig weil das für Injected fxml das nicht nicht SceneBuilder gesetzt werden kann
+        AnchorPane.setRightAnchor(raViewHBox, 0.0);
+        AnchorPane.setLeftAnchor(raViewHBox, 0.0);
+        AnchorPane.setTopAnchor(raViewHBox, 0.0);
+        AnchorPane.setBottomAnchor(raViewHBox, 0.0);
+
+        setupTreeView();
     }
-    
+
+    private void setupTreeView() {
+        List<FxDfdElement> dfdElements = new ArrayList<>();
+
+        dfdElements = odb.queryDfdElements(selectedState.isSelectedDiagram());
+
+        TreeItem root = new TreeItem("DfdElemente");
+        raTreeView.setRoot(root);
+
+        TreeItem pTI = new TreeItem("Process");
+        root.getChildren().add(pTI);
+        TreeItem mTI = new TreeItem("Memory");
+        root.getChildren().add(mTI);
+        TreeItem gTI = new TreeItem("DFlow");
+        root.getChildren().add(gTI);
+        TreeItem kTI = new TreeItem("Kommunikationskanal");
+        root.getChildren().add(kTI);
+
+    }
 }
