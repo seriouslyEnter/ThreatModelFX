@@ -7,9 +7,8 @@ package dik.adp.app.gui.ra;
 
 import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Ra;
-import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4Ra;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -56,9 +55,7 @@ public class RaPresenter implements Initializable {
     }
 
     private void setupTreeView() {
-        List<FxDfdElement> dfdElements = new ArrayList<>();
-
-        dfdElements = odb.queryDfdElements(selectedState.isSelectedDiagram());
+        List<FxDfdElement4Ra> dfdElements;
 
         TreeItem root = new TreeItem("DfdElemente");
         raTreeView.setRoot(root);
@@ -67,10 +64,36 @@ public class RaPresenter implements Initializable {
         root.getChildren().add(pTI);
         TreeItem mTI = new TreeItem("Memory");
         root.getChildren().add(mTI);
-        TreeItem gTI = new TreeItem("DFlow");
-        root.getChildren().add(gTI);
+        TreeItem dTI = new TreeItem("DFlow");
+        root.getChildren().add(dTI);
         TreeItem kTI = new TreeItem("Kommunikationskanal");
         root.getChildren().add(kTI);
+
+        dfdElements = odb.queryDfdElements(selectedState.isSelectedDiagram());
+
+        for (FxDfdElement4Ra dfdElement : dfdElements) {
+            switch (dfdElement.getType()) {
+                case "Process":
+                    TreeItem p = new TreeItem(dfdElement);
+
+                    pTI.getChildren().add(p);
+                    break;
+                case "Memory":
+                    TreeItem m = new TreeItem(dfdElement);
+                    mTI.getChildren().add(m);
+                    break;
+                case "DFlow":
+                    TreeItem d = new TreeItem(dfdElement);
+                    dTI.getChildren().add(d);
+                    break;
+                case "Kommunikationskanal":
+                    TreeItem k = new TreeItem(dfdElement);
+                    kTI.getChildren().add(k);
+                    break;
+                default:
+                    break;
+            }
+        }
 
     }
 }

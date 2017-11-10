@@ -12,9 +12,11 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4Ra;
 import dik.adp.app.orientdb.odb2Klassen.FxStride;
 import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -34,16 +36,26 @@ public class Odb2Ra {
         return factory;
     }
 
-    public List<FxDfdElement> queryDfdElements(String selectedDiagram) {
+    public List<FxDfdElement4Ra> queryDfdElements(String selectedDiagram) {
         OrientGraph graph = ogf().getTx();
-        List<FxDfdElement> result = new ArrayList<>();
+        List<FxDfdElement4Ra> result = new ArrayList<>();
+        FxDfdElement element;
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
-                    "SELECT expand(out('hasAT').in('realized_by').out('targets'))"
+                    "SELECT expand(distinct(@rid))"
+                    + " FROM"
+                    + " ("
+                    + "SELECT expand(out('hasAT').in('realized_by').out('targets'))"
                     + " FROM DfdDiagram"
                     + " WHERE name='" + selectedDiagram + "'"
+                    + ")"
             )).execute()) {
-                result.add(odb2helper.vertexToFxDfdElement(v));
+                element = odb2helper.vertexToFxDfdElement(v);
+                FxDfdElement4Ra element4Ra = new FxDfdElement4Ra(
+                        element.getKey(), element.getType(), element.getName(), element.getDiagram(), element.getDiagram()
+                );
+                result.add(element4Ra);
+                Collections.sort(result, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
             }
         } catch (Exception e) {
             graph.rollback();
@@ -52,15 +64,6 @@ public class Odb2Ra {
         return result;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
     public List<FxStride> queryDfdElements(FxAT at, String selectedDiagram, String elementType) {
         OrientGraph graph = ogf().getTx();
         List<FxStride> result = new ArrayList<>();

@@ -93,9 +93,8 @@ public class FxDfdElement {
         }
         return diagram;
     }
-    
-    
-        public final String getBoundary() {
+
+    public final String getBoundary() {
         return boundaryProperty().get();
     }
 
@@ -164,6 +163,8 @@ public class FxDfdElement {
         return "FxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", boundary=" + boundary + ", elements=" + elements + '}';
     }
 
-    
+    public String toStringKeyAndName() {
+        return key + ": " + name;
+    }
 
 }
