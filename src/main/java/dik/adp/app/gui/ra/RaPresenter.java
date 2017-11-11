@@ -30,10 +30,6 @@ public class RaPresenter implements Initializable {
     private TreeView raTreeView;
     @FXML
     private HBox raViewHBox;
-//    @FXML
-//    private VBox raViewVBox;
-//    @FXML
-//    private AnchorPane raViewAnchorPane;
 
     @Inject
     private Odb2Ra odb;
