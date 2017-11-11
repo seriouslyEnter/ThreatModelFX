@@ -10,14 +10,17 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
+import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
-import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4Ra;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4TreeView;
 import dik.adp.app.orientdb.odb2Klassen.FxStride;
 import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javafx.scene.control.TreeItem;
 import javax.inject.Inject;
 
 /**
@@ -36,32 +39,45 @@ public class Odb2Ra {
         return factory;
     }
 
-    public List<FxDfdElement4Ra> queryDfdElements(String selectedDiagram) {
-        OrientGraph graph = ogf().getTx();
-        List<FxDfdElement4Ra> result = new ArrayList<>();
-        FxDfdElement element;
+    public Map<String,FxDfdElement4TreeView> queryDfdElements(String selectedDiagram) {
+        OrientGraphNoTx graph = ogf().getNoTx();
+//        FxDfdElement4TreeView treeViewElements = new FxDfdElement4TreeView();
+        Map<String, FxDfdElement4TreeView> treeViewMap = new TreeMap<>();
+        String key;
+        FxDfdElement4TreeView element;
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT expand(distinct(@rid))"
                     + " FROM"
                     + " ("
-                    + "SELECT expand(out('hasAT').in('realized_by').out('targets'))"
+                    + " SELECT expand(out('hasAT').in('realized_by').out('targets'))"
                     + " FROM DfdDiagram"
                     + " WHERE name='" + selectedDiagram + "'"
                     + ")"
             )).execute()) {
-                element = odb2helper.vertexToFxDfdElement(v);
-                FxDfdElement4Ra element4Ra = new FxDfdElement4Ra(
-                        element.getKey(), element.getType(), element.getName(), element.getDiagram(), element.getDiagram()
-                );
-                result.add(element4Ra);
-                Collections.sort(result, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
+                element = new FxDfdElement4TreeView(odb2helper.vertexToFxDfdElement(v));
+                key = element.getTreeItem().toString();
+                treeViewMap.put(key, element);
+                
+//                key = new FxDfdElement(odb2helper.vertexToFxDfdElement(v));
+//                element = new TreeItem(key.getKey() + ": " + key.getName());
+//                element = new TreeItem(element);
+
+//                treeViewMap.put(key, element);
+
+//                treeViewElements.add(odb2helper.vertexToFxDfdElement(v));
+//
+//                element = odb2helper.vertexToFxDfdElement(v);
+//                FxDfdElement4TreeView element4Ra = new FxDfdElement4TreeView(
+//                        element.getKey(), element.getType(), element.getName(), element.getDiagram(), element.getDiagram()
+//                );
+//                result.add(element4Ra);
+//                Collections.sort(result, (a, b) -> a.getKey().compareToIgnoreCase(b.getKey()));
             }
         } catch (Exception e) {
-            graph.rollback();
             graph.shutdown();
         }
-        return result;
+        return treeViewMap;
     }
 
     public List<FxStride> queryDfdElements(FxAT at, String selectedDiagram, String elementType) {

@@ -7,12 +7,13 @@ package dik.adp.app.gui.ra;
 
 import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Ra;
-import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4Ra;
+import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4TreeView;
 import java.net.URL;
-import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
@@ -39,6 +40,8 @@ public class RaPresenter implements Initializable {
     @Inject
     private SelectedState selectedState;
 
+    private Map<String, FxDfdElement4TreeView> treeViewElements;
+
     private ResourceBundle resources = null;
 
     @Override
@@ -55,7 +58,12 @@ public class RaPresenter implements Initializable {
     }
 
     private void setupTreeView() {
-        List<FxDfdElement4Ra> dfdElements;
+
+        raTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        raTreeView.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> this.updateSelectedDfdElement()
+        );
 
         TreeItem root = new TreeItem("DfdElemente");
         raTreeView.setRoot(root);
@@ -69,31 +77,39 @@ public class RaPresenter implements Initializable {
         TreeItem kTI = new TreeItem("Kommunikationskanal");
         root.getChildren().add(kTI);
 
-        dfdElements = odb.queryDfdElements(selectedState.isSelectedDiagram());
+        treeViewElements = odb.queryDfdElements(selectedState.isSelectedDiagram());
 
-        for (FxDfdElement4Ra dfdElement : dfdElements) {
-            switch (dfdElement.getType()) {
+        treeViewElements.forEach((k, v) -> {
+            switch (v.getFxDfdElement().getType()) {
                 case "Process":
-                    TreeItem p = new TreeItem(dfdElement);
-
-                    pTI.getChildren().add(p);
+                    pTI.getChildren().add(v.getTreeItem());
                     break;
                 case "Memory":
-                    TreeItem m = new TreeItem(dfdElement);
-                    mTI.getChildren().add(m);
+                    mTI.getChildren().add(v.getTreeItem());
                     break;
                 case "DFlow":
-                    TreeItem d = new TreeItem(dfdElement);
-                    dTI.getChildren().add(d);
+                    dTI.getChildren().add(v.getTreeItem());
                     break;
                 case "Kommunikationskanal":
-                    TreeItem k = new TreeItem(dfdElement);
-                    kTI.getChildren().add(k);
+                    kTI.getChildren().add(v.getTreeItem());
                     break;
                 default:
                     break;
             }
-        }
+        });
+    }
+
+    private void updateSelectedDfdElement() {
+        TreeItem selectedItem = (TreeItem) raTreeView.getSelectionModel().getSelectedItem();
+        System.out.println("Selecten TreeView item: " + selectedItem);
+        String string = selectedItem.toString();
+        treeViewElements.forEach((k, v) -> {
+            if (string.contentEquals(k)) {
+                System.out.println("Inhalt von k: " + k);
+                System.out.println("Inhalt von k Value: " + v.getTreeItem().getValue().toString());
+                System.out.println("Inhalt von v: " + v.getFxDfdElement().toString());
+            }
+        });
 
     }
 }

@@ -34,6 +34,14 @@ public class FxDfdElement {
         setBoundary(boundary);
     }
 
+    public FxDfdElement(FxDfdElement fxDfdElement) {
+        setKey(fxDfdElement.getKey());
+        setType(fxDfdElement.getType());
+        setName(fxDfdElement.getName());
+        setDiagram(fxDfdElement.getDiagram());
+        setBoundary(fxDfdElement.getBoundary());
+    }
+
     public final String getKey() {
         return keyProperty().get();
     }
@@ -162,9 +170,4 @@ public class FxDfdElement {
     public String toString() {
         return "FxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", boundary=" + boundary + ", elements=" + elements + '}';
     }
-
-    public String toStringKeyAndName() {
-        return key + ": " + name;
-    }
-
 }
