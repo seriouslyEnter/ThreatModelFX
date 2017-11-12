@@ -9,24 +9,35 @@ import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Ra;
 import dik.adp.app.orientdb.odb2Klassen.Dread;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4TreeView;
+import dik.adp.app.orientdb.odb2Klassen.FxRa;
+import dik.adp.app.orientdb.odb2Klassen.Rating;
 import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javax.inject.Inject;
+import org.controlsfx.control.PopOver;
 
 /**
  *
@@ -47,6 +58,7 @@ public class RaPresenter implements Initializable {
     private SelectedState selectedState;
 
     private Map<String, FxDfdElement4TreeView> treeViewElements;
+    private Button dreadButton;
 
     private ResourceBundle resources = null;
 
@@ -61,13 +73,12 @@ public class RaPresenter implements Initializable {
         AnchorPane.setBottomAnchor(raViewHBox, 0.0);
 
         setupTreeView();
-        setupDread();
+        setupDreadGrid();
     }
 
     private void setupTreeView() {
 
         raTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
         raTreeView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> this.updateSelectedDfdElement()
         );
@@ -113,16 +124,16 @@ public class RaPresenter implements Initializable {
         String string = selectedItem.toString();
 
         element = treeViewElements.get(string);
+
+        //prüfe ob selected TreeItem eins Kategorie oder Element ist
         if (element != null) {
             System.out.println(element.getFxDfdElement().getRid());
 
-            odb.queryBa(element.getFxDfdElement(), selectedState.getSelectedAt());
-
-            updateDREAD();
+            updateDREADGrid(odb.queryBa(element.getFxDfdElement(), selectedState.getSelectedAt()));
         } else {
             System.out.println("kein DFD Element");
             dreadGridPane.getChildren().clear();
-            dreadGridPane.setGridLinesVisible(true);
+            setupDreadGrid();
         }
 //        treeViewElements.forEach((k, v) -> {
 //            if (string.contentEquals(k)) {
@@ -132,51 +143,184 @@ public class RaPresenter implements Initializable {
 //        });
     }
 
-    private void updateDREAD() {
+    private void updateDREADGrid(FxRa fxRa) {
+        Label labelStride;
+        int column;
+        int row;
+
         System.out.println("updateDREAD()");
-        
-        
-//        Label firstLetter;
-//        Label labelStride;
-//        Integer column = 0;
-//        Integer row = 0;
-//
-//        for (Dread dread : Dread.values()) {
-//            column++;
-//            //Labes mit dem ersten Buchstaben aus DREAD Bezeichung
-//            firstLetter = new Label(dread.name().substring(0, 1));
-//            firstLetter.setFont(Font.font("System", FontWeight.BOLD, 36));
-//            dreadGridPane.add(firstLetter, column, row);
-//        }
-//
-//        column = 0;
-//        row = 0;
-//        for (Stride stride : Stride.values()) {
-//            row++;
-//            labelStride = new Label(stride.getBezeichnung());
-//            dreadGridPane.add(labelStride, column, row);
-//        }
-//
-////     ColumnConstraints column0 = new ColumnConstraints(200);
-////     column0.setHgrow(Priority.ALWAYS);
-////     dreadGridPane.getColumnConstraints().add(0, column0);
-////        dreadGridPane.setPrefWidth(800);
-//        dreadGridPane.setGridLinesVisible(true);
+
+        dreadGridPane.getChildren().clear();
+        setupGridFirstRow();
+
+        column = 0;
+        row = 0;
+        for (Stride stride : Stride.values()) {
+            row++;
+            labelStride = new Label(stride.getBezeichnung());
+
+            //check ob diese Stride in Query, wenn nein, dann disable Label
+            if (fxRa.getThreats().containsKey(stride) == true) {
+                labelStride.setDisable(false);
+                addDreadButtons(row);
+            } else {
+                labelStride.setDisable(true);
+            }
+            dreadGridPane.add(labelStride, column, row);
+        }
+        dreadGridPane.setGridLinesVisible(true);
     }
 
-    private void setupDread() {
-        Label firstLetter;
-        Label labelStride;
-        Integer column = 0;
-        Integer row = 0;
-
+    private void addDreadButtons(int row) {
+        int column = 0;
         for (Dread dread : Dread.values()) {
             column++;
-            //Labes mit dem ersten Buchstaben aus DREAD Bezeichung
-            firstLetter = new Label(dread.name().substring(0, 1));
-            firstLetter.setFont(Font.font("System", FontWeight.BOLD, 36));
-            dreadGridPane.add(firstLetter, column, row);
+            dreadButton = new Button();
+            dreadButton = setupDreadButton(dreadButton);
+//            dreadButton.setOnAction(this::popOver);
+//            dreadButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
+            dreadButton.addEventHandler(ActionEvent.ACTION, event -> {
+                popOver(event);
+            });
+            dreadGridPane.add(dreadButton, column, row);
         }
+    }
+
+    private void popOver(ActionEvent popEventLocation) {
+        System.out.println("Popover");
+//        event.getSource();
+        Button bt = new Button("test");
+        PopOver po = new PopOver();
+        po.setContentNode(setupPopOver(popEventLocation));
+        po.show((Node) popEventLocation.getSource());
+
+//        Button lab = (Button) popEventLocation.getSource();
+//        lab.setText("O");
+    }
+
+    private VBox setupPopOver(ActionEvent popEventLocation) {
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setSpacing(0);
+        Insets insetsVBox = new Insets(5);
+        vBox.setPadding(insetsVBox);
+
+        Button hB = new Button(Rating.HIGH.getRating());
+        Button mB = new Button(Rating.MEDIUM.getRating());
+        Button lB = new Button(Rating.LOW.getRating());
+
+        Insets insetsButton = new Insets(1);
+
+        hB.setFont(Font.font("System", FontWeight.BOLD, 15));
+        hB.setTextFill(Color.RED);
+        hB.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        hB.setPadding(insetsButton);
+        hB.addEventHandler(ActionEvent.ACTION, event -> {
+            System.out.println("high Button");
+            changeRating(popEventLocation, Rating.HIGH);
+        });
+
+        mB.setFont(Font.font("System", FontWeight.BOLD, 15));
+        mB.setTextFill(Color.ORANGE);
+        mB.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        mB.setPadding(insetsButton);
+        mB.addEventHandler(ActionEvent.ACTION, event -> {
+            System.out.println("medium Button");
+            changeRating(popEventLocation, Rating.MEDIUM);
+        });
+
+        lB.setFont(Font.font("System", FontWeight.BOLD, 15));
+        lB.setTextFill(Color.GREENYELLOW);
+        lB.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        lB.setPadding(insetsButton);
+        lB.addEventHandler(ActionEvent.ACTION, event -> {
+            System.out.println("low Button");
+            changeRating(popEventLocation, Rating.LOW);
+        });
+
+        vBox.getChildren().addAll(hB, mB, lB);
+        return vBox;
+    }
+
+    private void changeRating(ActionEvent popEventLocation, Rating rating) {
+        Button ratingButton = (Button) popEventLocation.getSource();
+        String buttonLetter;
+
+        switch (rating) {
+            case HIGH:
+                ratingButton.setText("H");
+                ratingButton.setFont(Font.font("System", FontWeight.BOLD, 15));
+                ratingButton.setTextFill(Color.RED);
+                break;
+            case MEDIUM:
+                ratingButton.setText("M");
+                ratingButton.setFont(Font.font("System", FontWeight.BOLD, 15));
+                ratingButton.setTextFill(Color.ORANGE);
+                break;
+            case LOW:
+                ratingButton.setText("L");
+                ratingButton.setFont(Font.font("System", FontWeight.BOLD, 15));
+                ratingButton.setTextFill(Color.GREENYELLOW);
+                break;
+            default:
+                ratingButton.setText("O");
+                ratingButton.setFont(Font.font("System", FontWeight.BOLD, 15));
+                ratingButton.setTextFill(Color.BLUE);
+                break;
+        }
+    }
+
+//    private void popOver(MouseEvent event) {
+//        System.out.println("Popover");
+//
+//        event.getSource();
+//
+//        Button bt = new Button("test");
+//        PopOver po = new PopOver();
+//        po.setContentNode(bt);
+//        po.show((Node) event.getSource());
+//        po.isShowing();
+//    }
+//    private void popOver(ActionEvent event) {
+//        System.out.println("Popover");
+//        
+//        event.getSource();
+//        
+//        Button bt = new Button("test");
+//        PopOver po = new PopOver();
+//            po.setContentNode(bt);
+//        po.show((Node) event.getSource());
+//    }
+//    private void popOver() {
+//        System.out.println("Popover");
+//
+//        Button bt = new Button("test");
+//        PopOver po = new PopOver();
+//        po.setContentNode(bt);
+//        po.show((Node) event.getSource());
+//    }
+    /**
+     * Label einsellen
+     */
+    private Button setupDreadButton(Button dreadButton) {
+        dreadButton.setText("?");
+        dreadButton.setFont(Font.font("System", FontWeight.BOLD, 15));
+        dreadButton.setTextFill(Color.web("#0015ff"));
+        dreadButton.setAlignment(Pos.CENTER);
+//            dreadButton.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+        dreadButton.setPrefSize(25, 25);
+        dreadButton.setPadding(Insets.EMPTY);
+        CornerRadii cr = new CornerRadii(5);
+        dreadButton.setBackground(new Background(new BackgroundFill(Color.WHITE, cr, Insets.EMPTY)));
+        return dreadButton;
+    }
+
+    private void setupDreadGrid() {
+        Label labelStride;
+        int column;
+        int row;
+
+        setupGridFirstRow();
 
         column = 0;
         row = 0;
@@ -188,4 +332,19 @@ public class RaPresenter implements Initializable {
         dreadGridPane.setGridLinesVisible(true);
     }
 
+    /**
+     * add the DREAD Labels to Grid
+     */
+    private void setupGridFirstRow() {
+        int column = 0;
+        int row = 0;
+        Label firstLetter;
+        for (Dread dread : Dread.values()) {
+            column++;
+            //Labes mit dem ersten Buchstaben aus DREAD Bezeichung
+            firstLetter = new Label(dread.name().substring(0, 1));
+            firstLetter.setFont(Font.font("System", FontWeight.BOLD, 36));
+            dreadGridPane.add(firstLetter, column, row);
+        }
+    }
 }
