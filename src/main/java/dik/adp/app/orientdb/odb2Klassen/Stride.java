@@ -19,10 +19,14 @@ public enum Stride {
     ELEVATION("Elevation of privilege"),
     EMPTY("Empty");
 
-    private String name;
+    private final String bezeichnung;
 
-    private Stride(String name) {
-        this.name = name;
+    private Stride(String bezeichnung) {
+        this.bezeichnung = bezeichnung;
+    }
+
+    public String getBezeichnung() {
+        return bezeichnung;
     }
 
     public String toString(Stride stride) {
@@ -56,36 +60,36 @@ public enum Stride {
 
         return returnThis;
     }
-    
-        public Stride fromString(String text) {
-        Stride returnThis = null;
 
-        switch (text) {
-            case "SPOOFING":
-                returnThis = Stride.SPOOFING;
-                break;
-            case "TAMPERING":
-                returnThis = Stride.TAMPERING;
-                break;
-            case "REPUDIATION":
-                returnThis = Stride.REPUDIATION;
-                break;
-            case "INFORMATION":
-                returnThis = Stride.INFORMATION;
-                break;
-            case "DENIAL":
-                returnThis = Stride.DENIAL;
-                break;
-            case "ELEVATION":
-                returnThis = Stride.ELEVATION;
-                break;
-            case "EMPTY":
-                returnThis = Stride.EMPTY;
-                break;
-            default:
-                break;
-        }
-
-        return returnThis;
-    }
+//    public Stride fromString(String text) {
+//        Stride returnThis = null;
+//
+//        switch (text) {
+//            case "SPOOFING":
+//                returnThis = Stride.SPOOFING;
+//                break;
+//            case "TAMPERING":
+//                returnThis = Stride.TAMPERING;
+//                break;
+//            case "REPUDIATION":
+//                returnThis = Stride.REPUDIATION;
+//                break;
+//            case "INFORMATION":
+//                returnThis = Stride.INFORMATION;
+//                break;
+//            case "DENIAL":
+//                returnThis = Stride.DENIAL;
+//                break;
+//            case "ELEVATION":
+//                returnThis = Stride.ELEVATION;
+//                break;
+//            case "EMPTY":
+//                returnThis = Stride.EMPTY;
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return returnThis;
+//    }
 }

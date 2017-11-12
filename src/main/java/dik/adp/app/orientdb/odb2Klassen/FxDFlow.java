@@ -18,8 +18,6 @@ public class FxDFlow {
     private StringProperty key; //cant use "id" its a reserved word in ThinkerPop
     private StringProperty name;
     private StringProperty diagram;
-//    private FxDfdElement from;
-//    private FxDfdElement to;
     private StringProperty from;
     private StringProperty to;
 

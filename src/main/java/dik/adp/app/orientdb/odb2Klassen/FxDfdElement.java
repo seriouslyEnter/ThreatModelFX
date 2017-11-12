@@ -18,6 +18,7 @@ import javafx.collections.ObservableList;
 //DFD Element als ein JavaFX Bean um in ObservableList zu benutzen
 public class FxDfdElement {
 
+    private StringProperty rid;
     private StringProperty key; //cant use "id" its a reserved word in ThinkerPop
     private StringProperty type;
     private StringProperty name;
@@ -25,6 +26,15 @@ public class FxDfdElement {
     private StringProperty boundary;
 
     private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
+
+    public FxDfdElement(String rid, String key, String type, String name, String diagram, String boundary) {
+        setRid(rid);
+        setKey(key);
+        setType(type);
+        setName(name);
+        setDiagram(diagram);
+        setBoundary(boundary);
+    }
 
     public FxDfdElement(String key, String type, String name, String diagram, String boundary) {
         setKey(key);
@@ -40,6 +50,21 @@ public class FxDfdElement {
         setName(fxDfdElement.getName());
         setDiagram(fxDfdElement.getDiagram());
         setBoundary(fxDfdElement.getBoundary());
+    }
+
+    public final String getRid() {
+        return ridProperty().get();
+    }
+
+    public final void setRid(String rid) {
+        ridProperty().set(rid);
+    }
+
+    public StringProperty ridProperty() {
+        if (rid == null) {
+            rid = new SimpleStringProperty();
+        }
+        return rid;
     }
 
     public final String getKey() {
@@ -124,12 +149,13 @@ public class FxDfdElement {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Objects.hashCode(this.key);
-        hash = 53 * hash + Objects.hashCode(this.type);
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + Objects.hashCode(this.diagram);
-        hash = 53 * hash + Objects.hashCode(this.boundary);
-        hash = 53 * hash + Objects.hashCode(this.elements);
+        hash = 59 * hash + Objects.hashCode(this.rid);
+        hash = 59 * hash + Objects.hashCode(this.key);
+        hash = 59 * hash + Objects.hashCode(this.type);
+        hash = 59 * hash + Objects.hashCode(this.name);
+        hash = 59 * hash + Objects.hashCode(this.diagram);
+        hash = 59 * hash + Objects.hashCode(this.boundary);
+        hash = 59 * hash + Objects.hashCode(this.elements);
         return hash;
     }
 
@@ -145,6 +171,9 @@ public class FxDfdElement {
             return false;
         }
         final FxDfdElement other = (FxDfdElement) obj;
+        if (!Objects.equals(this.rid, other.rid)) {
+            return false;
+        }
         if (!Objects.equals(this.key, other.key)) {
             return false;
         }
@@ -168,6 +197,7 @@ public class FxDfdElement {
 
     @Override
     public String toString() {
-        return "FxDfdElement{" + "key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", boundary=" + boundary + ", elements=" + elements + '}';
+        return "FxDfdElement{" + "rid=" + rid + ", key=" + key + ", type=" + type + ", name=" + name + ", diagram=" + diagram + ", boundary=" + boundary + ", elements=" + elements + '}';
     }
+
 }

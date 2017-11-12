@@ -24,25 +24,25 @@ import javafx.scene.text.FontWeight;
 import javax.inject.Inject;
 
 public class BaPresenter implements Initializable {
-    
+
     @FXML
     HBox baHBox;
     @FXML
     ToggleGroup baToggleGroup;
     @FXML
     GridPane baGridPane;
-    
+
     @Inject
     Odb2Ba odb;
     @Inject
     SelectedState selectedState;
-    
+
     private String[] stride = {"S", "T", "R", "I", "D", "E", "EMPTY"};
 //    private ObservableList<CheckBox> cbList = FXCollections.<CheckBox>observableArrayList();
     private List<FxStride> elements = new ArrayList<>();
-    
+
     private ResourceBundle resources = null;
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Notwendig weil das für Injected fxml das nicht nicht SceneBuilder gesetzt werden kann
@@ -50,14 +50,14 @@ public class BaPresenter implements Initializable {
         AnchorPane.setRightAnchor(baHBox, 0.0);
         AnchorPane.setTopAnchor(baHBox, 0.0);
         AnchorPane.setBottomAnchor(baHBox, 0.0);
-        
+
         this.resources = resources;
     }
-    
+
     private void setupToggleButtons() {
         // setup alles in fxml
     }
-    
+
     @FXML
     void pressToggleButton(ActionEvent event) {
         baGridPane.getChildren().clear();
@@ -98,8 +98,8 @@ public class BaPresenter implements Initializable {
             for (int i = 0; i < elements.size(); i++) {
                 Label lb = new Label(
                         elements.get(i).getDfdElement().getKey()
-                                + ": "
-                                + elements.get(i).getDfdElement().getName()
+                        + ": "
+                        + elements.get(i).getDfdElement().getName()
                 );
                 baGridPane.add(lb, 0, i + 1);
                 //Columns
@@ -121,6 +121,8 @@ public class BaPresenter implements Initializable {
                 }
             }
         }
+
+//        baGridPane.setGridLinesVisible(true);
     }
 
     void pressCheckbox(ActionEvent event) {

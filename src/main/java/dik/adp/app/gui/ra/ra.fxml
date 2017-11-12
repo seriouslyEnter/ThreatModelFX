@@ -7,15 +7,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<HBox fx:id="raViewHBox" alignment="CENTER" maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="200.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.ra.RaPresenter">
+<HBox fx:id="raViewHBox" alignment="CENTER" fillHeight="false" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.ra.RaPresenter">
    <children>
       <TreeView fx:id="raTreeView" showRoot="false" />
-      <GridPane gridLinesVisible="true">
+      <GridPane fx:id="dreadGridPane" hgap="10.0" vgap="10.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
    </children>

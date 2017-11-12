@@ -14,8 +14,8 @@ import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import dik.adp.app.orientdb.odb2Klassen.FxStride;
 import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import javafx.scene.control.CheckBox;
 import javax.inject.Inject;
 
 /**
@@ -53,6 +53,9 @@ public class Odb2Ba {
             graph.rollback();
             graph.shutdown();
         }
+        
+        Collections.sort(result, (a, b) -> a.getDfdElement().getKey().compareToIgnoreCase(b.getDfdElement().getKey()));
+        
         return result;
     }
 
