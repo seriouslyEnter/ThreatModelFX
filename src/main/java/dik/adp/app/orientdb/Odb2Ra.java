@@ -7,6 +7,7 @@ package dik.adp.app.orientdb;
 
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
@@ -14,6 +15,11 @@ import dik.adp.app.orientdb.odb2Klassen.FxBa;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4TreeView;
 import dik.adp.app.orientdb.odb2Klassen.FxRa;
+import dik.adp.app.orientdb.odb2Klassen.FxStride;
+import dik.adp.app.orientdb.odb2Klassen.Rating;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.inject.Inject;
@@ -81,9 +87,31 @@ public class Odb2Ra {
         }
         return fxRa;
     }
-    
+
     private FxBa toFxBa(Vertex ba) {
         FxBa fxBa = new FxBa(ba.getId().toString(), ba.getProperty("threat").toString());
         return fxBa;
     }
+
+    private void updateRating(FxBa fxBa, Integer iteration, Rating rating) {
+        OrientGraph graph = ogf().getTx();
+        try {
+            for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+""
+            )).execute()) {
+
+                
+            }
+        } catch (Exception e) {
+            graph.rollback();
+            graph.shutdown();
+        }
+//        Collections.sort(result, (a, b) -> a.getDfdElement().getKey().compareToIgnoreCase(b.getDfdElement().getKey()));
+    }
+    
+    private void createRating() {
+        
+    }
+    
+    
 }

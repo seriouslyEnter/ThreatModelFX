@@ -76,6 +76,9 @@ public class RaPresenter implements Initializable {
         setupDreadGrid();
     }
 
+    /**
+     * adding TreeItems to TreeView
+     */
     private void setupTreeView() {
 
         raTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -117,6 +120,9 @@ public class RaPresenter implements Initializable {
         });
     }
 
+    /**
+     * setup the select mechanics in TreeView
+     */
     private void updateSelectedDfdElement() {
         TreeItem selectedItem = (TreeItem) raTreeView.getSelectionModel().getSelectedItem();
         FxDfdElement4TreeView element;
@@ -143,6 +149,10 @@ public class RaPresenter implements Initializable {
 //        });
     }
 
+    /**
+     * update the Grid according to chosen DfdElement and disablenging/enabeling
+     * the activatet Threats
+     */
     private void updateDREADGrid(FxRa fxRa) {
         Label labelStride;
         int column;
@@ -171,6 +181,9 @@ public class RaPresenter implements Initializable {
         dreadGridPane.setGridLinesVisible(true);
     }
 
+    /**
+     * adding the Rating Buttons for on row
+     */
     private void addDreadButtons(int row) {
         int column = 0;
         for (Dread dread : Dread.values()) {
@@ -186,18 +199,20 @@ public class RaPresenter implements Initializable {
         }
     }
 
+    /**
+     * setup the Popover
+     */
     private void popOver(ActionEvent popEventLocation) {
         System.out.println("Popover");
-//        event.getSource();
         Button bt = new Button("test");
         PopOver po = new PopOver();
         po.setContentNode(setupPopOver(popEventLocation));
         po.show((Node) popEventLocation.getSource());
-
-//        Button lab = (Button) popEventLocation.getSource();
-//        lab.setText("O");
     }
 
+    /**
+     * setup the Popover content
+     */
     private VBox setupPopOver(ActionEvent popEventLocation) {
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
@@ -242,9 +257,11 @@ public class RaPresenter implements Initializable {
         return vBox;
     }
 
+    /**
+     * change Button text according to changed Rating
+     */
     private void changeRating(ActionEvent popEventLocation, Rating rating) {
         Button ratingButton = (Button) popEventLocation.getSource();
-        String buttonLetter;
 
         switch (rating) {
             case HIGH:
@@ -270,37 +287,8 @@ public class RaPresenter implements Initializable {
         }
     }
 
-//    private void popOver(MouseEvent event) {
-//        System.out.println("Popover");
-//
-//        event.getSource();
-//
-//        Button bt = new Button("test");
-//        PopOver po = new PopOver();
-//        po.setContentNode(bt);
-//        po.show((Node) event.getSource());
-//        po.isShowing();
-//    }
-//    private void popOver(ActionEvent event) {
-//        System.out.println("Popover");
-//        
-//        event.getSource();
-//        
-//        Button bt = new Button("test");
-//        PopOver po = new PopOver();
-//            po.setContentNode(bt);
-//        po.show((Node) event.getSource());
-//    }
-//    private void popOver() {
-//        System.out.println("Popover");
-//
-//        Button bt = new Button("test");
-//        PopOver po = new PopOver();
-//        po.setContentNode(bt);
-//        po.show((Node) event.getSource());
-//    }
     /**
-     * Label einsellen
+     * Button mit "?" erstellen
      */
     private Button setupDreadButton(Button dreadButton) {
         dreadButton.setText("?");
@@ -315,6 +303,9 @@ public class RaPresenter implements Initializable {
         return dreadButton;
     }
 
+    /**
+     * add column of STRIDE Labels
+     */
     private void setupDreadGrid() {
         Label labelStride;
         int column;
