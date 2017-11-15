@@ -19,47 +19,54 @@ public enum Stride {
     ELEVATION("Elevation of privilege"),
     EMPTY("Empty");
 
-    private final String bezeichnung;
+    private final String name;
 
-    private Stride(String bezeichnung) {
-        this.bezeichnung = bezeichnung;
+    private Stride(String name) {
+        this.name = name;
     }
 
-    public String getBezeichnung() {
-        return bezeichnung;
+//    public String getBezeichnung() {
+//        return name;
+//    }
+
+        @Override
+    public String toString() {
+        return name;
     }
-
-    public String toString(Stride stride) {
-        String returnThis = "";
-
-        switch (stride) {
-            case SPOOFING:
-                returnThis = "Spoofing of user identity";
-                break;
-            case TAMPERING:
-                returnThis = "Tampering";
-                break;
-            case REPUDIATION:
-                returnThis = "Repudiation";
-                break;
-            case INFORMATION:
-                returnThis = "Information disclosure";
-                break;
-            case DENIAL:
-                returnThis = "Denial of service";
-                break;
-            case ELEVATION:
-                returnThis = "Elevation of privilege";
-                break;
-            case EMPTY:
-                returnThis = "Empty";
-                break;
-            default:
-                break;
-        }
-
-        return returnThis;
-    }
+    
+    
+//    @Override
+//    public String toString() {
+//        String returnThis = "";
+//
+//        switch (stride) {
+//            case SPOOFING:
+//                returnThis = "Spoofing of user identity";
+//                break;
+//            case TAMPERING:
+//                returnThis = "Tampering";
+//                break;
+//            case REPUDIATION:
+//                returnThis = "Repudiation";
+//                break;
+//            case INFORMATION:
+//                returnThis = "Information disclosure";
+//                break;
+//            case DENIAL:
+//                returnThis = "Denial of service";
+//                break;
+//            case ELEVATION:
+//                returnThis = "Elevation of privilege";
+//                break;
+//            case EMPTY:
+//                returnThis = "Empty";
+//                break;
+//            default:
+//                break;
+//        }
+//
+//        return returnThis;
+//    }
 
 //    public Stride fromString(String text) {
 //        Stride returnThis = null;

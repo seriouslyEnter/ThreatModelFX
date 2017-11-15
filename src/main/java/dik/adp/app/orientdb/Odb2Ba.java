@@ -91,7 +91,7 @@ public class Odb2Ba {
         try {
 //            Vertex ba = odbGraph().addVertex("class:BA", "threat", foundFxStrideAndSetBa.getBa());
             Vertex ba = graph.addVertex("class:BA");
-            ba.setProperty("threat", foundFxStrideAndSetBa.getBa());
+            ba.setProperty("threat", foundFxStrideAndSetBa.getBa().name());
             Vertex at = queryAT(foundFxStrideAndSetBa);
             Edge baat = graph.addEdge(null, ba, at, "realized_by");
             Vertex dfdElement = queryDfdElement(foundFxStrideAndSetBa);
@@ -113,7 +113,7 @@ public class Odb2Ba {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT "
                     + "FROM BA "
-                    + "WHERE threat='" + foundFxStrideAndSetBa.getBa() + "' "
+                    + "WHERE threat='" + foundFxStrideAndSetBa.getBa().name() + "' "
                     + "AND out('targets').key='" + foundFxStrideAndSetBa.getDfdElement().getKey() + "' "
                     + "AND out('realized_by').in('hasAT').name='" + foundFxStrideAndSetBa.getDfdElement().getDiagram() + "'"
             )).execute()) {

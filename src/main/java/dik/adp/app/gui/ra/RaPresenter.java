@@ -9,10 +9,12 @@ import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Ra;
 import dik.adp.app.orientdb.odb2Klassen.Dread;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4TreeView;
+import dik.adp.app.orientdb.odb2Klassen.FxKeyPairForGrid;
 import dik.adp.app.orientdb.odb2Klassen.FxRa;
 import dik.adp.app.orientdb.odb2Klassen.Rating;
 import dik.adp.app.orientdb.odb2Klassen.Stride;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -58,7 +60,10 @@ public class RaPresenter implements Initializable {
     private SelectedState selectedState;
 
     private Map<String, FxDfdElement4TreeView> treeViewElements;
-    private Button dreadButton;
+//    private Button dreadButton;
+    private FxRa fxRa;
+//    private FxDreadGridPane fxDreadGridPane;
+    private Map<FxKeyPairForGrid, Button> fxGridMap = new HashMap<>();
 
     private ResourceBundle resources = null;
 
@@ -80,7 +85,6 @@ public class RaPresenter implements Initializable {
      * adding TreeItems to TreeView
      */
     private void setupTreeView() {
-
         raTreeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         raTreeView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> this.updateSelectedDfdElement()
@@ -135,7 +139,9 @@ public class RaPresenter implements Initializable {
         if (element != null) {
             System.out.println(element.getFxDfdElement().getRid());
 
-            updateDREADGrid(odb.queryBa(element.getFxDfdElement(), selectedState.getSelectedAt()));
+            this.fxRa = odb.queryBa(element.getFxDfdElement(), selectedState.getSelectedAt());
+            updateDREADGrid(this.fxRa);
+//            updateDREADGrid(odb.queryBa(element.getFxDfdElement(), selectedState.getSelectedAt()));
         } else {
             System.out.println("kein DFD Element");
             dreadGridPane.getChildren().clear();
@@ -167,24 +173,26 @@ public class RaPresenter implements Initializable {
         row = 0;
         for (Stride stride : Stride.values()) {
             row++;
-            labelStride = new Label(stride.getBezeichnung());
+//            labelStride = new Label(stride.getBezeichnung());
+labelStride = new Label(stride.toString());
 
             //check ob diese Stride in Query, wenn nein, dann disable Label
             if (fxRa.getThreats().containsKey(stride) == true) {
                 labelStride.setDisable(false);
-                addDreadButtons(row);
+                addDreadButtons(row, stride);
             } else {
                 labelStride.setDisable(true);
             }
             dreadGridPane.add(labelStride, column, row);
         }
-        dreadGridPane.setGridLinesVisible(true);
+//        dreadGridPane.setGridLinesVisible(true);
     }
 
     /**
      * adding the Rating Buttons for on row
      */
-    private void addDreadButtons(int row) {
+    private void addDreadButtons(int row, Stride stride) {
+        Button dreadButton;
         int column = 0;
         for (Dread dread : Dread.values()) {
             column++;
@@ -196,6 +204,10 @@ public class RaPresenter implements Initializable {
                 popOver(event);
             });
             dreadGridPane.add(dreadButton, column, row);
+            
+            //save position in MapMap
+            FxKeyPairForGrid key = new FxKeyPairForGrid(stride, dread);
+            fxGridMap.put(key, dreadButton);
         }
     }
 
@@ -232,7 +244,8 @@ public class RaPresenter implements Initializable {
         hB.setPadding(insetsButton);
         hB.addEventHandler(ActionEvent.ACTION, event -> {
             System.out.println("high Button");
-            changeRating(popEventLocation, Rating.HIGH);
+            updateRatingOnButton(popEventLocation, Rating.HIGH);
+            updateRatingInDB(popEventLocation, Rating.HIGH);
         });
 
         mB.setFont(Font.font("System", FontWeight.BOLD, 15));
@@ -241,7 +254,8 @@ public class RaPresenter implements Initializable {
         mB.setPadding(insetsButton);
         mB.addEventHandler(ActionEvent.ACTION, event -> {
             System.out.println("medium Button");
-            changeRating(popEventLocation, Rating.MEDIUM);
+            updateRatingOnButton(popEventLocation, Rating.MEDIUM);
+            updateRatingInDB(popEventLocation, Rating.MEDIUM);
         });
 
         lB.setFont(Font.font("System", FontWeight.BOLD, 15));
@@ -250,17 +264,44 @@ public class RaPresenter implements Initializable {
         lB.setPadding(insetsButton);
         lB.addEventHandler(ActionEvent.ACTION, event -> {
             System.out.println("low Button");
-            changeRating(popEventLocation, Rating.LOW);
+            updateRatingOnButton(popEventLocation, Rating.LOW);
+            updateRatingInDB(popEventLocation, Rating.LOW);
         });
 
         vBox.getChildren().addAll(hB, mB, lB);
         return vBox;
     }
 
+    private void updateRatingInDB(ActionEvent popEventLocation, Rating rating) {
+        System.out.println("updateRatingInDB");
+        Button buttonSource = (Button) popEventLocation.getSource();
+        
+        for (Stride stride : Stride.values()) {
+            for (Dread dread : Dread.values()) {
+                FxKeyPairForGrid key = new FxKeyPairForGrid(stride, dread);
+                Button buttonMap = fxGridMap.get(key);
+                if (buttonSource.equals(buttonMap)){
+                    System.out.println("FOUND BUTTON");
+                    System.out.println(buttonSource.toString());
+                }
+            }
+        }
+        
+        
+        
+
+//        //find FxBa from Button maybe by iterating over GridPane
+//        //Suche STRIDE by Iterating over Grid and compare to Button and Stride
+//        // cant iterate a grid just a list 
+//        for (FxBa stride : fxRa.getThreats().values()) {
+////            dreadGridPane.getChildren().
+//        }
+    }
+
     /**
      * change Button text according to changed Rating
      */
-    private void changeRating(ActionEvent popEventLocation, Rating rating) {
+    private void updateRatingOnButton(ActionEvent popEventLocation, Rating rating) {
         Button ratingButton = (Button) popEventLocation.getSource();
 
         switch (rating) {
@@ -317,10 +358,11 @@ public class RaPresenter implements Initializable {
         row = 0;
         for (Stride stride : Stride.values()) {
             row++;
-            labelStride = new Label(stride.getBezeichnung());
+//            labelStride = new Label(stride.getBezeichnung());
+labelStride = new Label(stride.toString());
             dreadGridPane.add(labelStride, column, row);
         }
-        dreadGridPane.setGridLinesVisible(true);
+//        dreadGridPane.setGridLinesVisible(true);
     }
 
     /**

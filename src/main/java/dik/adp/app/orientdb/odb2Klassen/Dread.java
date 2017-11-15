@@ -17,7 +17,7 @@ public enum Dread {
     AFFECTED("Affected"),
     DISCOVERABILITY("Discoverability");
 
-    private String name;
+    private final String name;
 
     private Dread(String name) {
         this.name = name;
