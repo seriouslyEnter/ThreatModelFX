@@ -27,6 +27,4 @@ public enum Dread {
     public String toString() {
         return name;
     }
-
-
 }

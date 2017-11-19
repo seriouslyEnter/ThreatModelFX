@@ -12,16 +12,39 @@ package dik.adp.app.orientdb.odb2Klassen;
 public enum Rating {
     HIGH("high"),
     MEDIUM("medium"),
-    LOW("low");
+    LOW("low"),
+    NONE("none");
 
-    private String rating;
+    private final String name;
 
-    private Rating(String rating) {
-        this.rating = rating;
+    private Rating(String name) {
+        this.name = name;
     }
 
-    public String getRating() {
-        return rating;
+     @Override
+    public String toString() {
+        return name;
+    }
+    
+    public Integer toNumber(){
+        Integer number;
+        
+        switch (this.name) {
+            case "high":
+                number = 3;
+                break;
+            case "medium":
+                number = 2;
+                break;
+            case "low":
+                number = 1;
+                break;
+            default:
+                number = 0;
+                break;
+        }
+        
+        return number;
     }
 
 }

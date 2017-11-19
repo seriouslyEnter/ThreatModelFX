@@ -1,7 +1,9 @@
 package dik.adp.app.gui.sharedcommunicationmodel;
 
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -60,7 +62,8 @@ public class SelectedState {
     }
 
     //=============================IT===========================================
-    private ObjectProperty<Integer> selectedIt = new SimpleObjectProperty<>();
+//    private ObjectProperty<Integer> selectedIt = new SimpleObjectProperty<>();
+     private IntegerProperty selectedIt = new SimpleIntegerProperty(1);
 
     public Integer getSelectedIt() {
         return selectedIt.get();
@@ -70,7 +73,7 @@ public class SelectedState {
         this.selectedIt.set(selectedIt);
     }
     
-    public ObjectProperty<Integer> selectedItProperty() {
+    public IntegerProperty selectedItProperty() {
         return selectedIt;
     }
 }

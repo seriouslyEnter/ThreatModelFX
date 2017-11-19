@@ -8,6 +8,7 @@ package dik.adp.app.gui.ra;
 import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Ra;
 import dik.adp.app.orientdb.odb2Klassen.Dread;
+import dik.adp.app.orientdb.odb2Klassen.FxBa;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement4TreeView;
 import dik.adp.app.orientdb.odb2Klassen.FxKeyPairForGrid;
 import dik.adp.app.orientdb.odb2Klassen.FxRa;
@@ -174,12 +175,12 @@ public class RaPresenter implements Initializable {
         for (Stride stride : Stride.values()) {
             row++;
 //            labelStride = new Label(stride.getBezeichnung());
-labelStride = new Label(stride.toString());
+            labelStride = new Label(stride.toString());
 
             //check ob diese Stride in Query, wenn nein, dann disable Label
             if (fxRa.getThreats().containsKey(stride) == true) {
                 labelStride.setDisable(false);
-                addDreadButtons(row, stride);
+                addDreadButtons(row, stride, fxRa.getThreats().get(stride));
             } else {
                 labelStride.setDisable(true);
             }
@@ -191,20 +192,20 @@ labelStride = new Label(stride.toString());
     /**
      * adding the Rating Buttons for on row
      */
-    private void addDreadButtons(int row, Stride stride) {
+    private void addDreadButtons(int row, Stride stride, FxBa fxBa) {
         Button dreadButton;
         int column = 0;
         for (Dread dread : Dread.values()) {
             column++;
             dreadButton = new Button();
-            dreadButton = setupDreadButton(dreadButton);
+            dreadButton = setupDreadButton(dreadButton, fxBa, dread);
 //            dreadButton.setOnAction(this::popOver);
 //            dreadButton.hoverProperty().addListener((observable, oldValue, newValue) -> {
             dreadButton.addEventHandler(ActionEvent.ACTION, event -> {
                 popOver(event);
             });
             dreadGridPane.add(dreadButton, column, row);
-            
+
             //save position in MapMap
             FxKeyPairForGrid key = new FxKeyPairForGrid(stride, dread);
             fxGridMap.put(key, dreadButton);
@@ -232,9 +233,9 @@ labelStride = new Label(stride.toString());
         Insets insetsVBox = new Insets(5);
         vBox.setPadding(insetsVBox);
 
-        Button hB = new Button(Rating.HIGH.getRating());
-        Button mB = new Button(Rating.MEDIUM.getRating());
-        Button lB = new Button(Rating.LOW.getRating());
+        Button hB = new Button(Rating.HIGH.name());
+        Button mB = new Button(Rating.MEDIUM.name());
+        Button lB = new Button(Rating.LOW.name());
 
         Insets insetsButton = new Insets(1);
 
@@ -275,20 +276,19 @@ labelStride = new Label(stride.toString());
     private void updateRatingInDB(ActionEvent popEventLocation, Rating rating) {
         System.out.println("updateRatingInDB");
         Button buttonSource = (Button) popEventLocation.getSource();
-        
+
         for (Stride stride : Stride.values()) {
             for (Dread dread : Dread.values()) {
                 FxKeyPairForGrid key = new FxKeyPairForGrid(stride, dread);
                 Button buttonMap = fxGridMap.get(key);
-                if (buttonSource.equals(buttonMap)){
+                if (buttonSource.equals(buttonMap)) {
                     System.out.println("FOUND BUTTON");
                     System.out.println(buttonSource.toString());
+                    FxBa fxBa = this.fxRa.getThreats().get(stride);
+                    odb.createDREAD(fxBa, selectedState.getSelectedIt(), rating, dread);
                 }
             }
         }
-        
-        
-        
 
 //        //find FxBa from Button maybe by iterating over GridPane
 //        //Suche STRIDE by Iterating over Grid and compare to Button and Stride
@@ -331,16 +331,41 @@ labelStride = new Label(stride.toString());
     /**
      * Button mit "?" erstellen
      */
-    private Button setupDreadButton(Button dreadButton) {
+    private Button setupDreadButton(Button dreadButton, FxBa fxBa, Dread dread) {
         dreadButton.setText("?");
         dreadButton.setFont(Font.font("System", FontWeight.BOLD, 15));
-        dreadButton.setTextFill(Color.web("#0015ff"));
+        dreadButton.setTextFill(Color.BLUE);
         dreadButton.setAlignment(Pos.CENTER);
 //            dreadButton.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
         dreadButton.setPrefSize(25, 25);
         dreadButton.setPadding(Insets.EMPTY);
         CornerRadii cr = new CornerRadii(5);
         dreadButton.setBackground(new Background(new BackgroundFill(Color.WHITE, cr, Insets.EMPTY)));
+        
+//        System.out.println(selectedState.getSelectedIt().toString());
+
+        //TODO: alle Ratings pro Bedrohung auf einmal abfragen in dem fxGridMap übergeben wird
+        Rating rating = odb.queryMetric(fxBa, selectedState.getSelectedIt(), dread);
+
+        switch (rating) {
+            case HIGH:
+                dreadButton.setText("H");
+                dreadButton.setTextFill(Color.RED);
+                break;
+            case MEDIUM:
+                dreadButton.setText("M");
+                dreadButton.setTextFill(Color.ORANGE);
+                break;
+            case LOW:
+                dreadButton.setText("L");
+                dreadButton.setTextFill(Color.GREENYELLOW);
+                break;
+            default:
+                dreadButton.setText("?");
+                dreadButton.setTextFill(Color.BLUE);
+                break;
+        }
+
         return dreadButton;
     }
 
@@ -359,7 +384,7 @@ labelStride = new Label(stride.toString());
         for (Stride stride : Stride.values()) {
             row++;
 //            labelStride = new Label(stride.getBezeichnung());
-labelStride = new Label(stride.toString());
+            labelStride = new Label(stride.toString());
             dreadGridPane.add(labelStride, column, row);
         }
 //        dreadGridPane.setGridLinesVisible(true);
