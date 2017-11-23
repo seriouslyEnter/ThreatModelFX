@@ -35,6 +35,8 @@ import dik.adp.app.gui.navigation.NavigationView;
 import dik.adp.app.gui.ra.RaPresenter;
 import dik.adp.app.gui.ra.RaView;
 import dik.adp.app.gui.sharedcommunicationmodel.ViewState;
+import dik.adp.app.gui.sum.SumPresenter;
+import dik.adp.app.gui.sum.SumView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -77,6 +79,8 @@ public class MainscenePresenter implements Initializable {
     private ItView itView;
     private RaPresenter raPresenter;
     private RaView raView;
+    private SumPresenter sumPresenter;
+    private SumView sumView;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -140,9 +144,11 @@ public class MainscenePresenter implements Initializable {
                 this.raPresenter = (RaPresenter) this.raView.getPresenter();
                 this.mainAnchorPane.getChildren().add(this.raView.getView());
             }
-//            if (isMainShowing.equals(sumNavButtonID)) {
-//                this.mainAnchorPane.getChildren().add(this.sumView.getView());
-//            }
+            if (isMainShowing.equals(sumNavButtonID)) {
+                this.sumView = new SumView();
+                this.sumPresenter = (SumPresenter) this.sumView.getPresenter();
+                this.mainAnchorPane.getChildren().add(this.sumView.getView());
+            }
         });
         //----------------------------------------------------------------------
     }

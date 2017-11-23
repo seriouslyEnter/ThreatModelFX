@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox fx:id="sumHBox" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dik.adp.app.gui.sum.SumPresenter">
+   <children>
+      <TreeTableView fx:id="treeTableView" HBox.hgrow="ALWAYS">
+         <columns>
+            <TreeTableColumn fx:id="columnElements" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" text="Column X" />
+            <TreeTableColumn fx:id="columnValues" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" text="Column X" />
+         </columns>
+         <columnResizePolicy>
+            <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TreeTableView>
+      <BarChart fx:id="barChart" title="barChart" HBox.hgrow="ALWAYS">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
+   </children>
+</HBox>
