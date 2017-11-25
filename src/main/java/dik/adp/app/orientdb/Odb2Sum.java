@@ -16,6 +16,8 @@ import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import dik.adp.app.orientdb.odb2Klassen.Rating;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import javafx.scene.control.TreeItem;
 import javax.inject.Inject;
 
 /**
@@ -46,10 +48,13 @@ public class Odb2Sum {
 //                );
 //                rootNode = new FxDfdElement(newElement);
                 rootNode = new FxDfdElement(
-                        v.getId().toString(), "DfdDiagram", v.getProperty("name")
+                        v.getId().toString(),
+                        "",
+                        v.getProperty("@class"),
+                        v.getProperty("name"),
+                        v.getProperty("name")
                 );
             }
-
         } catch (Exception e) {
             graph.shutdown();
         }
@@ -82,16 +87,17 @@ public class Odb2Sum {
         OrientGraphNoTx graph = ogf().getNoTx();
 //        Vertex topBoundary = null;
         List<FxDfdElement> listOfTopBoundarys = new ArrayList<>();
-        Boolean hasHigherBoundary = false;
+//        Boolean hasHigherBoundary = false;
         try {
             for (Vertex v1 : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT "
                     + " FROM DfdElement"
-                    + " WHERE type='Boundary'"
+                    + " WHERE diagram='" + selectedDiagram + "'"
+                    + " AND type='Boundary'"
                     + " AND out('inBoundary').size() = 0"
             )).execute()) {
                 listOfTopBoundarys.add(odb2helper.vertexToFxDfdElement(v1));
-              
+
 //                FxDfdElement newBoundary = new FxDfdElement(
 //                        odb2helper.vertexToFxDfdElement(v)
 //                );
@@ -120,16 +126,39 @@ public class Odb2Sum {
                 //                }
 //                rootBoundary = new FxDfdElement(odb2helper.vertexToFxDfdElement(topBoundary));
             }
-
         } catch (Exception e) {
             graph.shutdown();
         }
 
-        listOfTopBoundarys.forEach(item -> {
+        listOfTopBoundarys.forEach(item
+                -> {
             System.out.println(item.getRid());
-        });
-
+        }
+        );
         return listOfTopBoundarys;
+    }
+
+    public List<TreeItem<FxDfdElement>> queryChildElements(Queue<TreeItem<FxDfdElement>> childElementsQueue, String selectedDiagram) {
+        OrientGraphNoTx graph = ogf().getNoTx();
+        List<TreeItem<FxDfdElement>> childElementList = new ArrayList<>();
+        TreeItem<FxDfdElement> treeItem;
+        if (childElementsQueue.peek() != null) {
+            try {
+                for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                        "SELECT expand(in('inBoundary'))"
+                        + " FROM " + childElementsQueue.peek().getValue().getRid()
+                )).execute()) {
+                    treeItem = new TreeItem<>(odb2helper.vertexToFxDfdElement(v));
+                    //zu childListe hinzufügen
+                    childElementList.add(treeItem);
+                    //zu Queue hinzufügen
+                    childElementsQueue.add(treeItem);
+                }
+            } catch (Exception e) {
+                graph.shutdown();
+            }
+        }
+        return childElementList;
     }
 
 }

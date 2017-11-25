@@ -9,13 +9,16 @@ import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Sum;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import java.net.URL;
-import java.util.Collection;
+import java.util.AbstractQueue;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.ResourceBundle;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.concurrent.ArrayBlockingQueue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
@@ -68,21 +71,21 @@ public class SumPresenter implements Initializable {
     }
 
     private void setupTreeTable() {
+        Queue<TreeItem<FxDfdElement>> childElementsQueue = new LinkedList<>();
+        List<FxDfdElement> childElementList = new ArrayList<>();
+
         // Create three columns
-        TreeTableColumn<FxDfdElement, String> columnElements = new TreeTableColumn<>("Elements");
-        TreeTableColumn<FxDfdElement, String> columnValues = new TreeTableColumn<>("Werte");
-        TreeTableColumn<FxDfdElement, String> column3 = new TreeTableColumn<>("dsfgh");
-        TreeTableColumn<FxDfdElement, String> column4 = new TreeTableColumn<>("Wdfgdsgerte");
-        TreeTableColumn<FxDfdElement, String> column5 = new TreeTableColumn<>("adfgs");
-        TreeTableColumn<FxDfdElement, String> column6 = new TreeTableColumn<>("gfhds");
+        TreeTableColumn<FxDfdElement, String> columnKey = new TreeTableColumn<>("Key");
+        TreeTableColumn<FxDfdElement, String> columnName = new TreeTableColumn<>("Name");
+        TreeTableColumn<FxDfdElement, String> columnType = new TreeTableColumn<>("Type");
 
         // Add columns to the TreeTableView
-        treeTableView.getColumns().addAll(columnElements, columnValues);
+        treeTableView.getColumns().addAll(columnKey, columnName, columnType);
 
         // Set the cell value factory for columns
-        //ACHTUNG RID KEY SIND DIE DATEN DES OBJEKTS                         !!!!!!!!!!!
-        columnElements.setCellValueFactory(new TreeItemPropertyValueFactory<>("rid"));
-        columnValues.setCellValueFactory(new TreeItemPropertyValueFactory<>("key"));
+        columnKey.setCellValueFactory(new TreeItemPropertyValueFactory<>("key"));
+        columnName.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
+        columnType.setCellValueFactory(new TreeItemPropertyValueFactory<>("type"));
 
         //rootNode
         TreeItem<FxDfdElement> rootNode = new TreeItem<>(
@@ -98,7 +101,19 @@ public class SumPresenter implements Initializable {
         rootBoundary.forEach(item -> {
             TreeItem<FxDfdElement> newItem = new TreeItem<>(item);
             rootNode.getChildren().add(newItem);
+            childElementsQueue.add(newItem);
         });
+
+        while (!childElementsQueue.isEmpty()) {
+//            childElementList.addAll(odb.queryChildElements(childElementsQueue, selectedState.getSelectedDiagram()));
+            childElementsQueue.peek().getChildren().addAll(odb.queryChildElements(childElementsQueue, selectedState.getSelectedDiagram()));
+
+            System.out.println(childElementsQueue.peek().getValue().toString());
+            childElementsQueue.poll().getChildren().forEach(item -> {
+                System.out.println(item.getValue().toString());
+            });
+
+        }
 
 //        //funktioniert wollte aber .forEach ausprobieren
 //        for (FxDfdElement fxDfdElement : listOfBoundary) {
