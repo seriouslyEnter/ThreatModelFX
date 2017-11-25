@@ -103,7 +103,7 @@ public class RaPresenter implements Initializable {
         TreeItem kTI = new TreeItem("Kommunikationskanal");
         root.getChildren().add(kTI);
 
-        treeViewElements = odb.queryDfdElements(selectedState.isSelectedDiagram());
+        treeViewElements = odb.queryDfdElements(selectedState.getSelectedDiagram());
 
         treeViewElements.forEach((k, v) -> {
             switch (v.getFxDfdElement().getType()) {

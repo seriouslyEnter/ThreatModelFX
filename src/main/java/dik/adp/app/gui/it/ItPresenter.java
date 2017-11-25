@@ -48,7 +48,7 @@ public class ItPresenter implements Initializable {
     }
 
     private void setupRadioButton() {
-        Integer maxIteration = odb.findMaxIteration(selectedState.isSelectedDiagram());
+        Integer maxIteration = odb.findMaxIteration(selectedState.getSelectedDiagram());
         System.out.println(maxIteration);
 
         for (int i = 0; i < maxIteration; i++) {
@@ -77,11 +77,11 @@ public class ItPresenter implements Initializable {
 
     @FXML
     private void addNewIteration(ActionEvent event) {
-        if (odb.addNewIteration(selectedState.isSelectedDiagram()) == true) {
+        if (odb.addNewIteration(selectedState.getSelectedDiagram()) == true) {
             RadioButton iterationRB = new RadioButton();
             iterationRB.setToggleGroup(this.tg);
-            iterationRB.setText("Iteration: " + odb.findMaxIteration(selectedState.isSelectedDiagram()));
-            iterationRB.setUserData(odb.findMaxIteration(selectedState.isSelectedDiagram()));
+            iterationRB.setText("Iteration: " + odb.findMaxIteration(selectedState.getSelectedDiagram()));
+            iterationRB.setUserData(odb.findMaxIteration(selectedState.getSelectedDiagram()));
             this.itViewVBox.getChildren().add(iterationRB);
         } else {
             System.out.println("addNewIteration: FEHLER");

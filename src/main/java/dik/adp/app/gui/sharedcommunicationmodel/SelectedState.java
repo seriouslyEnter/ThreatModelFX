@@ -21,7 +21,7 @@ public class SelectedState {
         return selectedDiagram;
     }
 
-    public final String isSelectedDiagram() {
+    public final String getSelectedDiagram() {
         return selectedDiagramProperty().get();
     }
 

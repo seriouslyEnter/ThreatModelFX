@@ -91,7 +91,7 @@ public class BaPresenter implements Initializable {
         if (selectedTB != null) {
             System.out.println("ToggleButton: " + selectedTB.getId());
             elements = odb.queryDfdElements(selectedState.getSelectedAt(),
-                    selectedState.isSelectedDiagram(),
+                    selectedState.getSelectedDiagram(),
                     dfdElementType
             );
             //Rows

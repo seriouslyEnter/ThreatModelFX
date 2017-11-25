@@ -17,7 +17,12 @@ import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 public class Odb2Helper {
 
     public FxDfdElement vertexToFxDfdElement(Vertex v) {
-        FxDfdElement vFx = new FxDfdElement(v.getId().toString(), v.getProperty("key"), v.getProperty("type"), v.getProperty("name"), v.getProperty("diagram"), "");
+        FxDfdElement vFx = new FxDfdElement(
+                v.getId().toString(), 
+                v.getProperty("key"), 
+                v.getProperty("type"), 
+                v.getProperty("name"), 
+                v.getProperty("diagram"));
         //den Elementen die Trustboundary hinzufügen
         for (Vertex b : (Iterable<Vertex>) v.getVertices(Direction.OUT, "inBoundary")) {
             vFx.setBoundary(b.getProperty("key"));
@@ -35,4 +40,5 @@ public class Odb2Helper {
         }
         return newFxDFlow;
     }
+
 }

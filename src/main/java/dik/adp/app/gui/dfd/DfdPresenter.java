@@ -263,8 +263,7 @@ public class DfdPresenter implements Initializable {
                 //                typeDfdElementTextField.getText(),
                 typeDfdElementComboBox.getSelectionModel().getSelectedItem().toString(),
                 nameDfdElementTextField.getText(),
-                selectedDfdDiagram.getName(),
-                ""
+                selectedDfdDiagram.getName()
         );
         System.out.println(newDfdElement);
         System.out.println("textfeld " + nameDfdElementTextField.getText());
@@ -291,8 +290,7 @@ public class DfdPresenter implements Initializable {
                 //                typeDfdElementTextField.getText(),
                 typeDfdElementComboBox.getSelectionModel().getSelectedItem().toString(),
                 nameDfdElementTextField.getText(),
-                selectedDfdDiagram.getName(),
-                ""
+                selectedDfdDiagram.getName()
         );
         odb.updateDfdElement(this.selectedDfdElement, editedDfdElement);
         updateDfdElementsTable();
@@ -412,7 +410,7 @@ public class DfdPresenter implements Initializable {
 //        tColElements.setCellValueFactory(new PropertyValueFactory<>("key"));
 //        tColTrustBoundary.setCellValueFactory(new PropertyValueFactory<>("key"));
         DfdDiagram selectedDfdDiagram = (DfdDiagram) dfdComboBox.getSelectionModel().getSelectedItem();
-        FxDfdElement trustBoundary = new FxDfdElement("", "Boundary", "", selectedDfdDiagram.getName(), "");
+        FxDfdElement trustBoundary = new FxDfdElement("", "Boundary", "", selectedDfdDiagram.getName());
 
         ObservableList<String> obsListOfStrings = FXCollections.<String>observableArrayList();
         obsListOfStrings = this.odb.queryTrustBoundaries(trustBoundary);

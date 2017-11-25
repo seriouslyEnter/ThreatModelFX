@@ -27,6 +27,13 @@ public class FxDfdElement {
 
     private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
 
+    //Für RootNode wenn man DfdDiagramm queried
+    public FxDfdElement(String rid, String type, String name) {
+        setRid(rid);
+        setType(type);
+        setName(name);
+    }
+
     public FxDfdElement(String rid, String key, String type, String name, String diagram, String boundary) {
         setRid(rid);
         setKey(key);
@@ -36,15 +43,23 @@ public class FxDfdElement {
         setBoundary(boundary);
     }
 
-    public FxDfdElement(String key, String type, String name, String diagram, String boundary) {
+    public FxDfdElement(String rid, String key, String type, String name, String diagram) {
+        setRid(rid);
         setKey(key);
         setType(type);
         setName(name);
         setDiagram(diagram);
-        setBoundary(boundary);
+    }
+
+    public FxDfdElement(String key, String type, String name, String diagram) {
+        setKey(key);
+        setType(type);
+        setName(name);
+        setDiagram(diagram);
     }
 
     public FxDfdElement(FxDfdElement fxDfdElement) {
+        setKey(fxDfdElement.getRid());
         setKey(fxDfdElement.getKey());
         setType(fxDfdElement.getType());
         setName(fxDfdElement.getName());

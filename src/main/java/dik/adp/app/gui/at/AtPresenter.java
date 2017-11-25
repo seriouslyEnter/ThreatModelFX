@@ -82,7 +82,7 @@ public class AtPresenter implements Initializable {
 
     private void updateATCheckBoxes() {
         obsListAT.clear();
-        obsListAT = odb2at.queryAT(obsListAT, selectedState.isSelectedDiagram());
+        obsListAT = odb2at.queryAT(obsListAT, selectedState.getSelectedDiagram());
         //erste alte checkboxen entfernen
         checkBoxList.clear();
 //        listATVBox.getChildren().clear();
@@ -99,7 +99,7 @@ public class AtPresenter implements Initializable {
             cb.selectedProperty().addListener((ov, oldVal, newVal) -> {
                 System.out.println("CHECKBOX: " + newVal.toString());
                 System.out.println(cb.getText());
-                odb2at.saveSelectedAT(selectedState.isSelectedDiagram(), cb.getText(), newVal);
+                odb2at.saveSelectedAT(selectedState.getSelectedDiagram(), cb.getText(), newVal);
                 updateATCheckBoxes();
                 //selected State zurücksetzen falls der ausgeschaltete checkox gerade aktiv geschaltete ist
                 if (selectedState.getSelectedAt() != null) {
@@ -140,7 +140,7 @@ public class AtPresenter implements Initializable {
                     toggleButton.setSelected(true);
                     toggleButton.setText("active");
                     //save selceted AT in shared State
-                    FxAT newAt = new FxAT(toggleButtonId, true, selectedState.isSelectedDiagram());
+                    FxAT newAt = new FxAT(toggleButtonId, true, selectedState.getSelectedDiagram());
                     selectedState.setSelectedAt(newAt);
                 }
             }
@@ -150,9 +150,9 @@ public class AtPresenter implements Initializable {
 
     @FXML
     void createNewAT(ActionEvent event) {
-        System.out.println(selectedState.isSelectedDiagram());
+        System.out.println(selectedState.getSelectedDiagram());
         System.out.println(newATTextField.getText());
-        odb2at.addATtoDB(newATTextField.getText(), selectedState.isSelectedDiagram());
+        odb2at.addATtoDB(newATTextField.getText(), selectedState.getSelectedDiagram());
         newATTextField.clear();
         updateATCheckBoxes();
     }
