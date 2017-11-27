@@ -8,6 +8,7 @@ package dik.adp.app.gui.sum;
 import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.Odb2Sum;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxIteration;
 import java.net.URL;
 import java.util.AbstractQueue;
 import java.util.ArrayDeque;
@@ -19,15 +20,29 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javax.inject.Inject;
 
 /**
@@ -45,8 +60,7 @@ public class SumPresenter implements Initializable {
 //    @FXML
 //    private TreeTableColumn columnValues;
 
-    @FXML
-    private BarChart barChart;
+    private BarChart<String, Number> barChart;
 
     private Map<TreeItem, String> treeMap = new HashMap<>();
 
@@ -68,6 +82,8 @@ public class SumPresenter implements Initializable {
         AnchorPane.setBottomAnchor(sumHBox, 0.0);
 
         setupTreeTable();
+
+        setupChart();
     }
 
     private void setupTreeTable() {
@@ -112,34 +128,132 @@ public class SumPresenter implements Initializable {
             childElementsQueue.poll().getChildren().forEach(item -> {
                 System.out.println(item.getValue().toString());
             });
-
         }
 
-//        //funktioniert wollte aber .forEach ausprobieren
-//        for (FxDfdElement fxDfdElement : listOfBoundary) {
-//            TreeItem<FxDfdElement> treeItem = new TreeItem<>(fxDfdElement);
-//            boundaryTItemList.add(treeItem);
-//        }
-//        listOfBoundary.forEach(item -> {
-//            TreeItem<FxDfdElement> treeItem = new TreeItem<>(item);
-//            rootNode.getChildren().add(treeItem);
-//            System.out.println(treeItem.toString());
-//        });
-//        // Create TreeItems
-//        FxDfdElement ram = new FxDfdElement("Ram", "Singh", LocalDate.of(1930, 1, 1));
-//        FxDfdElement janki = new FxDfdElement("Janki", "Sharan", LocalDate.of(1956, 12, 17));
-//        
-//        
-//        //Add TreeItems
-// 
-//        
-//        TreeItem<FxDfdElement> jankiNode = new TreeItem<>(janki);
+        // Turn off multiple-selection mode for the TreeTableView
+        TreeTableViewSelectionModel<FxDfdElement> selectionModel = treeTableView.getSelectionModel();
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
+
+        //Add ChangeListener
+        ObservableList<Integer> list = selectionModel.getSelectedIndices();
+        // Add a ListChangeListener
+        list.addListener((ListChangeListener.Change<? extends Integer> change) -> {
+            System.out.println("Row selection has changed");
+            System.out.println(selectionModel.getSelectedItem().getValue().toString());
+            updateChart(selectionModel.getSelectedItem().getValue());
+        });
+
+    }
+
+    private void updateChart(FxDfdElement fxDfdElement) {
+
+        Map<Integer, FxIteration> dProIt = odb.calculateRisk(fxDfdElement, selectedState.getSelectedDiagram());
+
+        ObservableList<XYChart.Series<String, Number>> dataList
+                = FXCollections.<XYChart.Series<String, Number>>observableArrayList();
+
+        XYChart.Series<String, Number> seriesData = new XYChart.Series<>();
+
+        dProIt.forEach((i, a) -> {
+            XYChart.Data<String, Number> data = new XYChart.Data<>("Iteration " + i.toString(), a.getRisk());
+            seriesData.getData().add(data);
+        });
+
+        dataList.addAll(seriesData);
+
+        this.barChart.setData(dataList);
+        
+        Node n0 = this.barChart.lookup(".data0.chart-bar");
+    n0.setStyle("-fx-bar-fill: red");
+    
+            Node n1 = this.barChart.lookup(".data1.chart-bar");
+    n1.setStyle("-fx-bar-fill: green");
+    
+                Node n2 = this.barChart.lookup(".data2.chart-bar");
+    n2.setStyle("-fx-bar-fill: #ee42f4");
+    
+
+    }
+
+    private void setupChart() {
+
+//        final String austria = "Austria";
+//        final String brazil = "Brazil";
+//        final String france = "France";
+//        final String italy = "Italy";
+//        final String usa = "USA";
+        CategoryAxis iterationXAxis = new CategoryAxis();
+        NumberAxis riskYAxis = new NumberAxis();
+        
+        
+//        iterationXAxis.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
+        
+        
+//        barChart = new BarChart<String, Number>(xAxis, yAxis);
+        this.barChart = new BarChart<String, Number>(iterationXAxis, riskYAxis);
+
+        barChart.setTitle("Risikoentwicklung");
+        iterationXAxis.setLabel("Iteration");
+        riskYAxis.setLabel("Risk");
+
+//        XYChart.Series series1 = new XYChart.Series();
+//        series1.setName("2003");
+//        series1.getData().add(new XYChart.Data(austria, 25601.34));
+//        series1.getData().add(new XYChart.Data(brazil, 20148.82));
+//        series1.getData().add(new XYChart.Data(france, 10000));
+//        series1.getData().add(new XYChart.Data(italy, 35407.15));
+//        series1.getData().add(new XYChart.Data(usa, 12000));
 //
-//        // Add children to the root node
-//        rootNode.getChildren().addAll(jankiNode);
-//        
-//        // Set the model for the TreeTableView
-//        treeTableView.setRoot(rootNode);
+//        XYChart.Series series2 = new XYChart.Series();
+//        series2.setName("2004");
+//        series2.getData().add(new XYChart.Data(austria, 57401.85));
+//        series2.getData().add(new XYChart.Data(brazil, 41941.19));
+//        series2.getData().add(new XYChart.Data(france, 45263.37));
+//        series2.getData().add(new XYChart.Data(italy, 117320.16));
+//        series2.getData().add(new XYChart.Data(usa, 14845.27));
+//
+//        XYChart.Series series3 = new XYChart.Series();
+//        series3.setName("2005");
+//        series3.getData().add(new XYChart.Data(austria, 45000.65));
+//        series3.getData().add(new XYChart.Data(brazil, 44835.76));
+//        series3.getData().add(new XYChart.Data(france, 18722.18));
+//        series3.getData().add(new XYChart.Data(italy, 17557.31));
+//        series3.getData().add(new XYChart.Data(usa, 92633.68));
+//
+//        barChart.getData().addAll(series1, series2, series3);
+        sumHBox.getChildren().add(barChart);
+
+//        CategoryAxis xAxis = new CategoryAxis();
+//        xAxis.setLabel("Iteration");
+//        NumberAxis yAxis = new NumberAxis();
+//        yAxis.setLabel("Risk");
+////        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+//        barChart = new BarChart<>(xAxis, yAxis);
+//        barChart.setTitle("Risikoentwicklung");
+//
+//        XYChart.Data<String, Number> data1 = new XYChart.Data<>("Iteration 1", 3);
+//        XYChart.Data<String, Number> data2 = new XYChart.Data<>("Iteration 2", 2);
+//        XYChart.Data<String, Number> data3 = new XYChart.Data<>("Iteration 3", 1);
+//
+//        XYChart.Series<String, Number> seriesIteration = new XYChart.Series<>();
+//        seriesIteration.setName("Iteration");
+//        seriesIteration.getData().addAll(data1, data2, data3);
+//
+//        ObservableList<XYChart.Series<String, Number>> data
+//                = FXCollections.<XYChart.Series<String, Number>>observableArrayList();
+//        data.addAll(seriesIteration);
+//
+//        // Set the data for the chart
+////ObservableList<XYChart.Series<String,Number>> chartData = new a
+////chart.setData(chartData);
+////        
+//        // Set the data for the chart
+//        barChart.setData(data);
+//
+////// Set the data for the chart
+////        ObservableList<XYChart.Series<String, Number>> chartData
+////                = XYChartDataUtil.getYearSeries();
+////        barChart.setData(chartData);
     }
 
 }
