@@ -10,8 +10,6 @@ import dik.adp.app.orientdb.Odb2Sum;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import dik.adp.app.orientdb.odb2Klassen.FxIteration;
 import java.net.URL;
-import java.util.AbstractQueue;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,13 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
-import java.util.concurrent.ArrayBlockingQueue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -38,11 +34,7 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javax.inject.Inject;
 
 /**
@@ -60,7 +52,12 @@ public class SumPresenter implements Initializable {
 //    @FXML
 //    private TreeTableColumn columnValues;
 
+    @FXML
     private BarChart<String, Number> barChart;
+    @FXML
+    private CategoryAxis xAxis;
+    @FXML
+    private NumberAxis yAxis;
 
     private Map<TreeItem, String> treeMap = new HashMap<>();
 
@@ -147,12 +144,12 @@ public class SumPresenter implements Initializable {
 
     private void updateChart(FxDfdElement fxDfdElement) {
 
-        Map<Integer, FxIteration> dProIt = odb.calculateRisk(fxDfdElement, selectedState.getSelectedDiagram());
-
         ObservableList<XYChart.Series<String, Number>> dataList
                 = FXCollections.<XYChart.Series<String, Number>>observableArrayList();
 
         XYChart.Series<String, Number> seriesData = new XYChart.Series<>();
+
+        Map<Integer, FxIteration> dProIt = odb.calculateRisk(fxDfdElement, selectedState.getSelectedDiagram());
 
         dProIt.forEach((i, a) -> {
             XYChart.Data<String, Number> data = new XYChart.Data<>("Iteration " + i.toString(), a.getRisk());
@@ -160,42 +157,73 @@ public class SumPresenter implements Initializable {
         });
 
         dataList.addAll(seriesData);
-
-        this.barChart.setData(dataList);
+        barChart.setData(dataList);
         
-        Node n0 = this.barChart.lookup(".data0.chart-bar");
-    n0.setStyle("-fx-bar-fill: red");
-    
-            Node n1 = this.barChart.lookup(".data1.chart-bar");
-    n1.setStyle("-fx-bar-fill: green");
-    
-                Node n2 = this.barChart.lookup(".data2.chart-bar");
-    n2.setStyle("-fx-bar-fill: #ee42f4");
-    
 
+        //color only after "this.barChart.setData(dataList);" otherwise nullpointer
+        seriesData.getData().forEach((d) -> {
+            if (d.YValueProperty().getValue().doubleValue() >= 2.5) {
+                d.getNode().setStyle("-fx-bar-fill: red");
+            } else if (d.YValueProperty().getValue().doubleValue() > 1.5 & d.YValueProperty().getValue().doubleValue() < 2.5) {
+                d.getNode().setStyle("-fx-bar-fill: orange");
+            } else if (d.YValueProperty().getValue().doubleValue() <= 1.5) {
+                d.getNode().setStyle("-fx-bar-fill: greenyellow");
+            }
+        });
+
+//        //color
+//        this.barChart.getData().get(0).getNode().getProperties().
+//                
+//        if (a.getRisk().doubleValue() >= 2.5) {
+//            data.getNode().setStyle("-fx-bar-fill: red");
+//
+//        } else if (a.getRisk().doubleValue() > 1.5 & a.getRisk().doubleValue() < 2.5) {
+//            data.getNode().setStyle("-fx-bar-fill: yellow");
+//
+//        } else if (a.getRisk().doubleValue() <= 1.5) {
+//            data.getNode().setStyle("-fx-bar-fill: green");
+//
+//        }
+//        if () {
+//            Node n0 = this.barChart.lookup(".data0.chart-bar");
+//            n0.setStyle("-fx-bar-fill: red");
+//        } else if () {
+//            Node n1 = this.barChart.lookup(".data1.chart-bar");
+//            n1.setStyle("-fx-bar-fill: green");
+//        } else if () {
+//            Node n2 = this.barChart.lookup(".data2.chart-bar");
+//            n2.setStyle("-fx-bar-fill: #ee42f4");
+//        } else {
+//
+//        }
     }
 
     private void setupChart() {
 
+//        CategoryAxis iterationXAxis = new CategoryAxis();
+//        NumberAxis riskYAxis = new NumberAxis();
+////        iterationXAxis.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
+////        barChart = new BarChart<String, Number>(xAxis, yAxis);
+//        this.barChart = new BarChart<String, Number>(iterationXAxis, riskYAxis);
+        barChart.setTitle("Risikoentwicklung");
+//        iterationXAxis.setLabel("Iterations");
+//        riskYAxis.setLabel("Risk");
+
+        xAxis.setLabel("Iterations");
+        yAxis.setLabel("Risk");
+
+        barChart.setLegendVisible(false);
+        yAxis.setAutoRanging(false);
+        yAxis.setUpperBound(3.5d);
+//        riskYAxis.setAutoRanging(false);
+//        riskYAxis.setUpperBound(3.5d);
+
+//                sumHBox.getChildren().add(barChart);
 //        final String austria = "Austria";
 //        final String brazil = "Brazil";
 //        final String france = "France";
 //        final String italy = "Italy";
 //        final String usa = "USA";
-        CategoryAxis iterationXAxis = new CategoryAxis();
-        NumberAxis riskYAxis = new NumberAxis();
-        
-        
-//        iterationXAxis.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
-        
-        
-//        barChart = new BarChart<String, Number>(xAxis, yAxis);
-        this.barChart = new BarChart<String, Number>(iterationXAxis, riskYAxis);
-
-        barChart.setTitle("Risikoentwicklung");
-        iterationXAxis.setLabel("Iteration");
-        riskYAxis.setLabel("Risk");
-
 //        XYChart.Series series1 = new XYChart.Series();
 //        series1.setName("2003");
 //        series1.getData().add(new XYChart.Data(austria, 25601.34));
@@ -221,8 +249,6 @@ public class SumPresenter implements Initializable {
 //        series3.getData().add(new XYChart.Data(usa, 92633.68));
 //
 //        barChart.getData().addAll(series1, series2, series3);
-        sumHBox.getChildren().add(barChart);
-
 //        CategoryAxis xAxis = new CategoryAxis();
 //        xAxis.setLabel("Iteration");
 //        NumberAxis yAxis = new NumberAxis();

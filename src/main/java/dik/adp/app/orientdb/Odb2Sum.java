@@ -10,12 +10,16 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
+import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.Dread;
 import dik.adp.app.orientdb.odb2Klassen.FxBa;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
+import dik.adp.app.orientdb.odb2Klassen.FxIteration;
 import dik.adp.app.orientdb.odb2Klassen.Rating;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import javafx.scene.control.TreeItem;
 import javax.inject.Inject;
@@ -28,6 +32,9 @@ public class Odb2Sum {
 
     @Inject
     Odb2Helper odb2helper;
+    
+    @Inject
+    odb2It odb2It;
 
     private OrientGraphFactory ogf() {
         OrientGraphFactory factory = new OrientGraphFactory(
@@ -161,4 +168,40 @@ public class Odb2Sum {
         return childElementList;
     }
 
+    public Map<Integer, FxIteration> calculateRisk(FxDfdElement fxDfdElement, String dfdDiagram) {
+        Map<Integer, FxIteration> dProIt = new HashMap<>();
+        FxIteration averageRiskProIteration;
+        OrientGraphNoTx graph = ogf().getNoTx();
+        try {
+            Integer maxIteration = odb2It.findMaxIteration(dfdDiagram);
+            for (int i = 1; i <= maxIteration; i++) {
+                averageRiskProIteration = new FxIteration(0, 0);
+                //Setze Iteration
+                averageRiskProIteration.setIteratoin(i);
+                //Setze Durchschnitt pro Bedrohung
+                for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                        "SELECT expand(in('targets').out('has_iteration')[iteration=" + i + "].out('metric')) "
+                                + "FROM " + fxDfdElement.getRid()
+                )).execute()) {
+                    //berechne Druchschnitt
+                    Double dSchnitt = 0d;
+                    for (Dread dread : Dread.values()) {
+                        if (v.getProperty(dread.name()) == null ) {
+                            dSchnitt = dSchnitt + 0d;
+                        } else {
+                            Integer zw = v.getProperty(dread.name());
+                            dSchnitt = dSchnitt + zw.doubleValue();
+//                            dSchnitt = dSchnitt + (Double) v.getProperty(dread.name());
+                        }
+                    }
+                    averageRiskProIteration.setRisk(dSchnitt / 5); //Durchschnitt
+                }
+                dProIt.put(i, averageRiskProIteration);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+            graph.shutdown();
+        }
+        return dProIt;
+    }
 }

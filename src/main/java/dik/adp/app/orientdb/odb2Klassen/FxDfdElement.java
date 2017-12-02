@@ -24,7 +24,7 @@ public class FxDfdElement {
     private StringProperty name;
     private StringProperty diagram;
     private StringProperty boundary;
-
+    
     private ObservableList<FxDfdElement> elements = FXCollections.observableArrayList();
 
     //Für RootNode wenn man DfdDiagramm queried
