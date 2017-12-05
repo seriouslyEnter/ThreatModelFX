@@ -83,6 +83,8 @@ public class SumPresenter implements Initializable {
         setupChart();
     }
 
+    
+    //TODO: Elemente die nicht unter einer Vertauengrenze müssen noch hinzugefügt werden unter der rootNode
     private void setupTreeTable() {
         Queue<TreeItem<FxDfdElement>> childElementsQueue = new LinkedList<>();
         List<FxDfdElement> childElementList = new ArrayList<>();
@@ -149,7 +151,12 @@ public class SumPresenter implements Initializable {
 
         XYChart.Series<String, Number> seriesData = new XYChart.Series<>();
 
-        Map<Integer, FxIteration> dProIt = odb.calculateRisk(fxDfdElement, selectedState.getSelectedDiagram());
+        Map<Integer, FxIteration> dProIt;
+        if (fxDfdElement.getType().contentEquals("Boundary") || fxDfdElement.getType().contentEquals("DfdDiagram")) {
+            dProIt = odb.calculateRiskOfParentElement(fxDfdElement, selectedState.getSelectedDiagram());
+        } else {
+            dProIt = odb.calculateRiskOfLeafElement(fxDfdElement, selectedState.getSelectedDiagram());
+        }
 
         dProIt.forEach((i, a) -> {
             XYChart.Data<String, Number> data = new XYChart.Data<>("Iteration " + i.toString(), a.getRisk());
@@ -158,7 +165,6 @@ public class SumPresenter implements Initializable {
 
         dataList.addAll(seriesData);
         barChart.setData(dataList);
-        
 
         //color only after "this.barChart.setData(dataList);" otherwise nullpointer
         seriesData.getData().forEach((d) -> {

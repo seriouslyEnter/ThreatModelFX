@@ -32,7 +32,7 @@ public class Odb2Sum {
 
     @Inject
     Odb2Helper odb2helper;
-    
+
     @Inject
     odb2It odb2It;
 
@@ -168,25 +168,25 @@ public class Odb2Sum {
         return childElementList;
     }
 
-    public Map<Integer, FxIteration> calculateRisk(FxDfdElement fxDfdElement, String dfdDiagram) {
+    public Map<Integer, FxIteration> calculateRiskOfLeafElement(FxDfdElement fxDfdElement, String selectedDiagram) {
         Map<Integer, FxIteration> dProIt = new HashMap<>();
         FxIteration averageRiskProIteration;
         OrientGraphNoTx graph = ogf().getNoTx();
         try {
-            Integer maxIteration = odb2It.findMaxIteration(dfdDiagram);
+            Integer maxIteration = odb2It.findMaxIteration(selectedDiagram);
             for (int i = 1; i <= maxIteration; i++) {
                 averageRiskProIteration = new FxIteration(0, 0);
                 //Setze Iteration
-                averageRiskProIteration.setIteratoin(i);
+                averageRiskProIteration.setIteration(i);
                 //Setze Durchschnitt pro Bedrohung
                 for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
-                        "SELECT expand(in('targets').out('has_iteration')[iteration=" + i + "].out('metric')) "
-                                + "FROM " + fxDfdElement.getRid()
+                        "SELECT expand(in('targets').out('has_iteration')[iteration=" + i + "].out('metric'))"
+                        + " FROM " + fxDfdElement.getRid()
                 )).execute()) {
                     //berechne Druchschnitt
                     Double dSchnitt = 0d;
                     for (Dread dread : Dread.values()) {
-                        if (v.getProperty(dread.name()) == null ) {
+                        if (v.getProperty(dread.name()) == null) {
                             dSchnitt = dSchnitt + 0d;
                         } else {
                             Integer zw = v.getProperty(dread.name());
@@ -201,6 +201,105 @@ public class Odb2Sum {
         } catch (Exception e) {
             System.err.println(e);
             graph.shutdown();
+        }
+        return dProIt;
+    }
+
+    
+    public Map<Integer, FxIteration> calculateRiskOfParentElement(FxDfdElement fxDfdElement, String selectedDiagram) {
+        Map<Integer, FxIteration> dProIt = new HashMap<>();
+        //prüfe ob Sonderfall rootNode/ganzes DfdDiagramm oder(else)
+        if (fxDfdElement.getType().contentEquals("DfdDiagram")) {
+            Map<Integer, FxIteration> childDProIt;
+//        FxIteration averageRiskProIteration;
+            Integer addedElements = 0;
+            OrientGraphNoTx graph = ogf().getNoTx();
+            try {
+                Integer maxIteration = odb2It.findMaxIteration(selectedDiagram);
+                //erstelle leere Objekte für Parent
+                for (int i = 1; i <= maxIteration; i++) {
+                    dProIt.put(i, new FxIteration(i, 0));
+                }
+//            for (int i = 1; i <= maxIteration; i++) {
+//                averageRiskProIteration = new FxIteration(0, 0);
+//                //Setze Iteration
+//                averageRiskProIteration.setIteration(i);
+                //find children
+                for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                        "SELECT"
+                        + " FROM DfdElement"
+                        + " WHERE diagram='" + selectedDiagram + "' AND type!='Boundary'"
+                )).execute()) {
+                    childDProIt = calculateRiskOfLeafElement(odb2helper.vertexToFxDfdElement(v), selectedDiagram);
+                    //remember how many Elements were added
+                    addedElements++;
+                    //adding old and new Risk for every Iteration
+                    for (Integer iteration : childDProIt.keySet()) {
+                        FxIteration oldValue = dProIt.get(iteration);
+                        FxIteration newValue = childDProIt.get(iteration);
+                        //adding old and new Risk
+                        oldValue.setRisk(oldValue.getRisk().doubleValue() + newValue.getRisk().doubleValue());
+                    }
+                }
+                //calculate Average
+                for (Map.Entry<Integer, FxIteration> entry : dProIt.entrySet()) {
+                    Integer key = entry.getKey();
+                    FxIteration value = entry.getValue();
+                    value.setRisk(value.getRisk().doubleValue() / addedElements);
+                }
+//            }
+            } catch (Exception e) {
+                System.err.println(e);
+                graph.shutdown();
+            }
+        } else {
+            Map<Integer, FxIteration> childDProIt;
+//        FxIteration averageRiskProIteration;
+            Integer addedElements = 0;
+            OrientGraphNoTx graph = ogf().getNoTx();
+            try {
+                Integer maxIteration = odb2It.findMaxIteration(selectedDiagram);
+                //erstelle leere Objekte für Parent
+                for (int i = 1; i <= maxIteration; i++) {
+                    dProIt.put(i, new FxIteration(i, 0));
+                }
+//            for (int i = 1; i <= maxIteration; i++) {
+//                averageRiskProIteration = new FxIteration(0, 0);
+//                //Setze Iteration
+//                averageRiskProIteration.setIteration(i);
+                //find children
+                for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                        //                    "SELECT expand(in('inBoundary')) FROM " + fxDfdElement.getRid()
+                        "SELECT "
+                        + " FROM "
+                        + " ( "
+                        + " TRAVERSE in('inBoundary') "
+                        + " FROM " + fxDfdElement.getRid()
+                        + " ) "
+                        + " WHERE type!='Boundary'"
+                )).execute()) {
+                    childDProIt = calculateRiskOfLeafElement(odb2helper.vertexToFxDfdElement(v), selectedDiagram);
+                    //remember how many Elements were added
+                    addedElements++;
+                    //adding old and new Risk for every Iteration
+                    for (Integer iteration : childDProIt.keySet()) {
+                        FxIteration oldValue = dProIt.get(iteration);
+                        FxIteration newValue = childDProIt.get(iteration);
+                        //adding old and new Risk
+                        oldValue.setRisk(oldValue.getRisk().doubleValue() + newValue.getRisk().doubleValue());
+                    }
+                }
+                //calculate Average
+                for (Map.Entry<Integer, FxIteration> entry : dProIt.entrySet()) {
+                    Integer key = entry.getKey();
+                    FxIteration value = entry.getValue();
+                    value.setRisk(value.getRisk().doubleValue() / addedElements);
+                }
+//            }
+            } catch (Exception e) {
+                System.err.println(e);
+                graph.shutdown();
+            }
         }
         return dProIt;
     }

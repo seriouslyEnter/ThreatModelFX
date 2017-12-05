@@ -12,11 +12,11 @@ import java.util.Objects;
  * @author gu35nxt
  */
 public class FxIteration {
-    private Integer iteratoin;
+    private Integer iteration;
     private Number risk;
 
-    public FxIteration(Integer iteratoin, Number risk) {
-        this.iteratoin = iteratoin;
+    public FxIteration(Integer iteration, Number risk) {
+        this.iteration = iteration;
         this.risk = risk;
     }
 
@@ -28,18 +28,18 @@ public class FxIteration {
         this.risk = risk;
     }
 
-    public Integer getIteratoin() {
-        return iteratoin;
+    public Integer getIteration() {
+        return iteration;
     }
 
-    public void setIteratoin(Integer iteratoin) {
-        this.iteratoin = iteratoin;
+    public void setIteration(Integer iteration) {
+        this.iteration = iteration;
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.iteratoin);
+        hash = 23 * hash + Objects.hashCode(this.iteration);
         hash = 23 * hash + Objects.hashCode(this.risk);
         return hash;
     }
@@ -56,7 +56,7 @@ public class FxIteration {
             return false;
         }
         final FxIteration other = (FxIteration) obj;
-        if (!Objects.equals(this.iteratoin, other.iteratoin)) {
+        if (!Objects.equals(this.iteration, other.iteration)) {
             return false;
         }
         if (!Objects.equals(this.risk, other.risk)) {
@@ -67,7 +67,7 @@ public class FxIteration {
 
     @Override
     public String toString() {
-        return "FxIteration{" + "iteratoin=" + iteratoin + ", risk=" + risk + '}';
+        return "FxIteration{" + "iteration=" + iteration + ", risk=" + risk + '}';
     }
     
     
