@@ -10,7 +10,6 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
-import dik.adp.app.orientdb.odb2Klassen.DfdDiagram;
 import dik.adp.app.orientdb.odb2Klassen.Dread;
 import dik.adp.app.orientdb.odb2Klassen.FxBa;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
@@ -71,23 +70,6 @@ public class Odb2Sum {
             System.out.println(rootNode.toString());
         }
         return rootNode;
-    }
-
-    public void createerftgsdfgsgDREAD(FxBa fxBa, Integer iteration, Rating rating, Dread dread) {
-        OrientGraph graph = ogf().getTx();
-        try {
-            //finde die Iteration and die Dread angehängt wird
-//            System.out.println(fxBa.getRid());
-            for (Vertex vDread : (Iterable<Vertex>) graph.command(new OCommandSQL()).execute()) {
-
-            }
-            graph.commit();
-        } catch (Exception e) {
-            System.out.println(e);
-            graph.rollback();
-            graph.shutdown();
-        }
-//        Collections.sort(result, (a, b) -> a.getDfdElement().getKey().compareToIgnoreCase(b.getDfdElement().getKey()));
     }
 
     public List<FxDfdElement> queryTopBoundary(String selectedDiagram) {
@@ -168,6 +150,30 @@ public class Odb2Sum {
         return childElementList;
     }
 
+    public List<TreeItem<FxDfdElement>> queryElementsWithoutBoundary(String selectedDiagram) {
+        OrientGraphNoTx graph = ogf().getNoTx();
+        List<TreeItem<FxDfdElement>> elementList = new ArrayList<>();
+        try {
+            //finde die Iteration and die Dread angehängt wird
+//            System.out.println(fxBa.getRid());
+            for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
+                    "SELECT"
+                    + " FROM DfdElement"
+                    + " WHERE out('inBoundary').size() = 0 AND type!='Boundary'"
+            )).execute()) {
+                TreeItem treeItem = new TreeItem<>(odb2helper.vertexToFxDfdElement(v));
+                elementList.add(treeItem);
+            }
+            graph.commit();
+        } catch (Exception e) {
+            System.out.println(e);
+            graph.rollback();
+            graph.shutdown();
+        }
+//        Collections.sort(result, (a, b) -> a.getDfdElement().getKey().compareToIgnoreCase(b.getDfdElement().getKey()));
+        return elementList;
+    }
+
     public Map<Integer, FxIteration> calculateRiskOfLeafElement(FxDfdElement fxDfdElement, String selectedDiagram) {
         Map<Integer, FxIteration> dProIt = new HashMap<>();
         FxIteration averageRiskProIteration;
@@ -205,10 +211,9 @@ public class Odb2Sum {
         return dProIt;
     }
 
-    
     public Map<Integer, FxIteration> calculateRiskOfParentElement(FxDfdElement fxDfdElement, String selectedDiagram) {
         Map<Integer, FxIteration> dProIt = new HashMap<>();
-        //prüfe ob Sonderfall rootNode/ganzes DfdDiagramm oder(else)
+        //prüfe ob Sonderfall rootNode/ganzes DfdDiagramm oder(else) einzelnes Boundary
         if (fxDfdElement.getType().contentEquals("DfdDiagram")) {
             Map<Integer, FxIteration> childDProIt;
 //        FxIteration averageRiskProIteration;
@@ -303,4 +308,5 @@ public class Odb2Sum {
         }
         return dProIt;
     }
+
 }

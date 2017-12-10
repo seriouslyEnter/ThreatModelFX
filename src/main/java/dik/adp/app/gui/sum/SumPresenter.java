@@ -84,7 +84,6 @@ public class SumPresenter implements Initializable {
     }
 
     
-    //TODO: Elemente die nicht unter einer Vertauengrenze müssen noch hinzugefügt werden unter der rootNode
     private void setupTreeTable() {
         Queue<TreeItem<FxDfdElement>> childElementsQueue = new LinkedList<>();
         List<FxDfdElement> childElementList = new ArrayList<>();
@@ -108,26 +107,30 @@ public class SumPresenter implements Initializable {
         );
         treeTableView.setRoot(rootNode);
 
-        //Vertrauensgrenze oder System
-        List<FxDfdElement> rootBoundary = odb.queryTopBoundary(
-                selectedState.getSelectedDiagram()
-        );
+        //Vertrauensgrenze oder System die top Boundarys sind dem root anhängen
+        List<FxDfdElement> rootBoundary = odb.queryTopBoundary(selectedState.getSelectedDiagram());
 
+        //Add all rootBoundaries/TopBoundary to rootNode
         rootBoundary.forEach(item -> {
             TreeItem<FxDfdElement> newItem = new TreeItem<>(item);
             rootNode.getChildren().add(newItem);
+            //add to Queue to query further for more Elements
             childElementsQueue.add(newItem);
         });
 
+        //work the queue until all Elements are queried and added to TreeTable
         while (!childElementsQueue.isEmpty()) {
-//            childElementList.addAll(odb.queryChildElements(childElementsQueue, selectedState.getSelectedDiagram()));
             childElementsQueue.peek().getChildren().addAll(odb.queryChildElements(childElementsQueue, selectedState.getSelectedDiagram()));
-
-            System.out.println(childElementsQueue.peek().getValue().toString());
             childElementsQueue.poll().getChildren().forEach(item -> {
                 System.out.println(item.getValue().toString());
             });
         }
+        
+        //Add Elements without a Boundary to rootNode
+        odb.queryElementsWithoutBoundary(selectedState.getSelectedDiagram());
+        
+        rootNode.getChildren().addAll(odb.queryElementsWithoutBoundary(selectedState.getSelectedDiagram()));
+        
 
         // Turn off multiple-selection mode for the TreeTableView
         TreeTableViewSelectionModel<FxDfdElement> selectionModel = treeTableView.getSelectionModel();
@@ -141,7 +144,6 @@ public class SumPresenter implements Initializable {
             System.out.println(selectionModel.getSelectedItem().getValue().toString());
             updateChart(selectionModel.getSelectedItem().getValue());
         });
-
     }
 
     private void updateChart(FxDfdElement fxDfdElement) {
