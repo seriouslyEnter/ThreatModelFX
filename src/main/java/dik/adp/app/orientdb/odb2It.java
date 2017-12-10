@@ -10,12 +10,16 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
+import javax.inject.Inject;
 
 /**
  *
  * @author gu35nxt
  */
 public class odb2It {
+    
+        @Inject
+    OdbConnection odbc;
 
     private OrientGraphFactory ogf() {
         OrientGraphFactory factory = new OrientGraphFactory(

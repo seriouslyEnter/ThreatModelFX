@@ -13,6 +13,7 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import java.util.Collections;
 import javafx.collections.ObservableList;
+import javax.inject.Inject;
 
 /**
  *
@@ -20,9 +21,14 @@ import javafx.collections.ObservableList;
  */
 public class odb2AT {
 
+    @Inject
+    OdbConnection odbc;
+
     public void addATtoDB(String newATextField, String selectedDiagramShowing) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             //create new AT
             Vertex at = graph.addVertex("class:AT");
@@ -44,8 +50,10 @@ public class odb2AT {
     }
 
     public ObservableList<FxAT> queryAT(ObservableList<FxAT> obsListAT, String selectedDiagram) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
@@ -68,13 +76,14 @@ public class odb2AT {
     }
 
     public void saveSelectedAT(String selectedDiagram, String at, Boolean newVal) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
-                            "SELECT FROM AT WHERE name='" + at + "' "
-                                    + "AND in('hasAT').name = '" + selectedDiagram +"'"
-                    )).execute()) {
+                    "SELECT FROM AT WHERE name='" + at + "' "
+                    + "AND in('hasAT').name = '" + selectedDiagram + "'"
+            )).execute()) {
                 System.out.println("Name : " + v.getProperty("name"));
                 v.setProperty("selected", newVal.toString());
             }

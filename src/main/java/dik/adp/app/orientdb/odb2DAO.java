@@ -25,15 +25,18 @@ import javax.inject.Inject;
  * @author gu35nxt
  */
 public class odb2DAO {
-    
+
     @Inject
     Odb2Helper odb2Helper;
+    @Inject
+    OdbConnection odbc;
 
     public ObservableList<DfdDiagram> queryDfdDiagram(ObservableList<DfdDiagram> obsListOfDfds) { //maybe static
-        // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
-        OrientGraph graph = factory.getTx();
+//        // AT THE BEGINNING
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        // EVERY TIME YOU NEED A GRAPH INSTANCE
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
@@ -69,10 +72,11 @@ public class odb2DAO {
 //        return dfdList;
 //    }
     public void addDfdToDb(String newDfd) {
-        // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
-        OrientGraph graph = factory.getTx();
+//        // AT THE BEGINNING
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        // EVERY TIME YOU NEED A GRAPH INSTANCE
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             Vertex v = graph.addVertex("class:DfdDiagram");
             v.setProperty("name", newDfd);
@@ -84,8 +88,9 @@ public class odb2DAO {
     }
 
     public ObservableList<FxDfdElement> queryDfdElements(ObservableList<FxDfdElement> listDfdElemente, DfdDiagram selectedDiagram) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
@@ -104,10 +109,11 @@ public class odb2DAO {
     }
 
     public void addNewDfdElementToDb(FxDfdElement newDfdElement) {
-        // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
-        OrientGraph graph = factory.getTx();
+//         AT THE BEGINNING
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//         EVERY TIME YOU NEED A GRAPH INSTANCE
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             Vertex v = graph.addVertex("class:DfdElement");
             v.setProperty("key", newDfdElement.getKey());
@@ -122,10 +128,11 @@ public class odb2DAO {
     }
 
     public void deleteDfdElement(FxDfdElement selectedDfdElement) {
-        // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
-        OrientGraph graph = factory.getTx();
+//        // AT THE BEGINNING
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        // EVERY TIME YOU NEED A GRAPH INSTANCE
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
 //            for (Vertex v : graph.getVertices("DfdElement.key", selectedDfdElement.getKey()   )) {
 //                System.out.println("Delete vertex: " + v);
@@ -146,10 +153,11 @@ public class odb2DAO {
     }
 
     public void updateDfdElement(FxDfdElement selectedDfdElement, FxDfdElement editedDfdElement) {
-        // AT THE BEGINNING
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        // EVERY TIME YOU NEED A GRAPH INSTANCE
-        OrientGraph graph = factory.getTx();
+//        // AT THE BEGINNING
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        // EVERY TIME YOU NEED A GRAPH INSTANCE
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
 //            for (Vertex v : graph.getVertices("DfdElement.key", selectedDfdElement.getKey()   )) {
 //                System.out.println("Delete vertex: " + v);
@@ -227,8 +235,9 @@ public class odb2DAO {
 //        }
 //    }
     public ObservableList<FxDFlow> queryFxDFlows(ObservableList<FxDFlow> listFxDFlow, DfdDiagram selectedDiagram) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(
@@ -269,8 +278,9 @@ public class odb2DAO {
 //    }
     //only deletes the Edges keeps DfdElement(Dflow)
     public void deleteDFlow(FxDFlow selectedDFlow) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT FROM DfdElement WHERE "
@@ -312,8 +322,9 @@ public class odb2DAO {
 //    }
     //changes connections
     public void updateDFlow(FxDFlow oldDFlow, FxDFlow editedDFlow) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex vDFlow : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT FROM DfdElement WHERE "
@@ -351,8 +362,9 @@ public class odb2DAO {
     }
 
     public ObservableList<String> queryTrustBoundaries(FxDfdElement trustBoundary) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         ObservableList<String> listBoundary = FXCollections.<String>observableArrayList();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
@@ -372,8 +384,9 @@ public class odb2DAO {
     }
 
     public void updateBoundary(FxDfdElement elementWithNewBoundary) {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraph graph = factory.getTx();
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraph graph = factory.getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(
                     new OCommandSQL(

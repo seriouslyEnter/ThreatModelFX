@@ -31,19 +31,21 @@ public class Odb2Sum {
 
     @Inject
     Odb2Helper odb2helper;
+    @Inject
+    OdbConnection odbc;
 
     @Inject
     odb2It odb2It;
 
-    private OrientGraphFactory ogf() {
-        OrientGraphFactory factory = new OrientGraphFactory(
-                "remote:localhost/ThreatModelDB", "admin", "admin"
-        ).setupPool(1, 10);
-        return factory;
-    }
-
+//    private OrientGraphFactory ogf() {
+//        OrientGraphFactory factory = new OrientGraphFactory(
+//                "remote:localhost/ThreatModelDB", "admin", "admin"
+//        ).setupPool(1, 10);
+//        return factory;
+//    }
     public FxDfdElement querySystemElement(String selectedDiagram) {
-        OrientGraphNoTx graph = ogf().getNoTx();
+//        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
         FxDfdElement rootNode = null;
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
@@ -73,7 +75,8 @@ public class Odb2Sum {
     }
 
     public List<FxDfdElement> queryTopBoundary(String selectedDiagram) {
-        OrientGraphNoTx graph = ogf().getNoTx();
+//        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
 //        Vertex topBoundary = null;
         List<FxDfdElement> listOfTopBoundarys = new ArrayList<>();
 //        Boolean hasHigherBoundary = false;
@@ -128,7 +131,8 @@ public class Odb2Sum {
     }
 
     public List<TreeItem<FxDfdElement>> queryChildElements(Queue<TreeItem<FxDfdElement>> childElementsQueue, String selectedDiagram) {
-        OrientGraphNoTx graph = ogf().getNoTx();
+//        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
         List<TreeItem<FxDfdElement>> childElementList = new ArrayList<>();
         TreeItem<FxDfdElement> treeItem;
         if (childElementsQueue.peek() != null) {
@@ -151,7 +155,8 @@ public class Odb2Sum {
     }
 
     public List<TreeItem<FxDfdElement>> queryElementsWithoutBoundary(String selectedDiagram) {
-        OrientGraphNoTx graph = ogf().getNoTx();
+//        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
         List<TreeItem<FxDfdElement>> elementList = new ArrayList<>();
         try {
             //finde die Iteration and die Dread angehängt wird
@@ -175,9 +180,12 @@ public class Odb2Sum {
     }
 
     public Map<Integer, FxIteration> calculateRiskOfLeafElement(FxDfdElement fxDfdElement, String selectedDiagram) {
+        //        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
+
         Map<Integer, FxIteration> dProIt = new HashMap<>();
         FxIteration averageRiskProIteration;
-        OrientGraphNoTx graph = ogf().getNoTx();
+
         try {
             Integer maxIteration = odb2It.findMaxIteration(selectedDiagram);
             for (int i = 1; i <= maxIteration; i++) {
@@ -218,7 +226,8 @@ public class Odb2Sum {
             Map<Integer, FxIteration> childDProIt;
 //        FxIteration averageRiskProIteration;
             Integer addedElements = 0;
-            OrientGraphNoTx graph = ogf().getNoTx();
+//            OrientGraphNoTx graph = ogf().getNoTx();
+            OrientGraph graph = odbc.ogf().getTx();
             try {
                 Integer maxIteration = odb2It.findMaxIteration(selectedDiagram);
                 //erstelle leere Objekte für Parent
@@ -261,7 +270,8 @@ public class Odb2Sum {
             Map<Integer, FxIteration> childDProIt;
 //        FxIteration averageRiskProIteration;
             Integer addedElements = 0;
-            OrientGraphNoTx graph = ogf().getNoTx();
+//            OrientGraphNoTx graph = ogf().getNoTx();
+            OrientGraph graph = odbc.ogf().getTx();
             try {
                 Integer maxIteration = odb2It.findMaxIteration(selectedDiagram);
                 //erstelle leere Objekte für Parent

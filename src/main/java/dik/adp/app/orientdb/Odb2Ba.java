@@ -26,15 +26,18 @@ public class Odb2Ba {
 
     @Inject
     Odb2Helper odb2helper;
+    @Inject
+    OdbConnection odbc;
 
-    private OrientGraphFactory ogf() {
-        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-//        OrientGraph graph = factory.getTx();
-        return factory;
-    }
+//    private OrientGraphFactory ogf() {
+//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+////        OrientGraph graph = factory.getTx();
+//        return factory;
+//    }
 
     public List<FxStride> queryDfdElements(FxAT at, String selectedDiagram, String elementType) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         List<FxStride> result = new ArrayList<>();
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
@@ -53,14 +56,15 @@ public class Odb2Ba {
             graph.rollback();
             graph.shutdown();
         }
-        
+
         Collections.sort(result, (a, b) -> a.getDfdElement().getKey().compareToIgnoreCase(b.getDfdElement().getKey()));
-        
+
         return result;
     }
 
     public void getTheBAsToDfdElement(FxStride fxs, Vertex v, FxAT at, String selectedDiagram) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         try {
             for (Vertex ba : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT"
@@ -74,9 +78,9 @@ public class Odb2Ba {
             )).execute()) {
                 System.out.println(ba.toString());
                 for (Stride stride : Stride.values()) {
-                    if (stride.name().equals(ba.getProperty("threat"))){
+                    if (stride.name().equals(ba.getProperty("threat"))) {
                         fxs.getCbs().get(stride).setSelected(true);
-                    }    
+                    }
                 }
             }
         } catch (Exception e) {
@@ -85,9 +89,9 @@ public class Odb2Ba {
     }
 
     public void addThreatForElement(FxStride foundFxStrideAndSetBa) {
-//                OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-//        OrientGraph graph = factory.getTx();
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
+
         try {
 //            Vertex ba = odbGraph().addVertex("class:BA", "threat", foundFxStrideAndSetBa.getBa());
             Vertex ba = graph.addVertex("class:BA");
@@ -104,7 +108,8 @@ public class Odb2Ba {
     }
 
     public void removeThreatForElement(FxStride foundFxStrideAndSetBa) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         System.out.println(foundFxStrideAndSetBa.getBa());
         System.out.println(foundFxStrideAndSetBa.getDfdElement().getKey());
         System.out.println(foundFxStrideAndSetBa.getDfdElement().getDiagram());
@@ -128,7 +133,8 @@ public class Odb2Ba {
     }
 
     private Vertex queryAT(FxStride foundFxStrideAndSetBa) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         Vertex at = null;
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
@@ -147,7 +153,8 @@ public class Odb2Ba {
     }
 
     private Vertex queryDfdElement(FxStride foundFxStrideAndSetBa) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         Vertex dfdElement = null;
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(

@@ -30,16 +30,18 @@ public class Odb2Ra {
 
     @Inject
     Odb2Helper odb2helper;
+    @Inject
+    OdbConnection odbc;
 
-    private OrientGraphFactory ogf() {
-        OrientGraphFactory factory = new OrientGraphFactory(
-                "remote:localhost/ThreatModelDB", "admin", "admin"
-        ).setupPool(1, 10);
-        return factory;
-    }
-
+//    private OrientGraphFactory ogf() {
+//        OrientGraphFactory factory = new OrientGraphFactory(
+//                "remote:localhost/ThreatModelDB", "admin", "admin"
+//        ).setupPool(1, 10);
+//        return factory;
+//    }
     public Map<String, FxDfdElement4TreeView> queryDfdElements(String selectedDiagram) {
-        OrientGraphNoTx graph = ogf().getNoTx();
+//        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
 //        FxDfdElement4TreeView treeViewElements = new FxDfdElement4TreeView();
         Map<String, FxDfdElement4TreeView> treeViewMap = new TreeMap<>();
         String key;
@@ -65,7 +67,8 @@ public class Odb2Ra {
     }
 
     public FxRa queryBa(FxDfdElement fxDfdElement, FxAT selectedAt) {
-        OrientGraphNoTx graph = ogf().getNoTx();
+//        OrientGraphNoTx graph = ogf().getNoTx();
+        OrientGraph graph = odbc.ogf().getTx();
         FxRa fxRa = new FxRa(fxDfdElement);
         try {
             for (Vertex ba : (Iterable<Vertex>) graph.command(new OCommandSQL(
@@ -92,7 +95,8 @@ public class Odb2Ra {
     }
 
     public void createDREAD(FxBa fxBa, Integer iteration, Rating rating, Dread dread) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         Boolean dreadGefunden = false;
         try {
             //finde die Iteration and die Dread angehängt wird
@@ -130,7 +134,8 @@ public class Odb2Ra {
     }
 
     public Rating queryMetric(FxBa fxBa, Integer iteration, Dread dread) {
-        OrientGraph graph = ogf().getTx();
+//        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         Rating rating = null;
         try {
             //finde die Iteration and die Dread angehängt wird
