@@ -62,13 +62,14 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        startODB();
+//        startODB();
     }
 
     @Override
     public void stop() throws Exception {
         Injector.forgetAll();
         System.out.println("Stage is closing");
+        
         server.shutdown();
     }
 

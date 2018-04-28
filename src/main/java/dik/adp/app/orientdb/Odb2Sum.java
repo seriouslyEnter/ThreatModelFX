@@ -10,7 +10,9 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphNoTx;
+import dik.adp.app.gui.sharedcommunicationmodel.SelectedState;
 import dik.adp.app.orientdb.odb2Klassen.Dread;
+import dik.adp.app.orientdb.odb2Klassen.FxAT;
 import dik.adp.app.orientdb.odb2Klassen.FxBa;
 import dik.adp.app.orientdb.odb2Klassen.FxDfdElement;
 import dik.adp.app.orientdb.odb2Klassen.FxIteration;
@@ -36,6 +38,8 @@ public class Odb2Sum {
 
     @Inject
     odb2It odb2It;
+        @Inject
+    SelectedState selectedState;
 
 //    private OrientGraphFactory ogf() {
 //        OrientGraphFactory factory = new OrientGraphFactory(
@@ -49,7 +53,9 @@ public class Odb2Sum {
         FxDfdElement rootNode = null;
         try {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
-                    "SELECT FROM DfdDiagram WHERE name='" + selectedDiagram + "'"
+                    "SELECT "
+                    + "FROM DfdDiagram "
+                    + "WHERE name='" + selectedDiagram + "'"
             )).execute()) {
 //                FxDfdElement newElement = new FxDfdElement(
 //                        v.getId().toString(), "DfdDiagram", v.getProperty("name")
@@ -140,6 +146,7 @@ public class Odb2Sum {
                 for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                         "SELECT expand(in('inBoundary'))"
                         + " FROM " + childElementsQueue.peek().getValue().getRid()
+                //                        + " WHERE in('targets').out('realized_by')[name='" + selectedAT.getName() + "']"
                 )).execute()) {
                     treeItem = new TreeItem<>(odb2helper.vertexToFxDfdElement(v));
                     //zu childListe hinzufügen
@@ -154,7 +161,7 @@ public class Odb2Sum {
         return childElementList;
     }
 
-    public List<TreeItem<FxDfdElement>> queryElementsWithoutBoundary(String selectedDiagram) {
+    public List<TreeItem<FxDfdElement>> queryElementsWithoutBoundary(String selectedDiagram, FxAT selectedAT) {
 //        OrientGraphNoTx graph = ogf().getNoTx();
         OrientGraph graph = odbc.ogf().getTx();
         List<TreeItem<FxDfdElement>> elementList = new ArrayList<>();
@@ -164,7 +171,9 @@ public class Odb2Sum {
             for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                     "SELECT"
                     + " FROM DfdElement"
-                    + " WHERE out('inBoundary').size() = 0 AND type!='Boundary'"
+                    + " WHERE out('inBoundary').size() = 0"
+                    + " AND type!='Boundary'"
+                    + " AND in('targets').out('realized_by').name CONTAINS '" + selectedAT.getName() + "'"
             )).execute()) {
                 TreeItem treeItem = new TreeItem<>(odb2helper.vertexToFxDfdElement(v));
                 elementList.add(treeItem);
@@ -179,7 +188,7 @@ public class Odb2Sum {
         return elementList;
     }
 
-    public Map<Integer, FxIteration> calculateRiskOfLeafElement(FxDfdElement fxDfdElement, String selectedDiagram) {
+    public Map<Integer, FxIteration> calculateRiskOfLeafElement(FxDfdElement fxDfdElement, String selectedDiagram, FxAT selectedAT) {
         //        OrientGraphNoTx graph = ogf().getNoTx();
         OrientGraph graph = odbc.ogf().getTx();
 
@@ -196,6 +205,7 @@ public class Odb2Sum {
                 for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                         "SELECT expand(in('targets').out('has_iteration')[iteration=" + i + "].out('metric'))"
                         + " FROM " + fxDfdElement.getRid()
+                        + " WHERE in('targets').out('realized_by').name CONTAINS '" + selectedAT.getName() + "'"
                 )).execute()) {
                     //berechne Druchschnitt
                     Double dSchnitt = 0d;
@@ -219,7 +229,7 @@ public class Odb2Sum {
         return dProIt;
     }
 
-    public Map<Integer, FxIteration> calculateRiskOfParentElement(FxDfdElement fxDfdElement, String selectedDiagram) {
+    public Map<Integer, FxIteration> calculateRiskOfParentElement(FxDfdElement fxDfdElement, String selectedDiagram, FxAT selectedAT) {
         Map<Integer, FxIteration> dProIt = new HashMap<>();
         //prüfe ob Sonderfall rootNode/ganzes DfdDiagramm oder(else) einzelnes Boundary
         if (fxDfdElement.getType().contentEquals("DfdDiagram")) {
@@ -242,9 +252,11 @@ public class Odb2Sum {
                 for (Vertex v : (Iterable<Vertex>) graph.command(new OCommandSQL(
                         "SELECT"
                         + " FROM DfdElement"
-                        + " WHERE diagram='" + selectedDiagram + "' AND type!='Boundary'"
+                        + " WHERE diagram='" + selectedDiagram + "'"
+                            + " AND type!='Boundary'"
+//                            + " AND in('targets').out('realized_by').name CONTAINS '" + selectedAT.getName() + "'"
                 )).execute()) {
-                    childDProIt = calculateRiskOfLeafElement(odb2helper.vertexToFxDfdElement(v), selectedDiagram);
+                    childDProIt = calculateRiskOfLeafElement(odb2helper.vertexToFxDfdElement(v), selectedDiagram, selectedState.getSelectedAt());
                     //remember how many Elements were added
                     addedElements++;
                     //adding old and new Risk for every Iteration
@@ -292,8 +304,9 @@ public class Odb2Sum {
                         + " FROM " + fxDfdElement.getRid()
                         + " ) "
                         + " WHERE type!='Boundary'"
+//                            + " AND in('targets').out('realized_by').name CONTAINS '" + selectedAT.getName() + "'"
                 )).execute()) {
-                    childDProIt = calculateRiskOfLeafElement(odb2helper.vertexToFxDfdElement(v), selectedDiagram);
+                    childDProIt = calculateRiskOfLeafElement(odb2helper.vertexToFxDfdElement(v), selectedDiagram, selectedState.getSelectedAt());
                     //remember how many Elements were added
                     addedElements++;
                     //adding old and new Risk for every Iteration

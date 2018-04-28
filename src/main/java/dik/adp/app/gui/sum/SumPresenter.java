@@ -127,9 +127,9 @@ public class SumPresenter implements Initializable {
         }
         
         //Add Elements without a Boundary to rootNode
-        odb.queryElementsWithoutBoundary(selectedState.getSelectedDiagram());
+        odb.queryElementsWithoutBoundary(selectedState.getSelectedDiagram(), selectedState.getSelectedAt());
         
-        rootNode.getChildren().addAll(odb.queryElementsWithoutBoundary(selectedState.getSelectedDiagram()));
+        rootNode.getChildren().addAll(odb.queryElementsWithoutBoundary(selectedState.getSelectedDiagram(), selectedState.getSelectedAt()));
         
 
         // Turn off multiple-selection mode for the TreeTableView
@@ -155,9 +155,9 @@ public class SumPresenter implements Initializable {
 
         Map<Integer, FxIteration> dProIt;
         if (fxDfdElement.getType().contentEquals("Boundary") || fxDfdElement.getType().contentEquals("DfdDiagram")) {
-            dProIt = odb.calculateRiskOfParentElement(fxDfdElement, selectedState.getSelectedDiagram());
+            dProIt = odb.calculateRiskOfParentElement(fxDfdElement, selectedState.getSelectedDiagram(), selectedState.getSelectedAt());
         } else {
-            dProIt = odb.calculateRiskOfLeafElement(fxDfdElement, selectedState.getSelectedDiagram());
+            dProIt = odb.calculateRiskOfLeafElement(fxDfdElement, selectedState.getSelectedDiagram(), selectedState.getSelectedAt());
         }
 
         dProIt.forEach((i, a) -> {

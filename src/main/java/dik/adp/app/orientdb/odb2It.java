@@ -8,7 +8,6 @@ package dik.adp.app.orientdb;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
-import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
 import javax.inject.Inject;
 
@@ -18,18 +17,18 @@ import javax.inject.Inject;
  */
 public class odb2It {
     
-        @Inject
+    @Inject
     OdbConnection odbc;
 
-    private OrientGraphFactory ogf() {
-        OrientGraphFactory factory = new OrientGraphFactory(
-                "remote:localhost/ThreatModelDB", "admin", "admin"
-        ).setupPool(1, 10);
-        return factory;
-    }
+//    private OrientGraphFactory ogf() {
+//        OrientGraphFactory factory = new OrientGraphFactory(
+//                "remote:localhost/ThreatModelDB", "admin", "admin"
+//        ).setupPool(1, 10);
+//        return factory;
+//    }
 
     public Boolean addNewIteration(String dfdDiagram) {
-        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         Integer newIteration = findMaxIteration(dfdDiagram) + 1;
         Boolean success;
         try {
@@ -53,7 +52,7 @@ public class odb2It {
     }
 
     public Integer findMaxIteration(String dfdDiagram) {
-        OrientGraph graph = ogf().getTx();
+        OrientGraph graph = odbc.ogf().getTx();
         Integer maxIiteration = 0;
         try {
             for (Vertex maxIt : (Iterable<Vertex>) graph.command(new OCommandSQL(

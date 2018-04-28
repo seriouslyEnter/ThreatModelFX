@@ -14,8 +14,9 @@ import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 public class OdbConnection {
 
     public OrientGraphFactory ogf() {
-//        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
-        OrientGraphFactory factory = new OrientGraphFactory("plocal:.\\databases\\ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+        OrientGraphFactory factory = new OrientGraphFactory("remote:localhost/ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraphFactory factory = new OrientGraphFactory("plocal:.\\databases\\ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
+//        OrientGraphFactory factory = new OrientGraphFactory("plocal:G:\\LAGER\\NETBEANS PROJEKTE\\ThreatModelDB\\databases\\ThreatModelDB", "admin", "admin").setupPool(1, 10); //ACHTUNG PASSWORT AUF GITHUB SICHTBAR
 //        OrientGraph graph = factory.getTx();
         return factory;
     }
